@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Editor Mobile RPG</title>
+<title>Editor RPG Mobile</title>
 
 <style>
 body {
@@ -19,59 +19,46 @@ h2 {
     margin: 10px 0;
 }
 
-/* TABS */
 .tabs {
     display: flex;
-    justify-content: space-around;
     background: #222;
 }
 
 .tabs button {
     flex: 1;
-    padding: 15px;
+    padding: 14px;
     border: none;
     background: #222;
     color: white;
-    font-size: 14px;
 }
 
-.tabs button:hover {
-    background: #333;
-}
-
-/* CONTEÚDO */
 .tab {
     display: none;
-    padding: 15px;
+    padding: 12px;
 }
 
 input, textarea {
     width: 100%;
     padding: 12px;
     margin-bottom: 10px;
-    border: none;
-    border-radius: 5px;
     font-size: 16px;
+    border-radius: 5px;
+    border: none;
 }
 
 textarea {
     height: 80px;
-    resize: none;
 }
 
-/* BOTÃO SALVAR */
 .save-btn {
     position: fixed;
     bottom: 20px;
     right: 20px;
-
     background: #00c853;
     color: white;
     border: none;
     padding: 15px 20px;
     border-radius: 50px;
-    font-size: 16px;
-    box-shadow: 0 0 10px black;
 }
 </style>
 </head>
@@ -80,12 +67,13 @@ textarea {
 
 <h2>Editor de Ficha</h2>
 
-<!-- TABS -->
 <div class="tabs">
     <button onclick="showTab('basico')">Básico</button>
     <button onclick="showTab('combate')">Combate</button>
-    <button onclick="showTab('skills')">Skills</button>
-    <button onclick="showTab('itens')">Itens</button>
+    <button onclick="showTab('instintos')">Instintos</button>
+    <button onclick="showTab('conhecimentos')">Conhecimentos</button>
+    <button onclick="showTab('praticas')">Práticas</button>
+    <button onclick="showTab('extras')">Extras</button>
 </div>
 
 <!-- BÁSICO -->
@@ -101,20 +89,43 @@ textarea {
     <input id="hp_max" type="number" placeholder="HP Máximo">
 </div>
 
-<!-- SKILLS -->
-<div id="skills" class="tab">
+<!-- INSTINTOS -->
+<div id="instintos" class="tab">
     <input id="reacao" type="number" placeholder="Reação">
     <input id="percepcao" type="number" placeholder="Percepção">
     <input id="sagacidade" type="number" placeholder="Sagacidade">
+    <input id="potencia" type="number" placeholder="Potência">
+    <input id="influencia" type="number" placeholder="Influência">
+    <input id="resolucao" type="number" placeholder="Resolução">
 </div>
 
-<!-- ITENS -->
-<div id="itens" class="tab">
+<!-- CONHECIMENTOS -->
+<div id="conhecimentos" class="tab">
+    <input id="agrario" type="number" placeholder="Agrário">
+    <input id="biologico" type="number" placeholder="Biológico">
+    <input id="exato" type="number" placeholder="Exato">
+    <input id="medicina" type="number" placeholder="Medicina">
+    <input id="social2" type="number" placeholder="Social">
+    <input id="artistico" type="number" placeholder="Artístico">
+</div>
+
+<!-- PRÁTICAS -->
+<div id="praticas" class="tab">
+    <input id="esportivas" type="number">
+    <input id="ferramentas" type="number">
+    <input id="oficios" type="number">
+    <input id="armas" type="number">
+    <input id="veiculos" type="number">
+    <input id="infiltracao" type="number">
+</div>
+
+<!-- EXTRAS -->
+<div id="extras" class="tab">
+    <textarea id="caracteristicas" placeholder="Características"></textarea>
     <textarea id="equipamentos" placeholder="Equipamentos"></textarea>
 </div>
 
-<!-- BOTÃO SALVAR -->
-<button class="save-btn" onclick="salvar()">💾 Salvar</button>
+<button class="save-btn" onclick="salvar()">💾</button>
 
 <!-- FIREBASE -->
 <script type="module">
@@ -145,10 +156,11 @@ window.child = child;
 let idAtual = new URLSearchParams(window.location.search).get("id");
 
 let carregando = true;
+let timeout;
 
-// 🔥 salvar manual (evita bug mobile)
+// 🔥 SALVAR COMPLETO
 function salvar() {
-    if (!idAtual) return;
+    if (!idAtual || carregando) return;
 
     set(ref(db, "personagens/" + idAtual), {
         id: idAtual,
@@ -165,16 +177,46 @@ function salvar() {
         instintos: {
             reacao: Number(document.getElementById("reacao").value) || 0,
             percepcao: Number(document.getElementById("percepcao").value) || 0,
-            sagacidade: Number(document.getElementById("sagacidade").value) || 0
+            sagacidade: Number(document.getElementById("sagacidade").value) || 0,
+            potencia: Number(document.getElementById("potencia").value) || 0,
+            influencia: Number(document.getElementById("influencia").value) || 0,
+            resolucao: Number(document.getElementById("resolucao").value) || 0
         },
 
+        conhecimentos: {
+            agrario: Number(document.getElementById("agrario").value) || 0,
+            biologico: Number(document.getElementById("biologico").value) || 0,
+            exato: Number(document.getElementById("exato").value) || 0,
+            medicina: Number(document.getElementById("medicina").value) || 0,
+            social: Number(document.getElementById("social2").value) || 0,
+            artistico: Number(document.getElementById("artistico").value) || 0
+        },
+
+        praticas: {
+            esportivas: Number(document.getElementById("esportivas").value) || 0,
+            ferramentas: Number(document.getElementById("ferramentas").value) || 0,
+            oficios: Number(document.getElementById("oficios").value) || 0,
+            armas: Number(document.getElementById("armas").value) || 0,
+            veiculos: Number(document.getElementById("veiculos").value) || 0,
+            infiltracao: Number(document.getElementById("infiltracao").value) || 0
+        },
+
+        caracteristicas: document.getElementById("caracteristicas").value || "",
         equipamentos: document.getElementById("equipamentos").value || ""
     });
-
-    alert("Salvo!");
 }
 
-// 📥 carregar
+// 🔁 AUTOSAVE (SEGURO)
+document.querySelectorAll("input, textarea").forEach(el => {
+    el.addEventListener("input", () => {
+        if (carregando) return;
+
+        clearTimeout(timeout);
+        timeout = setTimeout(salvar, 700);
+    });
+});
+
+// 📥 CARREGAR
 function carregar() {
     if (!idAtual) return;
 
@@ -196,23 +238,37 @@ function carregar() {
         document.getElementById("reacao").value = p.instintos?.reacao || "";
         document.getElementById("percepcao").value = p.instintos?.percepcao || "";
         document.getElementById("sagacidade").value = p.instintos?.sagacidade || "";
+        document.getElementById("potencia").value = p.instintos?.potencia || "";
+        document.getElementById("influencia").value = p.instintos?.influencia || "";
+        document.getElementById("resolucao").value = p.instintos?.resolucao || "";
 
+        document.getElementById("agrario").value = p.conhecimentos?.agrario || "";
+        document.getElementById("biologico").value = p.conhecimentos?.biologico || "";
+        document.getElementById("exato").value = p.conhecimentos?.exato || "";
+        document.getElementById("medicina").value = p.conhecimentos?.medicina || "";
+        document.getElementById("social2").value = p.conhecimentos?.social || "";
+        document.getElementById("artistico").value = p.conhecimentos?.artistico || "";
+
+        document.getElementById("esportivas").value = p.praticas?.esportivas || "";
+        document.getElementById("ferramentas").value = p.praticas?.ferramentas || "";
+        document.getElementById("oficios").value = p.praticas?.oficios || "";
+        document.getElementById("armas").value = p.praticas?.armas || "";
+        document.getElementById("veiculos").value = p.praticas?.veiculos || "";
+        document.getElementById("infiltracao").value = p.praticas?.infiltracao || "";
+
+        document.getElementById("caracteristicas").value = p.caracteristicas || "";
         document.getElementById("equipamentos").value = p.equipamentos || "";
 
         carregando = false;
     });
 }
 
-// 🔁 tabs
+// UI
 function showTab(id) {
-    document.querySelectorAll(".tab").forEach(t => {
-        t.style.display = "none";
-    });
-
+    document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
     document.getElementById(id).style.display = "block";
 }
 
-// init
 window.onload = () => {
     showTab("basico");
     carregar();
