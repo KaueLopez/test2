@@ -17,7 +17,7 @@ body {
     left: 30px;
 }
 
-/* NOME (BRANCO + NEON NO CONTORNO) */
+/* NOME */
 .nome {
     font-size: 48px;
     font-weight: bold;
@@ -30,7 +30,24 @@ body {
         0 0 12px #ff1a1a,
         0 0 20px #ff1a1a;
 }
-    
+
+/* IMAGEM */
+#portrait {
+    width: 200px;
+    display: block;
+    margin-bottom: 10px;
+    transition: 0.3s;
+}
+
+/* ESTADOS */
+.ferido {
+    filter: brightness(0.7);
+}
+
+.critico {
+    filter: brightness(0.4) hue-rotate(-20deg);
+}
+
 </style>
 
 </head>
@@ -38,7 +55,11 @@ body {
 <body>
 
 <div class="overlay">
+
+    <img id="portrait" src="normal.png">
+
     <div class="nome" id="nome">Carregando...</div>
+
 </div>
 
 <script type="module">
@@ -57,6 +78,7 @@ const db = getDatabase(app);
 const id = new URLSearchParams(location.search).get("id");
 
 const nomeEl = document.getElementById("nome");
+const portrait = document.getElementById("portrait");
 
 /* LIVE UPDATE */
 onValue(ref(db, "personagens/" + id), (snap) => {
@@ -64,9 +86,25 @@ onValue(ref(db, "personagens/" + id), (snap) => {
     if (!p || !p.dados) return;
 
     const info = p.dados.info || {};
- 
+    const c = p.dados.combate || {};
 
     nomeEl.textContent = info.nome || "Sem nome";
+
+    const hpAtual = c.hp_atual ?? 0;
+    const hpMax = c.hp_max ?? 1;
+
+    const porcentagem = hpAtual / hpMax;
+
+    // limpa estados
+    portrait.classList.remove("ferido", "critico");
+
+    // aplica estado
+    if (porcentagem <= 0.3) {
+        portrait.classList.add("critico");
+    } else if (porcentagem <= 0.6) {
+        portrait.classList.add("ferido");
+    }
+
 });
 </script>
 
