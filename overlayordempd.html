@@ -72,8 +72,8 @@ onValue(ref(db, "personagens/" + id), (snap) => {
 
     nomeEl.textContent = info.nome || "Sem nome";
 
-    hpEl.textContent = `HP: ${c.hp_atual ?? 0} / ${c.hp_max ?? 0}`;
-    pdEl.textContent = `PD: ${c.pd_turno ?? 0}`;
+    hpEl.textContent = `${c.hp_atual ?? 0} / ${c.hp_max ?? 0}`;
+    pdEl.textContent = `${c.pd_turno ?? 0}`;
 });
 
 </script>
