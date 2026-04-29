@@ -31,17 +31,7 @@ body {
         0 0 12px #ff1a1a,
         0 0 20px #ff1a1a;
 }
-
-/* STATUS (HP) */
-.stat {
-    font-size: 28px;
-    font-family: "lobster", serif;
-
-    color: #9B111E;
-    text-shadow:
-        0 0 6px #960018,
-        0 0 12px #960018;
-}
+    
 </style>
 
 </head>
@@ -68,7 +58,6 @@ const db = getDatabase(app);
 const id = new URLSearchParams(location.search).get("id");
 
 const nomeEl = document.getElementById("nome");
-const hpEl = document.getElementById("hp");
 
 /* LIVE UPDATE */
 onValue(ref(db, "personagens/" + id), (snap) => {
@@ -76,7 +65,7 @@ onValue(ref(db, "personagens/" + id), (snap) => {
     if (!p || !p.dados) return;
 
     const info = p.dados.info || {};
-    const c = p.dados.combate || {};
+ 
 
     nomeEl.textContent = info.nome || "Sem nome";
 });
