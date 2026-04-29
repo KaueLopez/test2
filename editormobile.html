@@ -30,7 +30,6 @@ h2 {
     border: none;
     background: #222;
     color: white;
-    font-size: 14px;
 }
 
 .tab {
@@ -72,9 +71,7 @@ textarea {
 <div class="tabs">
     <button onclick="showTab('basico')">Básico</button>
     <button onclick="showTab('combate')">Combate</button>
-    <button onclick="showTab('instintos')">Instintos</button>
-    <button onclick="showTab('conhecimentos')">Conhec.</button>
-    <button onclick="showTab('praticas')">Práticas</button>
+    <button onclick="showTab('atributos')">Atributos</button>
     <button onclick="showTab('extras')">Extras</button>
 </div>
 
@@ -91,34 +88,33 @@ textarea {
     <input id="hp_max" type="number" placeholder="HP Máximo">
 </div>
 
-<!-- INSTINTOS -->
-<div id="instintos" class="tab">
+<!-- ATRIBUTOS (UNIFICADO) -->
+<div id="atributos" class="tab">
+
+    <h3>Instintos</h3>
     <input id="reacao" type="number" placeholder="Reação">
     <input id="percepcao" type="number" placeholder="Percepção">
     <input id="sagacidade" type="number" placeholder="Sagacidade">
     <input id="potencia" type="number" placeholder="Potência">
     <input id="influencia" type="number" placeholder="Influência">
     <input id="resolucao" type="number" placeholder="Resolução">
-</div>
 
-<!-- CONHECIMENTOS -->
-<div id="conhecimentos" class="tab">
+    <h3>Conhecimentos</h3>
     <input id="agrario" type="number" placeholder="Agrário">
     <input id="biologico" type="number" placeholder="Biológico">
     <input id="exato" type="number" placeholder="Exato">
     <input id="medicina" type="number" placeholder="Medicina">
     <input id="social2" type="number" placeholder="Social">
     <input id="artistico" type="number" placeholder="Artístico">
-</div>
 
-<!-- PRÁTICAS -->
-<div id="praticas" class="tab">
+    <h3>Práticas</h3>
     <input id="esportivas" type="number" placeholder="Esportivas">
     <input id="ferramentas" type="number" placeholder="Ferramentas">
     <input id="oficios" type="number" placeholder="Ofícios">
     <input id="armas" type="number" placeholder="Armas">
     <input id="veiculos" type="number" placeholder="Veículos">
     <input id="infiltracao" type="number" placeholder="Infiltração">
+
 </div>
 
 <!-- EXTRAS -->
@@ -160,7 +156,7 @@ let idAtual = new URLSearchParams(window.location.search).get("id");
 let carregando = true;
 let timeout = null;
 
-// 🔥 SALVAR COMPLETO
+// 💾 SALVAR
 function salvar() {
     if (!idAtual || carregando) return;
 
@@ -208,16 +204,14 @@ function salvar() {
     });
 }
 
-// 🔁 AUTOSAVE REAL (SEGURADO)
+// 🔁 AUTOSAVE
 function ativarAutosave() {
     document.querySelectorAll("input, textarea").forEach(el => {
         el.addEventListener("input", () => {
             if (carregando) return;
 
             clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                salvar();
-            }, 700);
+            timeout = setTimeout(salvar, 700);
         });
     });
 }
@@ -242,6 +236,7 @@ function carregar() {
         document.getElementById("hp_atual").value = p.saude?.hp_atual || "";
         document.getElementById("hp_max").value = p.saude?.hp_max || "";
 
+        // instintos
         document.getElementById("reacao").value = p.instintos?.reacao || "";
         document.getElementById("percepcao").value = p.instintos?.percepcao || "";
         document.getElementById("sagacidade").value = p.instintos?.sagacidade || "";
@@ -249,6 +244,7 @@ function carregar() {
         document.getElementById("influencia").value = p.instintos?.influencia || "";
         document.getElementById("resolucao").value = p.instintos?.resolucao || "";
 
+        // conhecimentos
         document.getElementById("agrario").value = p.conhecimentos?.agrario || "";
         document.getElementById("biologico").value = p.conhecimentos?.biologico || "";
         document.getElementById("exato").value = p.conhecimentos?.exato || "";
@@ -256,6 +252,7 @@ function carregar() {
         document.getElementById("social2").value = p.conhecimentos?.social || "";
         document.getElementById("artistico").value = p.conhecimentos?.artistico || "";
 
+        // práticas
         document.getElementById("esportivas").value = p.praticas?.esportivas || "";
         document.getElementById("ferramentas").value = p.praticas?.ferramentas || "";
         document.getElementById("oficios").value = p.praticas?.oficios || "";
