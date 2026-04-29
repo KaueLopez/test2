@@ -2,375 +2,86 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FICHA ORDEM CODICE</title>
 
 <style>
 body {
     margin: 0;
+    background: transparent;
     font-family: Arial;
-    background: #0f0f0f;
+}
+
+.overlay {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+
     color: white;
+    text-shadow: 1px 1px 3px black;
+
+    font-size: 20px;
 }
 
-header {
-    text-align: center;
-    padding: 10px;
-    background: #1a1a1a;
-    position: sticky;
-    top: 0;
+.nome {
+    font-size: 28px;
+    font-weight: bold;
 }
 
-/* TABS */
-.tabs {
-    display: flex;
-    position: sticky;
-    top: 44px;
-    background: #1f1f1f;
-}
-
-.tabs button {
-    flex: 1;
-    padding: 14px;
-    border: none;
-    background: #1f1f1f;
-    color: white;
-    cursor: pointer;
-}
-
-/* CONTEÚDO */
-.tab {
-    display: none;
-    padding: 12px;
-}
-
-/* INPUTS */
-input, textarea {
-    width: 100%;
-    padding: 12px;
-    font-size: 15px;
-    border-radius: 8px;
-    border: none;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-}
-
-/* GRID */
-.grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-}
-
-@media (max-width: 800px) {
-    .grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 500px) {
-    .grid { grid-template-columns: 1fr; }
-}
-
-/* BLOCO */
-.block {
-    background: #161616;
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid #2a2a2a;
-    margin-bottom: 12px;
-}
-
-/* LABEL */
-.label {
-    font-size: 12px;
-    opacity: 0.7;
-    margin-top: 4px;
-    text-align: center;
-}
-
-/* CELL */
-.cell {
-    text-align: center;
-}
-
-/* STATUS */
-#status {
-    position: fixed;
-    bottom: 12px;
-    right: 12px;
-    background: #7c3aed;
-    padding: 8px 12px;
-    border-radius: 20px;
-    font-size: 12px;
+.hp {
+    margin-top: 5px;
+    font-size: 18px;
 }
 </style>
 </head>
 
 <body>
 
-<header>FICHA ORDEM CODICE</header>
-
-<div class="tabs">
-    <button onclick="showTab('info')">Info</button>
-    <button onclick="showTab('combat')">Combate</button>
-    <button onclick="showTab('skills')">Skills</button>
+<div class="overlay">
+    <div class="nome" id="nome">Nome</div>
+    <div class="hp" id="hp">HP: 0 / 0</div>
 </div>
 
-<!-- INFO -->
-<div id="info" class="tab">
-    <div class="block">
-        <input id="nome" placeholder="Nome">
-        <input id="classe" placeholder="Classe">
-        <input id="origem" placeholder="Origem">
-        <textarea id="descricao" placeholder="Descrição"></textarea>
-    </div>
-</div>
-
-<!-- COMBATE -->
-<div id="combat" class="tab">
-
-<div class="block">
-<h3>HP</h3>
-<div class="grid">
-    <div class="cell">
-        <input id="hp_atual" type="number">
-        <div class="label">Atual</div>
-    </div>
-    <div class="cell">
-        <input id="hp_max" type="number">
-        <div class="label">Máximo</div>
-    </div>
-</div>
-</div>
-
-<div class="block">
-<h3>Sanidade</h3>
-<div class="grid">
-    <div class="cell">
-        <input id="san_atual" type="number">
-        <div class="label">Atual</div>
-    </div>
-    <div class="cell">
-        <input id="san_max" type="number">
-        <div class="label">Máx</div>
-    </div>
-</div>
-</div>
-
-<div class="block">
-<h3>PD / PE</h3>
-
-<div class="grid">
-    <div class="cell">
-        <input id="pe_atual" type="number">
-        <div class="label">PE Atual</div>
-    </div>
-    <div class="cell">
-        <input id="pe_max" type="number">
-        <div class="label">PE Máx</div>
-    </div>
-</div>
-
-<div class="grid">
-    <div class="cell">
-        <input id="pd_atual" type="number">
-        <div class="label">PD Atual</div>
-    </div>
-    <div class="cell">
-        <input id="pd_max" type="number">
-        <div class="label">PD Máx</div>
-    </div>
-</div>
-
-</div>
-
-<div class="block">
-<h3>Defesa</h3>
-<div class="grid">
-    <div class="cell"><input id="defesa" type="number"><div class="label">Defesa</div></div>
-    <div class="cell"><input id="bloqueio" type="number"><div class="label">Bloqueio</div></div>
-    <div class="cell"><input id="esquiva" type="number"><div class="label">Esquiva</div></div>
-</div>
-</div>
-
-<div class="block">
-<h3>Armas</h3>
-<input id="arma1" placeholder="Arma 1">
-<input id="arma2" placeholder="Arma 2">
-<input id="arma3" placeholder="Arma 3">
-</div>
-
-</div>
-
-<!-- SKILLS -->
-<div id="skills" class="tab">
-
-<div class="block">
-<h3>Atributos</h3>
-<div class="grid">
-    <div class="cell"><input id="for" type="number"><div class="label">FOR</div></div>
-    <div class="cell"><input id="agi" type="number"><div class="label">AGI</div></div>
-    <div class="cell"><input id="int" type="number"><div class="label">INT</div></div>
-    <div class="cell"><input id="vig" type="number"><div class="label">VIG</div></div>
-    <div class="cell"><input id="pre" type="number"><div class="label">PRE</div></div>
-    <div class="cell"><input id="desl" type="number"><div class="label">DESL</div></div>
-</div>
-</div>
-
-<div class="block">
-<h3>Perícias</h3>
-<textarea id="pericias"></textarea>
-
-<h3>Habilidades</h3>
-<textarea id="habilidades"></textarea>
-
-<h3>Rituais</h3>
-<textarea id="rituais"></textarea>
-
-<h3>Equipamentos</h3>
-<textarea id="equipamentos"></textarea>
-</div>
-
-</div>
-
-<div id="status">Pronto</div>
-
-<!-- 🔥 FUNÇÃO QUE FALTAVA -->
-<script>
-function showTab(tabId) {
-    document.querySelectorAll(".tab").forEach(tab => {
-        tab.style.display = "none";
-    });
-
-    document.getElementById(tabId).style.display = "block";
-}
-</script>
-
-<!-- 🔥 FIREBASE -->
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-const app = initializeApp({
+const firebaseConfig = {
   apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
   authDomain: "fichasrpg-45934.firebaseapp.com",
-  databaseURL: "https://fichasrpg-45934-default-rtdb.firebaseio.com"
-});
+  databaseURL: "https://fichasrpg-45934-default-rtdb.firebaseio.com",
+  projectId: "fichasrpg-45934",
+  storageBucket: "fichasrpg-45934.firebasestorage.app",
+  messagingSenderId: "523682127281",
+  measurementId: "G-L22V165GJX"
+};
 
+const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const id = new URLSearchParams(location.search).get("id");
 
-const $ = (id) => document.getElementById(id);
+// 🔥 ID do personagem
+const id = new URLSearchParams(window.location.search).get("id");
 
-let carregando = true;
-let userEditing = false;
-
-document.querySelectorAll("input, textarea").forEach(el=>{
-    el.addEventListener("focus", ()=> userEditing = true);
-    el.addEventListener("blur", ()=> userEditing = false);
-});
-
-/* SYNC */
-onValue(ref(db,"personagens/"+id), (snap)=>{
-    if(!snap.exists() || userEditing) return;
-
-    const p = snap.val();
-    const i = p.dados?.info || {};
-    const c = p.dados?.combate || {};
-    const a = p.dados?.atributos || {};
-    const e = p.extras || {};
-
-    $("nome").value=i.nome||"";
-    $("classe").value=i.classe||"";
-    $("origem").value=i.origem||"";
-    $("descricao").value=e.descricao||"";
-
-    $("hp_atual").value=c.hp_atual||0;
-    $("hp_max").value=c.hp_max||0;
-
-    $("san_atual").value=c.sanidade_atual||0;
-    $("san_max").value=c.sanidade_max||0;
-
-    $("pe_atual").value=c.pe_atual||0;
-    $("pe_max").value=c.pe_max||0;
-
-    $("pd_atual").value=c.pd_atual||0;
-    $("pd_max").value=c.pd_max||0;
-
-    $("defesa").value=c.defesa||0;
-    $("bloqueio").value=c.bloqueio||0;
-    $("esquiva").value=c.esquiva||0;
-
-    $("arma1").value=c.arma1||"";
-    $("arma2").value=c.arma2||"";
-    $("arma3").value=c.arma3||"";
-
-    $("for").value=a.for||0;
-    $("agi").value=a.agi||0;
-    $("int").value=a.int||0;
-    $("vig").value=a.vig||0;
-    $("pre").value=a.pre||0;
-    $("desl").value=a.desl||0;
-
-    $("pericias").value=e.pericias||"";
-    $("habilidades").value=e.habilidades||"";
-    $("rituais").value=e.rituais||"";
-    $("equipamentos").value=e.equipamentos||"";
-
-    carregando=false;
-});
-
-/* AUTOSAVE */
-function bind(idField, path, key){
-    $(idField).addEventListener("input", async ()=>{
-        if(carregando) return;
-
-        const value = $(idField).value;
-        const parsed = isNaN(value) ? value : +value;
-
-        const obj = {};
-        obj[key] = parsed;
-
-        await update(ref(db,"personagens/"+id+"/"+path), obj);
-    });
+if (!id) {
+    console.error("ID não encontrado na URL");
 }
 
-/* BINDS */
-bind("nome","dados/info","nome");
-bind("classe","dados/info","classe");
-bind("origem","dados/info","origem");
+// 🔁 listener em tempo real
+onValue(ref(db, "personagens/" + id), (snapshot) => {
+    const p = snapshot.val();
 
-bind("hp_atual","dados/combate","hp_atual");
-bind("hp_max","dados/combate","hp_max");
-bind("san_atual","dados/combate","sanidade_atual");
-bind("san_max","dados/combate","sanidade_max");
-bind("pe_atual","dados/combate","pe_atual");
-bind("pe_max","dados/combate","pe_max");
-bind("pd_atual","dados/combate","pd_atual");
-bind("pd_max","dados/combate","pd_max");
+    console.log("UPDATE:", p);
 
-bind("defesa","dados/combate","defesa");
-bind("bloqueio","dados/combate","bloqueio");
-bind("esquiva","dados/combate","esquiva");
+    if (!p) return;
 
-bind("arma1","dados/combate","arma1");
-bind("arma2","dados/combate","arma2");
-bind("arma3","dados/combate","arma3");
+    const nome = p.nome || "Sem nome";
 
-bind("for","dados/atributos","for");
-bind("agi","dados/atributos","agi");
-bind("int","dados/atributos","int");
-bind("vig","dados/atributos","vig");
-bind("pre","dados/atributos","pre");
-bind("desl","dados/atributos","desl");
+    const hpAtual = Number(p.saude?.hp_atual || 0);
+    const hpMax = Number(p.saude?.hp_max || 0);
 
-bind("pericias","extras","pericias");
-bind("habilidades","extras","habilidades");
-bind("rituais","extras","rituais");
-bind("equipamentos","extras","equipamentos");
-bind("descricao","extras","descricao");
+    document.getElementById("nome").textContent = nome;
+    document.getElementById("hp").textContent = `HP: ${hpAtual} / ${hpMax}`;
+});
 
-/* ABRE PRIMEIRA ABA */
-window.onload = ()=> showTab("info");
 </script>
 
 </body>
