@@ -62,14 +62,22 @@ const db = getDatabase(app);
 onValue(ref(db, "personagens/" + id), (snapshot) => {
     const p = snapshot.val();
 
-    console.log("DADOS RECEBIDOS:", p);
+    console.log("UPDATE FIREBASE:", p);
 
     if (!p) return;
 
-    document.getElementById("nome").innerText = p.nome || "Sem nome";
+    const nome = p.nome ?? "Sem nome";
 
-    document.getElementById("hp").innerText =
-        `HP: ${p.saude?.hp_atual} / ${p.saude?.hp_max}`;
+    const hpAtual =
+        Number(p.saude?.hp_atual ?? p.hp_atual ?? 0);
+
+    const hpMax =
+        Number(p.saude?.hp_max ?? p.hp_max ?? 0);
+
+    document.getElementById("nome").textContent = nome;
+
+    document.getElementById("hp").textContent =
+        `HP: ${hpAtual} / ${hpMax}`;
 });
 
 </script>
