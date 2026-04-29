@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>FICHA ASSIMILACAO CODICE</title>
+<title>FICHA ASSIMILAÇÃO CODICE</title>
 
 <style>
 body {
     margin: 0;
     font-family: Arial;
-    background: #111;
+    background: #000;
     color: white;
 }
 
@@ -21,16 +21,15 @@ h2 {
 
 .tabs {
     display: flex;
-    background: #222;
+    background: #1a1a1a;
 }
 
 .tabs button {
     flex: 1;
     padding: 14px;
     border: none;
-    background: #222;
+    background: #1a1a1a;
     color: white;
-    cursor: pointer;
 }
 
 .tab {
@@ -38,20 +37,37 @@ h2 {
     padding: 12px;
 }
 
+.block {
+    background: #0b0b0b;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 12px;
+}
+
 input, textarea {
     width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
     border: none;
-    margin-bottom: 12px;
+    border-radius: 6px;
+    background: #fff;
+    color: #000;
+    font-size: 14px;
     box-sizing: border-box;
-    text-align: center;
 }
 
 textarea {
-    height: 80px;
-    text-align: left;
+    min-height: 80px;
+    resize: vertical;
+}
+
+h3 {
+    background: #2a2a2a;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin: 15px 0 10px;
 }
 
 .grid2x3 {
@@ -61,28 +77,38 @@ textarea {
     margin-bottom: 15px;
 }
 
+@media (max-width: 600px) {
+    .grid2x3 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
 .cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.label {
+    background: #3a3a3a;
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    margin-top: 5px;
+    width: 100%;
     text-align: center;
 }
 
 .cell input {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 6px;
-    border: none;
     text-align: center;
+    font-weight: bold;
 }
 
-.label {
-    font-size: 12px;
-    margin-top: 4px;
-    opacity: 0.7;
-}
-
-h3 {
-    margin: 10px 0;
-    font-size: 16px;
+#hp_atual, #hp_max {
+    background: #ff2b2b;
+    color: #000;
+    font-weight: bold;
 }
 </style>
 </head>
@@ -99,37 +125,35 @@ h3 {
 
 <!-- BÁSICO -->
 <div id="basico" class="tab">
-    <input id="nome" placeholder="Nome">
-    <textarea id="evento" placeholder="Evento Marcante"></textarea>
-    <input id="social" placeholder="Posição Social">
+    <div class="block">
+        <input id="nome" placeholder="Nome">
+        <textarea id="evento" placeholder="Evento Marcante"></textarea>
+        <input id="social" placeholder="Posição Social">
+    </div>
 </div>
 
 <!-- COMBATE -->
 <div id="combate" class="tab">
+<div class="block">
 
-<h3>Combate</h3>
-
+<h3>HP</h3>
 <div class="grid2x3">
     <div class="cell">
         <input id="hp_atual" type="number">
         <div class="label">HP Atual</div>
     </div>
-
     <div class="cell">
         <input id="hp_max" type="number">
         <div class="label">HP Máximo</div>
     </div>
 </div>
 
-<!-- 🔥 NOVO BLOCO -->
 <h3>Recursos</h3>
-
 <div class="grid2x3">
     <div class="cell">
         <input id="det_atual" type="number">
         <div class="label">Determinação Atual</div>
     </div>
-
     <div class="cell">
         <input id="det_max" type="number">
         <div class="label">Determinação Máx</div>
@@ -141,7 +165,6 @@ h3 {
         <input id="assim_atual" type="number">
         <div class="label">Assimilação Atual</div>
     </div>
-
     <div class="cell">
         <input id="assim_max" type="number">
         <div class="label">Assimilação Máx</div>
@@ -150,49 +173,52 @@ h3 {
 
 <h3>Instintos</h3>
 <div class="grid2x3">
-    <div class="cell"><input id="reacao" type="number"><div class="label">Reação</div></div>
-    <div class="cell"><input id="percepcao" type="number"><div class="label">Percepção</div></div>
-    <div class="cell"><input id="sagacidade" type="number"><div class="label">Sagacidade</div></div>
+    <div class="cell"><input id="reacao"><div class="label">Reação</div></div>
+    <div class="cell"><input id="percepcao"><div class="label">Percepção</div></div>
+    <div class="cell"><input id="sagacidade"><div class="label">Sagacidade</div></div>
 </div>
 
 <div class="grid2x3">
-    <div class="cell"><input id="potencia" type="number"><div class="label">Potência</div></div>
-    <div class="cell"><input id="influencia" type="number"><div class="label">Influência</div></div>
-    <div class="cell"><input id="resolucao" type="number"><div class="label">Resolução</div></div>
+    <div class="cell"><input id="potencia"><div class="label">Potência</div></div>
+    <div class="cell"><input id="influencia"><div class="label">Influência</div></div>
+    <div class="cell"><input id="resolucao"><div class="label">Resolução</div></div>
 </div>
 
 <h3>Conhecimentos</h3>
 <div class="grid2x3">
-    <div class="cell"><input id="agrario" type="number"><div class="label">Agrário</div></div>
-    <div class="cell"><input id="biologico" type="number"><div class="label">Biológico</div></div>
-    <div class="cell"><input id="exato" type="number"><div class="label">Exato</div></div>
+    <div class="cell"><input id="agrario"><div class="label">Agrário</div></div>
+    <div class="cell"><input id="biologico"><div class="label">Biológico</div></div>
+    <div class="cell"><input id="exato"><div class="label">Exato</div></div>
 </div>
 
 <div class="grid2x3">
-    <div class="cell"><input id="medicina" type="number"><div class="label">Medicina</div></div>
-    <div class="cell"><input id="social2" type="number"><div class="label">Social</div></div>
-    <div class="cell"><input id="artistico" type="number"><div class="label">Artístico</div></div>
+    <div class="cell"><input id="medicina"><div class="label">Medicina</div></div>
+    <div class="cell"><input id="social2"><div class="label">Social</div></div>
+    <div class="cell"><input id="artistico"><div class="label">Artístico</div></div>
 </div>
 
 <h3>Práticas</h3>
 <div class="grid2x3">
-    <div class="cell"><input id="esportivas" type="number"><div class="label">Esportivas</div></div>
-    <div class="cell"><input id="ferramentas" type="number"><div class="label">Ferramentas</div></div>
-    <div class="cell"><input id="oficios" type="number"><div class="label">Ofícios</div></div>
+    <div class="cell"><input id="esportivas"><div class="label">Esportivas</div></div>
+    <div class="cell"><input id="ferramentas"><div class="label">Ferramentas</div></div>
+    <div class="cell"><input id="oficios"><div class="label">Ofícios</div></div>
 </div>
 
 <div class="grid2x3">
-    <div class="cell"><input id="armas" type="number"><div class="label">Armas</div></div>
-    <div class="cell"><input id="veiculos" type="number"><div class="label">Veículos</div></div>
-    <div class="cell"><input id="infiltracao" type="number"><div class="label">Infiltração</div></div>
+    <div class="cell"><input id="armas"><div class="label">Armas</div></div>
+    <div class="cell"><input id="veiculos"><div class="label">Veículos</div></div>
+    <div class="cell"><input id="infiltracao"><div class="label">Infiltração</div></div>
 </div>
 
+</div>
 </div>
 
 <!-- EXTRAS -->
 <div id="extras" class="tab">
-    <textarea id="caracteristicas" placeholder="Características"></textarea>
-    <textarea id="equipamentos" placeholder="Equipamentos"></textarea>
+    <div class="block">
+        <textarea id="caracteristicas"></textarea>
+        <textarea id="equipamentos"></textarea>
+    </div>
 </div>
 
 <!-- FIREBASE -->
@@ -200,155 +226,110 @@ h3 {
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-const firebaseConfig = {
+const app = initializeApp({
   apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
   authDomain: "fichasrpg-45934.firebaseapp.com",
   databaseURL: "https://fichasrpg-45934-default-rtdb.firebaseio.com"
-};
+});
 
-const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
+const id = new URLSearchParams(location.search).get("id");
 
-window.db = db;
-window.ref = ref;
-window.set = set;
-window.get = get;
-window.child = child;
-</script>
-
-<script>
-const params = new URLSearchParams(window.location.search);
-let idAtual = params.get("id") || crypto.randomUUID();
-window.history.replaceState({}, "", "?id=" + idAtual);
-
+const $ = (i)=>document.getElementById(i);
 let carregando = true;
-let timeout = null;
-let salvando = false;
+let timeout;
 
 /* SAVE */
-async function salvar() {
-    if (!idAtual || carregando || salvando) return;
+function salvar(){
+if(!id || carregando) return;
 
-    salvando = true;
+set(ref(db,"personagens/"+id),{
 
-    await set(ref(db, "personagens/" + idAtual), {
+nome: $("nome").value || "",
+evento: $("evento").value || "",
+social: $("social").value || "",
 
-        nome: nome.value || "",
-        evento: evento.value || "",
-        social: social.value || "",
+saude:{
+hp_atual:+$("hp_atual").value||0,
+hp_max:+$("hp_max").value||0,
+det_atual:+$("det_atual").value||0,
+det_max:+$("det_max").value||0,
+assim_atual:+$("assim_atual").value||0,
+assim_max:+$("assim_max").value||0
+},
 
-        saude: {
-            hp_atual: Number(hp_atual.value) || 0,
-            hp_max: Number(hp_max.value) || 0,
+instintos:{
+reacao:+$("reacao").value||0,
+percepcao:+$("percepcao").value||0,
+sagacidade:+$("sagacidade").value||0,
+potencia:+$("potencia").value||0,
+influencia:+$("influencia").value||0,
+resolucao:+$("resolucao").value||0
+},
 
-            det_atual: Number(det_atual.value) || 0,
-            det_max: Number(det_max.value) || 0,
+conhecimentos:{
+agrario:+$("agrario").value||0,
+biologico:+$("biologico").value||0,
+exato:+$("exato").value||0,
+medicina:+$("medicina").value||0,
+social:+$("social2").value||0,
+artistico:+$("artistico").value||0
+},
 
-            assim_atual: Number(assim_atual.value) || 0,
-            assim_max: Number(assim_max.value) || 0
-        },
+praticas:{
+esportivas:+$("esportivas").value||0,
+ferramentas:+$("ferramentas").value||0,
+oficios:+$("oficios").value||0,
+armas:+$("armas").value||0,
+veiculos:+$("veiculos").value||0,
+infiltracao:+$("infiltracao").value||0
+},
 
-        instintos: {
-            reacao: Number(reacao.value) || 0,
-            percepcao: Number(percepcao.value) || 0,
-            sagacidade: Number(sagacidade.value) || 0,
-            potencia: Number(potencia.value) || 0,
-            influencia: Number(influencia.value) || 0,
-            resolucao: Number(resolucao.value) || 0
-        },
-
-        conhecimentos: {
-            agrario: Number(agrario.value) || 0,
-            biologico: Number(biologico.value) || 0,
-            exato: Number(exato.value) || 0,
-            medicina: Number(medicina.value) || 0,
-            social: Number(social2.value) || 0,
-            artistico: Number(artistico.value) || 0
-        },
-
-        praticas: {
-            esportivas: Number(esportivas.value) || 0,
-            ferramentas: Number(ferramentas.value) || 0,
-            oficios: Number(oficios.value) || 0,
-            armas: Number(armas.value) || 0,
-            veiculos: Number(veiculos.value) || 0,
-            infiltracao: Number(infiltracao.value) || 0
-        },
-
-        caracteristicas: caracteristicas.value || "",
-        equipamentos: equipamentos.value || ""
-    });
-
-    salvando = false;
+caracteristicas:$("caracteristicas").value||"",
+equipamentos:$("equipamentos").value||""
+});
 }
 
 /* LOAD */
-async function carregar() {
-    const snap = await get(child(ref(db), "personagens/" + idAtual));
+async function load(){
+const snap=await get(child(ref(db),"personagens/"+id));
+if(!snap.exists()){carregando=false;return}
 
-    if (snap.exists()) {
-        const p = snap.val();
+const p=snap.val();
 
-        nome.value = p.nome || "";
-        evento.value = p.evento || "";
-        social.value = p.social || "";
+$("nome").value=p.nome||"";
+$("evento").value=p.evento||"";
+$("social").value=p.social||"";
 
-        hp_atual.value = p.saude?.hp_atual || "";
-        hp_max.value = p.saude?.hp_max || "";
+$("hp_atual").value=p.saude?.hp_atual||"";
+$("hp_max").value=p.saude?.hp_max||"";
+$("det_atual").value=p.saude?.det_atual||"";
+$("det_max").value=p.saude?.det_max||"";
+$("assim_atual").value=p.saude?.assim_atual||"";
+$("assim_max").value=p.saude?.assim_max||"";
 
-        det_atual.value = p.saude?.det_atual || "";
-        det_max.value = p.saude?.det_max || "";
-
-        assim_atual.value = p.saude?.assim_atual || "";
-        assim_max.value = p.saude?.assim_max || "";
-
-        reacao.value = p.instintos?.reacao || "";
-        percepcao.value = p.instintos?.percepcao || "";
-        sagacidade.value = p.instintos?.sagacidade || "";
-        potencia.value = p.instintos?.potencia || "";
-        influencia.value = p.instintos?.influencia || "";
-        resolucao.value = p.instintos?.resolucao || "";
-
-        agrario.value = p.conhecimentos?.agrario || "";
-        biologico.value = p.conhecimentos?.biologico || "";
-        exato.value = p.conhecimentos?.exato || "";
-        medicina.value = p.conhecimentos?.medicina || "";
-        social2.value = p.conhecimentos?.social || "";
-        artistico.value = p.conhecimentos?.artistico || "";
-
-        esportivas.value = p.praticas?.esportivas || "";
-        ferramentas.value = p.praticas?.ferramentas || "";
-        oficios.value = p.praticas?.oficios || "";
-        armas.value = p.praticas?.armas || "";
-        veiculos.value = p.praticas?.veiculos || "";
-        infiltracao.value = p.praticas?.infiltracao || "";
-
-        caracteristicas.value = p.caracteristicas || "";
-        equipamentos.value = p.equipamentos || "";
-    }
-
-    carregando = false;
+carregando=false;
 }
 
-/* AUTOSAVE */
-document.querySelectorAll("input, textarea").forEach(el => {
-    el.addEventListener("input", () => {
-        if (carregando) return;
-
-        clearTimeout(timeout);
-        timeout = setTimeout(salvar, 600);
-    });
+/* autosave */
+document.querySelectorAll("input,textarea").forEach(e=>{
+e.addEventListener("input",()=>{
+if(carregando)return;
+clearTimeout(timeout);
+timeout=setTimeout(salvar,700);
+});
 });
 
-/* TABS */
-function showTab(id) {
-    document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
-    document.getElementById(id).style.display = "block";
+/* tabs */
+function showTab(id){
+document.querySelectorAll(".tab").forEach(t=>t.style.display="none");
+document.getElementById(id).style.display="block";
 }
+window.showTab=showTab;
 
-window.onload = () => {
-    showTab("basico");
-    carregar();
+window.onload=()=>{
+showTab("basico");
+load();
 };
 </script>
 
