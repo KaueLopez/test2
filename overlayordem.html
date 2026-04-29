@@ -21,17 +21,16 @@ body {
     gap: 20px;
 }
 
-/* IMAGEM (DOBRO DO TAMANHO) */
+/* IMAGEM */
 #portrait {
     width: 240px;
     height: 240px;
     object-fit: cover;
 
-    /* animação base */
     animation: flutuar 3s ease-in-out infinite;
 }
 
-/* BLOCO DE INFO */
+/* INFO */
 .info {
     display: flex;
     flex-direction: column;
@@ -50,29 +49,24 @@ body {
         0 0 20px #ff1a1a;
 }
 
+/* FLUTUAR + ACHATAR */
 @keyframes flutuar {
-    0% {
-        transform: translateY(0px) scaleY(1);
-    }
-    50% {
-        transform: translateY(-8px) scaleY(0.99); /* levemente achatado */
-    }
-    100% {
-        transform: translateY(0px) scaleY(1);
-    }
+    0%   { transform: translateY(0px) scaleY(1); }
+    50%  { transform: translateY(-8px) scaleY(0.92); }
+    100% { transform: translateY(0px) scaleY(1); }
 }
 
-/* TREMER QUANDO CRÍTICO */
+/* CRÍTICO */
 .critico {
     animation: flutuar 3s ease-in-out infinite, tremer 0.15s infinite;
 }
 
 @keyframes tremer {
-    0% { transform: translate(0px, 0px); }
-    25% { transform: translate(3px, -3px); }
-    50% { transform: translate(-3px, 3px); }
-    75% { transform: translate(3px, 3px); }
-    100% { transform: translate(0px, 0px); }
+    0% { transform: translate(0px, 0px) scaleY(0.92); }
+    25% { transform: translate(3px, -3px) scaleY(0.92); }
+    50% { transform: translate(-3px, 3px) scaleY(0.92); }
+    75% { transform: translate(3px, 3px) scaleY(0.92); }
+    100% { transform: translate(0px, 0px) scaleY(0.92); }
 }
 </style>
 
@@ -82,7 +76,8 @@ body {
 
 <div class="overlay">
 
-    <img id="portrait" src="Adelaide.png">
+    <!-- imagem inicial genérica -->
+    <img id="portrait" src="img/giii/normal.png">
 
     <div class="info">
         <div class="nome" id="nome">Carregando...</div>
@@ -108,7 +103,6 @@ const id = new URLSearchParams(location.search).get("id");
 const nomeEl = document.getElementById("nome");
 const portrait = document.getElementById("portrait");
 
-/* LIVE UPDATE */
 onValue(ref(db, "personagens/" + id), (snap) => {
     const p = snap.val();
     if (!p || !p.dados) return;
@@ -123,21 +117,27 @@ onValue(ref(db, "personagens/" + id), (snap) => {
 
     const porcentagem = hpAtual / hpMax;
 
-    let novaImagem = "Adelaide.png";
+    /* DEFINE PASTA DO PERSONAGEM */
+    const pasta = id; // ou info.id_personagem
 
-    // remove estado anterior
+    /* DEFINE ESTADO */
+    let estado = "normal";
+
     portrait.classList.remove("critico");
 
     if (porcentagem <= 0.3) {
-        novaImagem = "Adelaide.png";
+        estado = "critico";
         portrait.classList.add("critico");
-    } else if (porcentagem <= 0.5) {
-        novaImagem = "Adelaide.png";
+    } else if (porcentagem <= 0.6) {
+        estado = "ferido";
     }
 
-    // evita troca desnecessária
-    if (!portrait.src.includes(novaImagem)) {
-        portrait.src = novaImagem;
+    /* CAMINHO DINÂMICO */
+    const caminho = `img/${pasta}/${estado}.png`;
+
+    /* TROCA SOMENTE SE NECESSÁRIO */
+    if (!portrait.src.includes(caminho)) {
+        portrait.src = caminho;
     }
 });
 </script>
