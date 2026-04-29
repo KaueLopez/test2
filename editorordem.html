@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Editor RPG Mobile</title>
+<title>RPG Panel</title>
 
 <style>
 body {
@@ -14,23 +14,19 @@ body {
     color: white;
 }
 
-/* HEADER */
 header {
     text-align: center;
     padding: 10px;
-    font-size: 18px;
     background: #1a1a1a;
     position: sticky;
     top: 0;
 }
 
-/* TABS MOBILE STYLE */
 .tabs {
     display: flex;
     position: sticky;
     top: 44px;
     background: #1f1f1f;
-    z-index: 10;
 }
 
 .tabs button {
@@ -39,20 +35,13 @@ header {
     border: none;
     background: #1f1f1f;
     color: white;
-    font-size: 14px;
 }
 
-.tabs button:hover {
-    background: #2a2a2a;
-}
-
-/* PAGES */
 .tab {
     display: none;
     padding: 12px;
 }
 
-/* INPUTS */
 input, textarea {
     width: 100%;
     padding: 14px;
@@ -61,34 +50,26 @@ input, textarea {
     border: none;
     margin-bottom: 12px;
     box-sizing: border-box;
-    background: #fff;
-    color: #000;
 }
 
 textarea {
     min-height: 90px;
 }
 
-/* GRID RESPONSIVO REAL */
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
 }
 
-@media (max-width: 900px) {
-    .grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+@media (max-width: 800px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-@media (max-width: 600px) {
-    .grid {
-        grid-template-columns: 1fr;
-    }
+@media (max-width: 500px) {
+    .grid { grid-template-columns: 1fr; }
 }
 
-/* CELULA */
 .cell {
     text-align: center;
 }
@@ -99,43 +80,38 @@ textarea {
     margin-top: 4px;
 }
 
-/* BOTÃO SALVAR FLUTUANTE */
-.save-indicator {
+#status {
     position: fixed;
-    bottom: 15px;
-    right: 15px;
+    bottom: 12px;
+    right: 12px;
     background: #7c3aed;
-    padding: 10px 14px;
+    padding: 8px 12px;
     border-radius: 20px;
     font-size: 12px;
-    z-index: 100;
 }
 </style>
 </head>
 
 <body>
 
-<header>Editor RPG Mobile</header>
+<header>RPG Character Panel</header>
 
 <div class="tabs">
     <button onclick="showTab('info')">Info</button>
-    <button onclick="showTab('combate')">Combate</button>
+    <button onclick="showTab('combat')">Combate</button>
     <button onclick="showTab('skills')">Skills</button>
 </div>
 
 <!-- INFO -->
 <div id="info" class="tab">
-
-<input id="nome" placeholder="Nome">
-<input id="classe" placeholder="Classe">
-<input id="origem" placeholder="Origem">
-
-<textarea id="descricao" placeholder="Descrição"></textarea>
-
+    <input id="nome" placeholder="Nome">
+    <input id="classe" placeholder="Classe">
+    <input id="origem" placeholder="Origem">
+    <textarea id="descricao" placeholder="Descrição"></textarea>
 </div>
 
 <!-- COMBATE -->
-<div id="combate" class="tab">
+<div id="combat" class="tab">
 
 <h3>HP</h3>
 <div class="grid">
@@ -180,8 +156,8 @@ textarea {
 <h3>Defesa</h3>
 <div class="grid">
     <div class="cell"><input id="defesa" type="number"><div class="label">Defesa</div></div>
-    <div class="cell"><input id="esquiva" type="number"><div class="label">Esquiva</div></div>
     <div class="cell"><input id="bloqueio" type="number"><div class="label">Bloqueio</div></div>
+    <div class="cell"><input id="esquiva" type="number"><div class="label">Esquiva</div></div>
 </div>
 
 <h3>Armas</h3>
@@ -218,7 +194,7 @@ textarea {
 
 </div>
 
-<div class="save-indicator" id="status">Salvando...</div>
+<div id="status">Salvando...</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -237,22 +213,31 @@ history.replaceState({}, "", "?id=" + id);
 
 let carregando = true;
 
-function v(id) {
-    return document.getElementById(id);
-}
+/* HELP */
+const $ = (id) => document.getElementById(id);
 
 /* LOAD */
 async function load() {
-    const snap = await get(child(ref(db), "chars/" + id));
-    if (!snap.exists()) { carregando = false; return; }
+    try {
+        const snap = await get(child(ref(db), "personagens/" + id));
 
-    const d = snap.val();
+        if (!snap.exists()) {
+            carregando = false;
+            return;
+        }
 
-    Object.keys(d).forEach(k => {
-        if (v(k)) v(k).value = d[k];
-    });
+        const d = snap.val();
 
-    carregando = false;
+        Object.keys(d).forEach(k => {
+            if ($(k)) $(k).value = d[k];
+        });
+
+        carregando = false;
+
+    } catch (e) {
+        console.error(e);
+        carregando = false;
+    }
 }
 
 /* SAVE */
@@ -260,33 +245,37 @@ async function save() {
     if (carregando) return;
 
     let data = {};
+
     document.querySelectorAll("input, textarea").forEach(el => {
-        data[el.id] = el.value;
+        if (el.id) data[el.id] = el.value;
     });
 
-    await set(ref(db, "chars/" + id), data);
+    await set(ref(db, "personagens/" + id), data);
 
-    v("status").innerText = "Salvo ✔";
-    setTimeout(() => v("status").innerText = "Salvando...", 1000);
+    $("status").innerText = "Salvo ✔";
+    setTimeout(() => $("status").innerText = "Salvando...", 1000);
 }
 
 /* AUTOSAVE */
 let timeout;
 document.querySelectorAll("input, textarea").forEach(el => {
     el.addEventListener("input", () => {
+        if (carregando) return;
+
         clearTimeout(timeout);
         timeout = setTimeout(save, 600);
     });
 });
 
 /* TABS */
-function showTab(idTab) {
+function showTab(tab) {
     document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
-    v(idTab).style.display = "block";
+    $(tab).style.display = "block";
 }
 
 window.showTab = showTab;
 
+/* START */
 window.onload = () => {
     showTab("info");
     load();
