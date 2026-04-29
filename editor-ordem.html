@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Editor Ordem Paranormal</title>
+
+<style>
+body {
+    font-family: Arial;
+    margin: 20px;
+    background: #000;
+    color: white;
+}
+
+.box {
+    background: #0b0b0b;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #333;
+}
+
+input {
+    width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Ordem Paranormal</h2>
+
+<div class="box">
+
+<input id="nome" placeholder="Nome">
+<input id="origem" placeholder="Origem">
+<input id="classe" placeholder="Classe">
+
+<h3>Atributos</h3>
+<div class="grid">
+<input id="agi" type="number">
+<input id="for" type="number">
+<input id="int" type="number">
+<input id="vig" type="number">
+<input id="pre" type="number">
+<input id="nivel" type="number">
+</div>
+
+<input id="nex" type="number" placeholder="NEX">
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const app = initializeApp({
+  apiKey: "xxx",
+  authDomain: "xxx",
+  databaseURL: "xxx"
+});
+
+const db = getDatabase(app);
+
+let id = new URLSearchParams(location.search).get("id");
+let carregando = true;
+
+/* LOAD */
+get(child(ref(db), "personagens/" + id)).then(snap => {
+    const p = snap.val();
+
+    const i = p.dados?.info || {};
+    const a = p.dados?.atributos || {};
+
+    nome.value = i.nome || "";
+    origem.value = i.origem || "";
+    classe.value = i.classe || "";
+
+    agi.value = a.agi || 0;
+    for.value = a.for || 0;
+    int.value = a.int || 0;
+    vig.value = a.vig || 0;
+    pre.value = a.pre || 0;
+    nivel.value = a.nivel || 0;
+    nex.value = a.nex || 0;
+
+    carregando = false;
+});
+
+/* SAVE */
+setInterval(() => {
+    if (carregando) return;
+
+    set(ref(db, "personagens/" + id), {
+        tipo: "ordem",
+        dados: {
+            info: {
+                nome: nome.value,
+                origem: origem.value,
+                classe: classe.value
+            },
+            atributos: {
+                agi: +agi.value || 0,
+                for: +for.value || 0,
+                int: +int.value || 0,
+                vig: +vig.value || 0,
+                pre: +pre.value || 0,
+                nivel: +nivel.value || 0,
+                nex: +nex.value || 0
+            }
+        }
+    });
+}, 600);
+</script>
+
+</body>
+</html>
