@@ -58,26 +58,28 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// 🔥 pega ID da URL
+// 🔥 ID do personagem
+const id = new URLSearchParams(window.location.search).get("id");
+
+if (!id) {
+    console.error("ID não encontrado na URL");
+}
+
+// 🔁 listener em tempo real
 onValue(ref(db, "personagens/" + id), (snapshot) => {
     const p = snapshot.val();
 
-    console.log("UPDATE FIREBASE:", p);
+    console.log("UPDATE:", p);
 
     if (!p) return;
 
-    const nome = p.nome ?? "Sem nome";
+    const nome = p.nome || "Sem nome";
 
-    const hpAtual =
-        Number(p.saude?.hp_atual ?? p.hp_atual ?? 0);
-
-    const hpMax =
-        Number(p.saude?.hp_max ?? p.hp_max ?? 0);
+    const hpAtual = Number(p.saude?.hp_atual || 0);
+    const hpMax = Number(p.saude?.hp_max || 0);
 
     document.getElementById("nome").textContent = nome;
-
-    document.getElementById("hp").textContent =
-        `HP: ${hpAtual} / ${hpMax}`;
+    document.getElementById("hp").textContent = `HP: ${hpAtual} / ${hpMax}`;
 });
 
 </script>
