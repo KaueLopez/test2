@@ -123,7 +123,7 @@ label {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, get, child, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, get, child, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const app = initializeApp({
   apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
@@ -137,11 +137,17 @@ const id = new URLSearchParams(location.search).get("id");
 const $ = (id) => document.getElementById(id);
 
 let carregando = true;
+let userEditing = false;
 
-/* LOAD */
-async function load(){
-    const snap = await get(child(ref(db),"personagens/"+id));
-    if(!snap.exists()){carregando=false;return;}
+/* 🔒 evita overwrite durante edição */
+document.querySelectorAll("input, textarea").forEach(el=>{
+    el.addEventListener("focus", ()=> userEditing = true);
+    el.addEventListener("blur", ()=> userEditing = false);
+});
+
+/* 🔁 SYNC EM TEMPO REAL (resolve mobile vs PC) */
+onValue(ref(db,"personagens/"+id), (snap)=>{
+    if(!snap.exists() || userEditing) return;
 
     const p = snap.val();
 
@@ -149,7 +155,6 @@ async function load(){
     const c = p.dados?.combate || {};
     const a = p.dados?.atributos || {};
     const e = p.extras || {};
-    const cfg = p.config || {};
 
     $("nome").value = i.nome || "";
     $("classe").value = i.classe || "";
@@ -187,55 +192,59 @@ async function load(){
     $("descricao").value = e.descricao || "";
 
     carregando = false;
-}
+});
 
-/* SAVE (AGORA UPDATE) */
-async function save(){
-    if(carregando) return;
+/* 💾 AUTOSAVE INTELIGENTE (SEM INTERVAL BUGADO) */
+function bind(idField, path, key){
+    $(idField).addEventListener("input", async ()=>{
+        if(carregando) return;
 
-    await update(ref(db,"personagens/"+id),{
-        dados:{
-            info:{
-                nome:$("nome").value,
-                classe:$("classe").value,
-                origem:$("origem").value
-            },
-            atributos:{
-                for:+$("for").value||0,
-                agi:+$("agi").value||0,
-                int:+$("int").value||0,
-                vig:+$("vig").value||0,
-                pre:+$("pre").value||0,
-                desl:+$("desl").value||0
-            },
-            combate:{
-                hp_atual:+$("hp_atual").value||0,
-                hp_max:+$("hp_max").value||0,
-                sanidade_atual:+$("san_atual").value||0,
-                sanidade_max:+$("san_max").value||0,
-                pe_atual:+$("pe_atual").value||0,
-                pe_max:+$("pe_max").value||0,
-                pd_turno:+$("pd_turno").value||0,
-                defesa:+$("defesa").value||0,
-                bloqueio:+$("bloqueio").value||0,
-                esquiva:+$("esquiva").value||0,
-                arma1:$("arma1").value,
-                arma2:$("arma2").value,
-                arma3:$("arma3").value
-            }
-        },
-        extras:{
-            pericias:$("pericias").value,
-            habilidades:$("habilidades").value,
-            rituais:$("rituais").value,
-            equipamentos:$("equipamentos").value,
-            descricao:$("descricao").value
-        }
+        const value = $(idField).value;
+        const parsed = isNaN(value) ? value : +value;
+
+        const obj = {};
+        obj[key] = parsed;
+
+        await update(ref(db,"personagens/"+id+"/"+path), obj);
     });
 }
 
-setInterval(save,5000);
-window.onload=load;
+/* INFO */
+bind("nome","dados/info","nome");
+bind("classe","dados/info","classe");
+bind("origem","dados/info","origem");
+
+/* COMBATE */
+bind("hp_atual","dados/combate","hp_atual");
+bind("hp_max","dados/combate","hp_max");
+bind("san_atual","dados/combate","sanidade_atual");
+bind("san_max","dados/combate","sanidade_max");
+bind("pe_atual","dados/combate","pe_atual");
+bind("pe_max","dados/combate","pe_max");
+bind("pd_turno","dados/combate","pd_turno");
+bind("defesa","dados/combate","defesa");
+bind("bloqueio","dados/combate","bloqueio");
+bind("esquiva","dados/combate","esquiva");
+bind("arma1","dados/combate","arma1");
+bind("arma2","dados/combate","arma2");
+bind("arma3","dados/combate","arma3");
+
+/* ATRIBUTOS */
+bind("for","dados/atributos","for");
+bind("agi","dados/atributos","agi");
+bind("int","dados/atributos","int");
+bind("vig","dados/atributos","vig");
+bind("pre","dados/atributos","pre");
+bind("desl","dados/atributos","desl");
+
+/* EXTRAS */
+bind("pericias","extras","pericias");
+bind("habilidades","extras","habilidades");
+bind("rituais","extras","rituais");
+bind("equipamentos","extras","equipamentos");
+bind("descricao","extras","descricao");
+
+window.onload = ()=> showTab("info");
 </script>
 
 </body>
