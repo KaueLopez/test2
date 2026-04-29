@@ -53,18 +53,6 @@ textarea {
     text-align: left;
 }
 
-.save-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #00c853;
-    color: white;
-    border: none;
-    padding: 15px 20px;
-    border-radius: 50px;
-}
-
-/* GRID */
 .grid2x3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -83,7 +71,6 @@ textarea {
     border-radius: 6px;
     border: none;
     text-align: center;
-    box-sizing: border-box;
 }
 
 .label {
@@ -95,7 +82,6 @@ textarea {
 h3 {
     margin: 10px 0;
     font-size: 16px;
-    opacity: 0.9;
 }
 </style>
 </head>
@@ -117,14 +103,12 @@ h3 {
     <input id="social" placeholder="Posição Social">
 </div>
 
-<!-- COMBATE (TUDO UNIFICADO) -->
+<!-- COMBATE -->
 <div id="combate" class="tab">
 
 <h3>Combate</h3>
 
-<!-- HP PRIMEIRO -->
 <div class="grid2x3">
-
     <div class="cell">
         <input id="hp_atual" type="number">
         <div class="label">HP Atual</div>
@@ -134,7 +118,6 @@ h3 {
         <input id="hp_max" type="number">
         <div class="label">HP Máximo</div>
     </div>
-
 </div>
 
 <h3>Instintos</h3>
@@ -149,34 +132,6 @@ h3 {
     <div class="cell"><input id="potencia" type="number"><div class="label">Potência</div></div>
     <div class="cell"><input id="influencia" type="number"><div class="label">Influência</div></div>
     <div class="cell"><input id="resolucao" type="number"><div class="label">Resolução</div></div>
-</div>
-
-<h3>Conhecimentos</h3>
-
-<div class="grid2x3">
-    <div class="cell"><input id="agrario" type="number"><div class="label">Agrário</div></div>
-    <div class="cell"><input id="biologico" type="number"><div class="label">Biológico</div></div>
-    <div class="cell"><input id="exato" type="number"><div class="label">Exato</div></div>
-</div>
-
-<div class="grid2x3">
-    <div class="cell"><input id="medicina" type="number"><div class="label">Medicina</div></div>
-    <div class="cell"><input id="social2" type="number"><div class="label">Social</div></div>
-    <div class="cell"><input id="artistico" type="number"><div class="label">Artístico</div></div>
-</div>
-
-<h3>Práticas</h3>
-
-<div class="grid2x3">
-    <div class="cell"><input id="esportivas" type="number"><div class="label">Esportivas</div></div>
-    <div class="cell"><input id="ferramentas" type="number"><div class="label">Ferramentas</div></div>
-    <div class="cell"><input id="oficios" type="number"><div class="label">Ofícios</div></div>
-</div>
-
-<div class="grid2x3">
-    <div class="cell"><input id="armas" type="number"><div class="label">Armas</div></div>
-    <div class="cell"><input id="veiculos" type="number"><div class="label">Veículos</div></div>
-    <div class="cell"><input id="infiltracao" type="number"><div class="label">Infiltração</div></div>
 </div>
 
 </div>
@@ -213,86 +168,64 @@ window.child = child;
 </script>
 
 <script>
-/* =========================
-   ID SEMPRE VÁLIDO
-========================= */
 const params = new URLSearchParams(window.location.search);
-let idAtual = params.get("id");
+let idAtual = params.get("id") || crypto.randomUUID();
+window.history.replaceState({}, "", "?id=" + idAtual);
 
-if (!idAtual) {
-    idAtual = crypto.randomUUID();
-    window.history.replaceState({}, "", "?id=" + idAtual);
-}
-
-/* =========================
-   ESTADO
-========================= */
 let carregando = true;
+let salvando = false;
 let timeout = null;
 
-/* =========================
-   SALVAR
-========================= */
-function salvar() {
-    if (!idAtual || carregando) return;
+/* ---------------- SAVE ---------------- */
+async function salvar() {
+    if (!idAtual || carregando || salvando) return;
 
-    console.log("SALVANDO:", idAtual);
+    salvando = true;
 
-    set(ref(db, "personagens/" + idAtual), {
-        nome: document.getElementById("nome").value || "",
-        evento: document.getElementById("evento").value || "",
-        social: document.getElementById("social").value || "",
+    try {
+        await set(ref(db, "personagens/" + idAtual), {
+            nome: document.getElementById("nome").value || "",
+            evento: document.getElementById("evento").value || "",
+            social: document.getElementById("social").value || "",
 
-        saude: {
-            hp_atual: Number(document.getElementById("hp_atual").value) || 0,
-            hp_max: Number(document.getElementById("hp_max").value) || 0
-        },
+            saude: {
+                hp_atual: Number(document.getElementById("hp_atual").value) || 0,
+                hp_max: Number(document.getElementById("hp_max").value) || 0
+            },
 
-        instintos: {
-            reacao: Number(document.getElementById("reacao").value) || 0,
-            percepcao: Number(document.getElementById("percepcao").value) || 0,
-            sagacidade: Number(document.getElementById("sagacidade").value) || 0,
-            potencia: Number(document.getElementById("potencia").value) || 0,
-            influencia: Number(document.getElementById("influencia").value) || 0,
-            resolucao: Number(document.getElementById("resolucao").value) || 0
-        },
+            instintos: {
+                reacao: Number(document.getElementById("reacao").value) || 0,
+                percepcao: Number(document.getElementById("percepcao").value) || 0,
+                sagacidade: Number(document.getElementById("sagacidade").value) || 0,
+                potencia: Number(document.getElementById("potencia").value) || 0,
+                influencia: Number(document.getElementById("influencia").value) || 0,
+                resolucao: Number(document.getElementById("resolucao").value) || 0
+            },
 
-        conhecimentos: {
-            agrario: Number(document.getElementById("agrario").value) || 0,
-            biologico: Number(document.getElementById("biologico").value) || 0,
-            exato: Number(document.getElementById("exato").value) || 0,
-            medicina: Number(document.getElementById("medicina").value) || 0,
-            social: Number(document.getElementById("social2").value) || 0,
-            artistico: Number(document.getElementById("artistico").value) || 0
-        },
+            caracteristicas: document.getElementById("caracteristicas").value || "",
+            equipamentos: document.getElementById("equipamentos").value || ""
+        });
 
-        praticas: {
-            esportivas: Number(document.getElementById("esportivas").value) || 0,
-            ferramentas: Number(document.getElementById("ferramentas").value) || 0,
-            oficios: Number(document.getElementById("oficios").value) || 0,
-            armas: Number(document.getElementById("armas").value) || 0,
-            veiculos: Number(document.getElementById("veiculos").value) || 0,
-            infiltracao: Number(document.getElementById("infiltracao").value) || 0
-        },
+        console.log("Salvo com sucesso:", idAtual);
 
-        caracteristicas: document.getElementById("caracteristicas").value || "",
-        equipamentos: document.getElementById("equipamentos").value || ""
-    });
+    } catch (err) {
+        console.error("Erro ao salvar:", err);
+    }
+
+    salvando = false;
 }
 
-/* =========================
-   CARREGAR
-========================= */
-function carregar() {
-    console.log("CARREGANDO:", idAtual);
+/* ---------------- LOAD ---------------- */
+async function carregar() {
+    try {
+        const snap = await get(child(ref(db), "personagens/" + idAtual));
 
-    get(child(ref(db), "personagens/" + idAtual)).then(snapshot => {
-        if (!snapshot.exists()) {
+        if (!snap.exists()) {
             carregando = false;
             return;
         }
 
-        const p = snapshot.val();
+        const p = snap.val();
 
         document.getElementById("nome").value = p.nome || "";
         document.getElementById("evento").value = p.evento || "";
@@ -308,45 +241,36 @@ function carregar() {
         document.getElementById("influencia").value = p.instintos?.influencia || "";
         document.getElementById("resolucao").value = p.instintos?.resolucao || "";
 
-        document.getElementById("agrario").value = p.conhecimentos?.agrario || "";
-        document.getElementById("biologico").value = p.conhecimentos?.biologico || "";
-        document.getElementById("exato").value = p.conhecimentos?.exato || "";
-        document.getElementById("medicina").value = p.conhecimentos?.medicina || "";
-        document.getElementById("social2").value = p.conhecimentos?.social || "";
-        document.getElementById("artistico").value = p.conhecimentos?.artistico || "";
-
-        document.getElementById("esportivas").value = p.praticas?.esportivas || "";
-        document.getElementById("ferramentas").value = p.praticas?.ferramentas || "";
-        document.getElementById("oficios").value = p.praticas?.oficios || "";
-        document.getElementById("armas").value = p.praticas?.armas || "";
-        document.getElementById("veiculos").value = p.praticas?.veiculos || "";
-        document.getElementById("infiltracao").value = p.praticas?.infiltracao || "";
-
         document.getElementById("caracteristicas").value = p.caracteristicas || "";
         document.getElementById("equipamentos").value = p.equipamentos || "";
 
         carregando = false;
-    });
+
+    } catch (err) {
+        console.error("Erro ao carregar:", err);
+    }
 }
 
-/* =========================
-   AUTOSAVE
-========================= */
+/* ---------------- AUTOSAVE ---------------- */
 document.querySelectorAll("input, textarea").forEach(el => {
     el.addEventListener("input", () => {
-        if (carregando) return;
+        if (carregando || salvando) return;
 
         clearTimeout(timeout);
-        timeout = setTimeout(() => {
-            salvar();
-        }, 500);
+        timeout = setTimeout(salvar, 800);
     });
 });
 
-/* =========================
-   START
-========================= */
-window.onload = carregar;
+/* ---------------- UI ---------------- */
+function showTab(id) {
+    document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
+    document.getElementById(id).style.display = "block";
+}
+
+window.onload = async () => {
+    showTab("basico");
+    await carregar();
+};
 </script>
 
 </body>
