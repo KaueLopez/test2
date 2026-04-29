@@ -3,74 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>FICHA ORDEM CODICE</title>
 
 <style>
 body {
     margin: 0;
     font-family: Arial;
-    background: #111;
+    background: #0f0f0f;
     color: white;
 }
 
-h2 {
+header {
     text-align: center;
-    margin: 10px 0;
+    padding: 10px;
+    background: #1a1a1a;
+    position: sticky;
+    top: 0;
 }
 
+/* TABS */
 .tabs {
     display: flex;
-    background: #222;
+    background: #1f1f1f;
+    position: sticky;
+    top: 44px;
 }
 
 .tabs button {
     flex: 1;
     padding: 14px;
     border: none;
-    background: #222;
+    background: #1f1f1f;
     color: white;
+    cursor: pointer;
 }
 
+/* TAB */
 .tab {
     display: none;
     padding: 12px;
 }
 
+/* INPUT */
 input, textarea {
     width: 100%;
     padding: 12px;
-    font-size: 16px;
-    border-radius: 6px;
+    font-size: 15px;
+    border-radius: 8px;
     border: none;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     box-sizing: border-box;
-    text-align: center;
 }
 
-textarea {
-    min-height: 80px;
-    resize: none;
-    text-align: left;
-}
-
+/* GRID */
 .grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-}
-
-.grid3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-}
-
-.block {
-    background: #1a1a1a;
-    padding: 10px;
-    border-radius: 10px;
-    margin-bottom: 10px;
 }
 
 .cell {
@@ -80,18 +69,26 @@ textarea {
 .label {
     font-size: 12px;
     opacity: 0.7;
+    margin-top: 4px;
+}
+
+h3 {
+    margin-top: 15px;
+    background: #1f1f1f;
+    padding: 8px;
+    border-left: 4px solid #7c3aed;
 }
 </style>
 </head>
 
 <body>
 
-<h2>FICHA ORDEM CODICE</h2>
+<header>FICHA ORDEM CODICE</header>
 
 <div class="tabs">
     <button onclick="showTab('info')">Info</button>
     <button onclick="showTab('combat')">Combate</button>
-    <button onclick="showTab('extras')">Extras</button>
+    <button onclick="showTab('skills')">Skills</button>
 </div>
 
 <!-- INFO -->
@@ -105,86 +102,42 @@ textarea {
 <!-- COMBATE -->
 <div id="combat" class="tab">
 
-<div class="block">
-<h3>HP</h3>
-<div class="grid">
-    <div class="cell"><input id="hp_atual" type="number"><div class="label">Atual</div></div>
-    <div class="cell"><input id="hp_max" type="number"><div class="label">Máx</div></div>
-</div>
-</div>
-
-<div class="block">
-<h3>Sanidade</h3>
-<div class="grid">
-    <div class="cell"><input id="san_atual" type="number"><div class="label">Atual</div></div>
-    <div class="cell"><input id="san_max" type="number"><div class="label">Máx</div></div>
-</div>
-</div>
-
-<div class="block">
-<h3>PE / PD</h3>
-
-<div class="grid">
-    <div class="cell"><input id="pe_atual" type="number"><div class="label">PE Atual</div></div>
-    <div class="cell"><input id="pe_max" type="number"><div class="label">PE Máx</div></div>
-</div>
-
-<div class="grid">
-    <div class="cell"><input id="pe_turno" type="number"><div class="label">PE Turno</div></div>
-</div>
-
-<div class="grid">
-    <div class="cell"><input id="pd_atual" type="number"><div class="label">PD Atual</div></div>
-    <div class="cell"><input id="pd_max" type="number"><div class="label">PD Máx</div></div>
-</div>
-
-<div class="grid">
-    <div class="cell"><input id="pd_turno" type="number"><div class="label">PD Turno</div></div>
-</div>
-</div>
-
-<div class="block">
 <h3>Atributos</h3>
-<div class="grid3">
-    <div class="cell"><input id="for" type="number"><div class="label">FOR</div></div>
-    <div class="cell"><input id="agi" type="number"><div class="label">AGI</div></div>
-    <div class="cell"><input id="int" type="number"><div class="label">INT</div></div>
-    <div class="cell"><input id="vig" type="number"><div class="label">VIG</div></div>
-    <div class="cell"><input id="pre" type="number"><div class="label">PRE</div></div>
-    <div class="cell"><input id="desl" type="number"><div class="label">DESL</div></div>
-</div>
+<div class="grid">
+    <div><input id="for" type="number"><div class="label">FOR</div></div>
+    <div><input id="agi" type="number"><div class="label">AGI</div></div>
+    <div><input id="int" type="number"><div class="label">INT</div></div>
+    <div><input id="vig" type="number"><div class="label">VIG</div></div>
+    <div><input id="pre" type="number"><div class="label">PRE</div></div>
+    <div><input id="desl" type="number"><div class="label">DESL</div></div>
 </div>
 
-<div class="block">
+<h3>Defesa</h3>
+<div class="grid">
+    <div><input id="defesa" type="number"><div class="label">DEFESA</div></div>
+    <div><input id="bloqueio" type="number"><div class="label">BLOQUEIO</div></div>
+    <div><input id="esquiva" type="number"><div class="label">ESQUIVA</div></div>
+</div>
+
 <h3>Armas</h3>
 <input id="arma1" placeholder="Arma 1">
 <input id="arma2" placeholder="Arma 2">
 <input id="arma3" placeholder="Arma 3">
-</div>
 
 </div>
 
-<!-- EXTRAS -->
-<div id="extras" class="tab">
+<!-- SKILLS -->
+<div id="skills" class="tab">
     <textarea id="pericias" placeholder="Perícias"></textarea>
     <textarea id="habilidades" placeholder="Habilidades"></textarea>
     <textarea id="rituais" placeholder="Rituais"></textarea>
     <textarea id="equipamentos" placeholder="Equipamentos"></textarea>
 </div>
 
-<!-- TAB -->
-<script>
-window.showTab = function(id){
-    document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
-    document.getElementById(id).style.display = "block";
-};
-window.onload = ()=> showTab("info");
-</script>
-
 <!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const app = initializeApp({
   apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
@@ -193,116 +146,86 @@ const app = initializeApp({
 });
 
 const db = getDatabase(app);
+
 const id = new URLSearchParams(location.search).get("id");
 
-const $ = (id) => document.getElementById(id);
+function $(id){ return document.getElementById(id); }
 
-let carregando = true;
+/* TAB FIX GLOBAL */
+window.showTab = function(tab){
+    document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
+    document.getElementById(tab).style.display = "block";
+};
 
-/* LOAD */
-onValue(ref(db,"personagens/"+id), (snap)=>{
+/* LOAD FIREBASE */
+if(id){
+    onValue(ref(db,"personagens/"+id), (snap)=>{
 
-    if(!snap.exists()) return;
+        const p = snap.val();
+        if(!p) return;
 
-    const p = snap.val();
-    const i = p.dados?.info || {};
-    const c = p.dados?.combate || {};
-    const a = p.dados?.atributos || {};
-    const e = p.extras || {};
+        const i = p.dados?.info || {};
+        const c = p.dados?.combate || {};
+        const a = p.dados?.atributos || {};
+        const e = p.extras || {};
 
-    $("nome").value=i.nome||"";
-    $("classe").value=i.classe||"";
-    $("origem").value=i.origem||"";
-    $("descricao").value=e.descricao||"";
+        $("nome").value = i.nome || "";
+        $("classe").value = i.classe || "";
+        $("origem").value = i.origem || "";
+        $("descricao").value = e.descricao || "";
 
-    $("hp_atual").value=c.hp_atual||0;
-    $("hp_max").value=c.hp_max||0;
+        $("for").value = a.for || 0;
+        $("agi").value = a.agi || 0;
+        $("int").value = a.int || 0;
+        $("vig").value = a.vig || 0;
+        $("pre").value = a.pre || 0;
+        $("desl").value = a.desl || 0;
 
-    $("san_atual").value=c.sanidade_atual||0;
-    $("san_max").value=c.sanidade_max||0;
+        $("defesa").value = c.defesa || 0;
+        $("bloqueio").value = c.bloqueio || 0;
+        $("esquiva").value = c.esquiva || 0;
 
-    $("pe_atual").value=c.pe_atual||0;
-    $("pe_max").value=c.pe_max||0;
-    $("pe_turno").value=c.pe_turno||0;
+        $("arma1").value = c.arma1 || "";
+        $("arma2").value = c.arma2 || "";
+        $("arma3").value = c.arma3 || "";
 
-    $("pd_atual").value=c.pd_atual||0;
-    $("pd_max").value=c.pd_max||0;
-    $("pd_turno").value=c.pd_turno||0;
-
-    $("for").value=a.for||0;
-    $("agi").value=a.agi||0;
-    $("int").value=a.int||0;
-    $("vig").value=a.vig||0;
-    $("pre").value=a.pre||0;
-    $("desl").value=a.desl||0;
-
-    $("arma1").value=c.arma1||"";
-    $("arma2").value=c.arma2||"";
-    $("arma3").value=c.arma3||"";
-
-    $("pericias").value=e.pericias||"";
-    $("habilidades").value=e.habilidades||"";
-    $("rituais").value=e.rituais||"";
-    $("equipamentos").value=e.equipamentos||"";
-
-    carregando=false;
-});
-
-/* SAVE */
-function bind(idField, path, key){
-    $(idField).addEventListener("input", async ()=>{
-
-        if(carregando) return;
-
-        const value = $(idField).value;
-        const parsed = isNaN(value) ? value : +value;
-
-        const obj = {};
-        obj[key] = parsed;
-
-        await update(ref(db,"personagens/"+id+"/"+path), obj);
+        $("pericias").value = e.pericias || "";
+        $("habilidades").value = e.habilidades || "";
+        $("rituais").value = e.rituais || "";
+        $("equipamentos").value = e.equipamentos || "";
     });
 }
 
-/* INFO */
-bind("nome","dados/info","nome");
-bind("classe","dados/info","classe");
-bind("origem","dados/info","origem");
+/* AUTO SAVE SIMPLES */
+async function save(path, key, value){
+    if(!id) return;
 
-/* COMBATE */
-bind("hp_atual","dados/combate","hp_atual");
-bind("hp_max","dados/combate","hp_max");
+    const refPath = ref(db,"personagens/"+id+"/"+path);
+    const obj = {};
+    obj[key] = value;
 
-bind("san_atual","dados/combate","sanidade_atual");
-bind("san_max","dados/combate","sanidade_max");
+    await set(refPath, obj);
+}
 
-bind("pe_atual","dados/combate","pe_atual");
-bind("pe_max","dados/combate","pe_max");
-bind("pe_turno","dados/combate","pe_turno");
+/* INPUT LISTENER */
+document.querySelectorAll("input, textarea").forEach(el=>{
+    el.addEventListener("input", ()=>{
+        const v = el.value;
+        const n = el.id;
 
-bind("pd_atual","dados/combate","pd_atual");
-bind("pd_max","dados/combate","pd_max");
-bind("pd_turno","dados/combate","pd_turno");
+        if(["for","agi","int","vig","pre","desl"].includes(n))
+            save("dados/atributos", n, Number(v));
+        else if(["defesa","bloqueio","esquiva","arma1","arma2","arma3"].includes(n))
+            save("dados/combate", n, v);
+        else if(["pericias","habilidades","rituais","equipamentos","descricao"].includes(n))
+            save("extras", n, v);
+        else
+            save("dados/info", n, v);
+    });
+});
 
-/* ATRIBUTOS */
-bind("for","dados/atributos","for");
-bind("agi","dados/atributos","agi");
-bind("int","dados/atributos","int");
-bind("vig","dados/atributos","vig");
-bind("pre","dados/atributos","pre");
-bind("desl","dados/atributos","desl");
-
-/* ARMAS */
-bind("arma1","dados/combate","arma1");
-bind("arma2","dados/combate","arma2");
-bind("arma3","dados/combate","arma3");
-
-/* EXTRAS */
-bind("pericias","extras","pericias");
-bind("habilidades","extras","habilidades");
-bind("rituais","extras","rituais");
-bind("equipamentos","extras","equipamentos");
-bind("descricao","extras","descricao");
+/* START */
+window.onload = () => showTab("info");
 </script>
 
 </body>
