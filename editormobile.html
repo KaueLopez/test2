@@ -53,18 +53,6 @@ textarea {
     text-align: left;
 }
 
-.save-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #00c853;
-    color: white;
-    border: none;
-    padding: 15px 20px;
-    border-radius: 50px;
-}
-
-/* GRID ATRIBUTOS */
 .grid2x3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -83,7 +71,6 @@ textarea {
     border-radius: 6px;
     border: none;
     text-align: center;
-    box-sizing: border-box;
 }
 
 .label {
@@ -95,19 +82,17 @@ textarea {
 h3 {
     margin: 10px 0;
     font-size: 16px;
-    opacity: 0.9;
 }
 </style>
 </head>
 
 <body>
 
-<h2>Ficha Assimilação RPG</h2>
+<h2>Ficha RPG</h2>
 
 <div class="tabs">
     <button onclick="showTab('basico')">Básico</button>
     <button onclick="showTab('combate')">Combate</button>
-    <button onclick="showTab('atributos')">Atributos</button>
     <button onclick="showTab('extras')">Extras</button>
 </div>
 
@@ -118,17 +103,24 @@ h3 {
     <input id="social" placeholder="Posição Social">
 </div>
 
-<!-- COMBATE -->
+<!-- COMBATE + SISTEMA COMPLETO -->
 <div id="combate" class="tab">
-    <input id="hp_atual" type="number" placeholder="HP Atual">
-    <input id="hp_max" type="number" placeholder="HP Máximo">
+
+<h3>Combate</h3>
+
+<div class="grid2x3">
+    <div class="cell">
+        <input id="hp_atual" type="number">
+        <div class="label">HP Atual</div>
+    </div>
+
+    <div class="cell">
+        <input id="hp_max" type="number">
+        <div class="label">HP Máximo</div>
+    </div>
 </div>
 
-<!-- ATRIBUTOS -->
-<div id="atributos" class="tab">
-
 <h3>Instintos</h3>
-
 <div class="grid2x3">
     <div class="cell"><input id="reacao" type="number"><div class="label">Reação</div></div>
     <div class="cell"><input id="percepcao" type="number"><div class="label">Percepção</div></div>
@@ -142,7 +134,6 @@ h3 {
 </div>
 
 <h3>Conhecimentos</h3>
-
 <div class="grid2x3">
     <div class="cell"><input id="agrario" type="number"><div class="label">Agrário</div></div>
     <div class="cell"><input id="biologico" type="number"><div class="label">Biológico</div></div>
@@ -156,7 +147,6 @@ h3 {
 </div>
 
 <h3>Práticas</h3>
-
 <div class="grid2x3">
     <div class="cell"><input id="esportivas" type="number"><div class="label">Esportivas</div></div>
     <div class="cell"><input id="ferramentas" type="number"><div class="label">Ferramentas</div></div>
@@ -203,123 +193,117 @@ window.child = child;
 </script>
 
 <script>
-let idAtual = new URLSearchParams(window.location.search).get("id");
+const params = new URLSearchParams(window.location.search);
+let idAtual = params.get("id") || crypto.randomUUID();
+window.history.replaceState({}, "", "?id=" + idAtual);
 
 let carregando = true;
 let timeout = null;
+let salvando = false;
 
-// SALVAR
-function salvar() {
-    if (!idAtual || carregando) return;
+/* SAVE */
+async function salvar() {
+    if (!idAtual || carregando || salvando) return;
 
-    set(ref(db, "personagens/" + idAtual), {
-        id: idAtual,
+    salvando = true;
 
-        nome: document.getElementById("nome").value || "",
-        evento: document.getElementById("evento").value || "",
-        social: document.getElementById("social").value || "",
+    await set(ref(db, "personagens/" + idAtual), {
+        nome: nome.value || "",
+        evento: evento.value || "",
+        social: social.value || "",
 
         saude: {
-            hp_atual: Number(document.getElementById("hp_atual").value) || 0,
-            hp_max: Number(document.getElementById("hp_max").value) || 0
+            hp_atual: Number(hp_atual.value) || 0,
+            hp_max: Number(hp_max.value) || 0
         },
 
         instintos: {
-            reacao: Number(document.getElementById("reacao").value) || 0,
-            percepcao: Number(document.getElementById("percepcao").value) || 0,
-            sagacidade: Number(document.getElementById("sagacidade").value) || 0,
-            potencia: Number(document.getElementById("potencia").value) || 0,
-            influencia: Number(document.getElementById("influencia").value) || 0,
-            resolucao: Number(document.getElementById("resolucao").value) || 0
+            reacao: Number(reacao.value) || 0,
+            percepcao: Number(percepcao.value) || 0,
+            sagacidade: Number(sagacidade.value) || 0,
+            potencia: Number(potencia.value) || 0,
+            influencia: Number(influencia.value) || 0,
+            resolucao: Number(resolucao.value) || 0
         },
 
         conhecimentos: {
-            agrario: Number(document.getElementById("agrario").value) || 0,
-            biologico: Number(document.getElementById("biologico").value) || 0,
-            exato: Number(document.getElementById("exato").value) || 0,
-            medicina: Number(document.getElementById("medicina").value) || 0,
-            social: Number(document.getElementById("social2").value) || 0,
-            artistico: Number(document.getElementById("artistico").value) || 0
+            agrario: Number(agrario.value) || 0,
+            biologico: Number(biologico.value) || 0,
+            exato: Number(exato.value) || 0,
+            medicina: Number(medicina.value) || 0,
+            social: Number(social2.value) || 0,
+            artistico: Number(artistico.value) || 0
         },
 
         praticas: {
-            esportivas: Number(document.getElementById("esportivas").value) || 0,
-            ferramentas: Number(document.getElementById("ferramentas").value) || 0,
-            oficios: Number(document.getElementById("oficios").value) || 0,
-            armas: Number(document.getElementById("armas").value) || 0,
-            veiculos: Number(document.getElementById("veiculos").value) || 0,
-            infiltracao: Number(document.getElementById("infiltracao").value) || 0
+            esportivas: Number(esportivas.value) || 0,
+            ferramentas: Number(ferramentas.value) || 0,
+            oficios: Number(oficios.value) || 0,
+            armas: Number(armas.value) || 0,
+            veiculos: Number(veiculos.value) || 0,
+            infiltracao: Number(infiltracao.value) || 0
         },
 
-        caracteristicas: document.getElementById("caracteristicas").value || "",
-        equipamentos: document.getElementById("equipamentos").value || ""
+        caracteristicas: caracteristicas.value || "",
+        equipamentos: equipamentos.value || ""
     });
+
+    salvando = false;
 }
 
-// AUTOSAVE DEBOUCE 5S
-function ativarAutosave() {
-    document.querySelectorAll("input, textarea").forEach(el => {
-        el.addEventListener("input", () => {
-            if (carregando) return;
+/* LOAD */
+async function carregar() {
+    const snap = await get(child(ref(db), "personagens/" + idAtual));
 
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                salvar();
-            }, 5000);
-        });
-    });
+    if (snap.exists()) {
+        const p = snap.val();
+
+        nome.value = p.nome || "";
+        evento.value = p.evento || "";
+        social.value = p.social || "";
+
+        hp_atual.value = p.saude?.hp_atual || "";
+        hp_max.value = p.saude?.hp_max || "";
+
+        reacao.value = p.instintos?.reacao || "";
+        percepcao.value = p.instintos?.percepcao || "";
+        sagacidade.value = p.instintos?.sagacidade || "";
+        potencia.value = p.instintos?.potencia || "";
+        influencia.value = p.instintos?.influencia || "";
+        resolucao.value = p.instintos?.resolucao || "";
+
+        agrario.value = p.conhecimentos?.agrario || "";
+        biologico.value = p.conhecimentos?.biologico || "";
+        exato.value = p.conhecimentos?.exato || "";
+        medicina.value = p.conhecimentos?.medicina || "";
+        social2.value = p.conhecimentos?.social || "";
+        artistico.value = p.conhecimentos?.artistico || "";
+
+        esportivas.value = p.praticas?.esportivas || "";
+        ferramentas.value = p.praticas?.ferramentas || "";
+        oficios.value = p.praticas?.oficios || "";
+        armas.value = p.praticas?.armas || "";
+        veiculos.value = p.praticas?.veiculos || "";
+        infiltracao.value = p.praticas?.infiltracao || "";
+
+        caracteristicas.value = p.caracteristicas || "";
+        equipamentos.value = p.equipamentos || "";
+    }
+
+    carregando = false;
 }
 
-// CARREGAR
-function carregar() {
-    if (!idAtual) return;
+/* AUTOSAVE */
+document.querySelectorAll("input, textarea").forEach(el => {
+    el.addEventListener("input", () => {
+        if (carregando) return;
 
-    get(child(ref(db), "personagens/" + idAtual)).then(snapshot => {
-        if (!snapshot.exists()) {
-            carregando = false;
-            ativarAutosave();
-            return;
-        }
-
-        const p = snapshot.val();
-
-        document.getElementById("nome").value = p.nome || "";
-        document.getElementById("evento").value = p.evento || "";
-        document.getElementById("social").value = p.social || "";
-
-        document.getElementById("hp_atual").value = p.saude?.hp_atual || "";
-        document.getElementById("hp_max").value = p.saude?.hp_max || "";
-
-        document.getElementById("reacao").value = p.instintos?.reacao || "";
-        document.getElementById("percepcao").value = p.instintos?.percepcao || "";
-        document.getElementById("sagacidade").value = p.instintos?.sagacidade || "";
-        document.getElementById("potencia").value = p.instintos?.potencia || "";
-        document.getElementById("influencia").value = p.instintos?.influencia || "";
-        document.getElementById("resolucao").value = p.instintos?.resolucao || "";
-
-        document.getElementById("agrario").value = p.conhecimentos?.agrario || "";
-        document.getElementById("biologico").value = p.conhecimentos?.biologico || "";
-        document.getElementById("exato").value = p.conhecimentos?.exato || "";
-        document.getElementById("medicina").value = p.conhecimentos?.medicina || "";
-        document.getElementById("social2").value = p.conhecimentos?.social || "";
-        document.getElementById("artistico").value = p.conhecimentos?.artistico || "";
-
-        document.getElementById("esportivas").value = p.praticas?.esportivas || "";
-        document.getElementById("ferramentas").value = p.praticas?.ferramentas || "";
-        document.getElementById("oficios").value = p.praticas?.oficios || "";
-        document.getElementById("armas").value = p.praticas?.armas || "";
-        document.getElementById("veiculos").value = p.praticas?.veiculos || "";
-        document.getElementById("infiltracao").value = p.praticas?.infiltracao || "";
-
-        document.getElementById("caracteristicas").value = p.caracteristicas || "";
-        document.getElementById("equipamentos").value = p.equipamentos || "";
-
-        carregando = false;
-        ativarAutosave();
+        clearTimeout(timeout);
+        timeout = setTimeout(salvar, 600);
     });
-}
+});
 
-// UI
+/* TABS */
 function showTab(id) {
     document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
     document.getElementById(id).style.display = "block";
