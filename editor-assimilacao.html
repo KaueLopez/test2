@@ -104,6 +104,31 @@ h3 {
     </div>
 </div>
 
+<!-- 🔥 NOVO BLOCO -->
+<h3>Recursos</h3>
+
+<div class="grid2x3">
+    <div>
+        <input id="det_atual" type="number">
+        <div class="label">Determinação Atual</div>
+    </div>
+    <div>
+        <input id="det_max" type="number">
+        <div class="label">Determinação Máxima</div>
+    </div>
+</div>
+
+<div class="grid2x3">
+    <div>
+        <input id="assim_atual" type="number">
+        <div class="label">Assimilação Atual</div>
+    </div>
+    <div>
+        <input id="assim_max" type="number">
+        <div class="label">Assimilação Máxima</div>
+    </div>
+</div>
+
 <h3>Instintos</h3>
 <div class="grid2x3">
     <div><input id="reacao" type="number"><div class="label">Reação</div></div>
@@ -176,7 +201,7 @@ const idAtual = new URLSearchParams(location.search).get("id");
 let carregando = true;
 let timeout = null;
 
-/* helpers */
+/* HELPERS */
 const $ = (id) => document.getElementById(id);
 
 /* SAVE */
@@ -190,7 +215,13 @@ async function salvar() {
 
         saude: {
             hp_atual: +$("hp_atual").value || 0,
-            hp_max: +$("hp_max").value || 0
+            hp_max: +$("hp_max").value || 0,
+
+            det_atual: +$("det_atual").value || 0,
+            det_max: +$("det_max").value || 0,
+
+            assim_atual: +$("assim_atual").value || 0,
+            assim_max: +$("assim_max").value || 0
         },
 
         instintos: {
@@ -243,6 +274,12 @@ async function carregar() {
     $("hp_atual").value = p.saude?.hp_atual || "";
     $("hp_max").value = p.saude?.hp_max || "";
 
+    $("det_atual").value = p.saude?.det_atual || "";
+    $("det_max").value = p.saude?.det_max || "";
+
+    $("assim_atual").value = p.saude?.assim_atual || "";
+    $("assim_max").value = p.saude?.assim_max || "";
+
     $("reacao").value = p.instintos?.reacao || "";
     $("percepcao").value = p.instintos?.percepcao || "";
     $("sagacidade").value = p.instintos?.sagacidade || "";
@@ -270,7 +307,7 @@ async function carregar() {
     carregando = false;
 }
 
-/* autosave anti-spam */
+/* autosave */
 document.querySelectorAll("input, textarea").forEach(el => {
     el.addEventListener("input", () => {
         if (carregando) return;
