@@ -12,7 +12,6 @@ body {
     color: white;
 }
 
-/* CONTAINER */
 .box {
     border: 1px solid #333;
     padding: 15px;
@@ -20,7 +19,6 @@ body {
     border-radius: 10px;
 }
 
-/* INPUTS */
 input, textarea {
     width: 100%;
     margin-bottom: 10px;
@@ -37,7 +35,6 @@ textarea {
     min-height: 70px;
 }
 
-/* TITULOS (Instintos, etc.) */
 h3 {
     background: #2a2a2a;
     padding: 8px 10px;
@@ -47,7 +44,6 @@ h3 {
     color: #fff;
 }
 
-/* GRID */
 .grid2x3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -55,14 +51,12 @@ h3 {
     margin-bottom: 15px;
 }
 
-/* CAIXA DO ATRIBUTO */
 .grid2x3 > div {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-/* LABEL DO ATRIBUTO */
 .grid2x3 .label {
     background: #3a3a3a;
     color: #fff;
@@ -74,27 +68,15 @@ h3 {
     text-align: center;
 }
 
-/* INPUT DENTRO DO GRID */
 .grid2x3 input {
     text-align: center;
     font-weight: bold;
 }
 
-/* HP ESPECIAL */
 #hp_atual, #hp_max {
     background: #ff2b2b;
     color: #000;
     font-weight: bold;
-}
-
-/* BOTÃO */
-button {
-    padding: 10px;
-    margin-top: 10px;
-    background: #222;
-    color: white;
-    border: 1px solid #444;
-    border-radius: 6px;
 }
 </style>
 </head>
@@ -111,74 +93,53 @@ button {
 
 <h3>Saúde (HP)</h3>
 <div class="grid2x3">
-
     <div>
         <input id="hp_atual" type="number">
         <div class="label">HP Atual</div>
     </div>
-
     <div>
         <input id="hp_max" type="number">
         <div class="label">HP Máximo</div>
     </div>
-
 </div>
-    
+
 <h3>Instintos</h3>
 <div class="grid2x3">
-    <input id="reacao" type="number">
-    <input id="percepcao" type="number">
-    <input id="sagacidade" type="number">
-    <div>Reação</div>
-    <div>Percepção</div>
-    <div>Sagacidade</div>
+    <div><input id="reacao" type="number"><div class="label">Reação</div></div>
+    <div><input id="percepcao" type="number"><div class="label">Percepção</div></div>
+    <div><input id="sagacidade" type="number"><div class="label">Sagacidade</div></div>
 </div>
 
 <div class="grid2x3">
-    <input id="potencia" type="number">
-    <input id="influencia" type="number">
-    <input id="resolucao" type="number">
-    <div>Potência</div>
-    <div>Influência</div>
-    <div>Resolução</div>
+    <div><input id="potencia" type="number"><div class="label">Potência</div></div>
+    <div><input id="influencia" type="number"><div class="label">Influência</div></div>
+    <div><input id="resolucao" type="number"><div class="label">Resolução</div></div>
 </div>
 
 <h3>Conhecimentos</h3>
 <div class="grid2x3">
-    <input id="agrario" type="number">
-    <input id="biologico" type="number">
-    <input id="exato" type="number">
-    <div>Agrário</div>
-    <div>Biológico</div>
-    <div>Exato</div>
+    <div><input id="agrario" type="number"><div class="label">Agrário</div></div>
+    <div><input id="biologico" type="number"><div class="label">Biológico</div></div>
+    <div><input id="exato" type="number"><div class="label">Exato</div></div>
 </div>
 
 <div class="grid2x3">
-    <input id="medicina" type="number">
-    <input id="social2" type="number">
-    <input id="artistico" type="number">
-    <div>Medicina</div>
-    <div>Social</div>
-    <div>Artístico</div>
+    <div><input id="medicina" type="number"><div class="label">Medicina</div></div>
+    <div><input id="social2" type="number"><div class="label">Social</div></div>
+    <div><input id="artistico" type="number"><div class="label">Artístico</div></div>
 </div>
 
 <h3>Práticas</h3>
 <div class="grid2x3">
-    <input id="esportivas" type="number">
-    <input id="ferramentas" type="number">
-    <input id="oficios" type="number">
-    <div>Esportivas</div>
-    <div>Ferramentas</div>
-    <div>Ofícios</div>
+    <div><input id="esportivas" type="number"><div class="label">Esportivas</div></div>
+    <div><input id="ferramentas" type="number"><div class="label">Ferramentas</div></div>
+    <div><input id="oficios" type="number"><div class="label">Ofícios</div></div>
 </div>
 
 <div class="grid2x3">
-    <input id="armas" type="number">
-    <input id="veiculos" type="number">
-    <input id="infiltracao" type="number">
-    <div>Armas</div>
-    <div>Veículos</div>
-    <div>Infiltração</div>
+    <div><input id="armas" type="number"><div class="label">Armas</div></div>
+    <div><input id="veiculos" type="number"><div class="label">Veículos</div></div>
+    <div><input id="infiltracao" type="number"><div class="label">Infiltração</div></div>
 </div>
 
 <h3>Características</h3>
@@ -217,12 +178,14 @@ window.child = child;
 <script>
 let idAtual = new URLSearchParams(window.location.search).get("id");
 let carregando = true;
+let timeout = null;
 
+/* SALVAR COMPLETO */
 function salvar() {
     if (!idAtual || carregando) return;
 
     set(ref(db, "personagens/" + idAtual), {
-        id: idAtual,
+
         nome: document.getElementById("nome").value || "",
         evento: document.getElementById("evento").value || "",
         social: document.getElementById("social").value || "",
@@ -230,10 +193,41 @@ function salvar() {
         saude: {
             hp_atual: Number(document.getElementById("hp_atual").value) || 0,
             hp_max: Number(document.getElementById("hp_max").value) || 0
-        }
+        },
+
+        instintos: {
+            reacao: Number(document.getElementById("reacao").value) || 0,
+            percepcao: Number(document.getElementById("percepcao").value) || 0,
+            sagacidade: Number(document.getElementById("sagacidade").value) || 0,
+            potencia: Number(document.getElementById("potencia").value) || 0,
+            influencia: Number(document.getElementById("influencia").value) || 0,
+            resolucao: Number(document.getElementById("resolucao").value) || 0
+        },
+
+        conhecimentos: {
+            agrario: Number(document.getElementById("agrario").value) || 0,
+            biologico: Number(document.getElementById("biologico").value) || 0,
+            exato: Number(document.getElementById("exato").value) || 0,
+            medicina: Number(document.getElementById("medicina").value) || 0,
+            social: Number(document.getElementById("social2").value) || 0,
+            artistico: Number(document.getElementById("artistico").value) || 0
+        },
+
+        praticas: {
+            esportivas: Number(document.getElementById("esportivas").value) || 0,
+            ferramentas: Number(document.getElementById("ferramentas").value) || 0,
+            oficios: Number(document.getElementById("oficios").value) || 0,
+            armas: Number(document.getElementById("armas").value) || 0,
+            veiculos: Number(document.getElementById("veiculos").value) || 0,
+            infiltracao: Number(document.getElementById("infiltracao").value) || 0
+        },
+
+        caracteristicas: document.getElementById("caracteristicas").value || "",
+        equipamentos: document.getElementById("equipamentos").value || ""
     });
 }
 
+/* CARREGAR COMPLETO */
 function carregar() {
     if (!idAtual) return;
 
@@ -252,15 +246,41 @@ function carregar() {
         document.getElementById("hp_atual").value = p.saude?.hp_atual || "";
         document.getElementById("hp_max").value = p.saude?.hp_max || "";
 
+        document.getElementById("reacao").value = p.instintos?.reacao || "";
+        document.getElementById("percepcao").value = p.instintos?.percepcao || "";
+        document.getElementById("sagacidade").value = p.instintos?.sagacidade || "";
+        document.getElementById("potencia").value = p.instintos?.potencia || "";
+        document.getElementById("influencia").value = p.instintos?.influencia || "";
+        document.getElementById("resolucao").value = p.instintos?.resolucao || "";
+
+        document.getElementById("agrario").value = p.conhecimentos?.agrario || "";
+        document.getElementById("biologico").value = p.conhecimentos?.biologico || "";
+        document.getElementById("exato").value = p.conhecimentos?.exato || "";
+        document.getElementById("medicina").value = p.conhecimentos?.medicina || "";
+        document.getElementById("social2").value = p.conhecimentos?.social || "";
+        document.getElementById("artistico").value = p.conhecimentos?.artistico || "";
+
+        document.getElementById("esportivas").value = p.praticas?.esportivas || "";
+        document.getElementById("ferramentas").value = p.praticas?.ferramentas || "";
+        document.getElementById("oficios").value = p.praticas?.oficios || "";
+        document.getElementById("armas").value = p.praticas?.armas || "";
+        document.getElementById("veiculos").value = p.praticas?.veiculos || "";
+        document.getElementById("infiltracao").value = p.praticas?.infiltracao || "";
+
+        document.getElementById("caracteristicas").value = p.caracteristicas || "";
+        document.getElementById("equipamentos").value = p.equipamentos || "";
+
         carregando = false;
     });
 }
 
+/* AUTOSAVE */
 document.querySelectorAll("input, textarea").forEach(el => {
     el.addEventListener("input", () => {
         if (carregando) return;
-        clearTimeout(window.t);
-        window.t = setTimeout(salvar, 500);
+
+        clearTimeout(timeout);
+        timeout = setTimeout(salvar, 500);
     });
 });
 
