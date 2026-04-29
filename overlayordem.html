@@ -49,24 +49,11 @@ body {
         0 0 20px #ff1a1a;
 }
 
-/* FLUTUAR + ACHATAR */
+/* ANIMAÇÃO (flutuar + leve achatado) */
 @keyframes flutuar {
     0%   { transform: translateY(0px) scaleY(1); }
     50%  { transform: translateY(-8px) scaleY(0.92); }
     100% { transform: translateY(0px) scaleY(1); }
-}
-
-/* CRÍTICO */
-.critico {
-    animation: flutuar 3s ease-in-out infinite, tremer 0.15s infinite;
-}
-
-@keyframes tremer {
-    0% { transform: translate(0px, 0px) scaleY(0.92); }
-    25% { transform: translate(3px, -3px) scaleY(0.92); }
-    50% { transform: translate(-3px, 3px) scaleY(0.92); }
-    75% { transform: translate(3px, 3px) scaleY(0.92); }
-    100% { transform: translate(0px, 0px) scaleY(0.92); }
 }
 </style>
 
@@ -76,8 +63,8 @@ body {
 
 <div class="overlay">
 
-    <!-- imagem inicial genérica -->
-    <img id="portrait" src="img/giii/normal.png">
+    <!-- imagem inicial -->
+    <img id="portrait" src="img/default/normal.png">
 
     <div class="info">
         <div class="nome" id="nome">Carregando...</div>
@@ -117,25 +104,20 @@ onValue(ref(db, "personagens/" + id), (snap) => {
 
     const porcentagem = hpAtual / hpMax;
 
-    /* DEFINE PASTA DO PERSONAGEM */
-    const pasta = id; // ou info.id_personagem
+    /* DEFINE PASTA */
+    const pasta = id;
 
     /* DEFINE ESTADO */
     let estado = "normal";
 
-    portrait.classList.remove("critico");
-
-    if (porcentagem <= 0.3) {
-        estado = "critico";
-        portrait.classList.add("critico");
-    } else if (porcentagem <= 0.6) {
+    if (porcentagem <= 0.5) {
         estado = "ferido";
     }
 
-    /* CAMINHO DINÂMICO */
+    /* CAMINHO */
     const caminho = `img/${pasta}/${estado}.png`;
 
-    /* TROCA SOMENTE SE NECESSÁRIO */
+    /* TROCA */
     if (!portrait.src.includes(caminho)) {
         portrait.src = caminho;
     }
