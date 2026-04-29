@@ -24,16 +24,7 @@ body {
     text-shadow: 1px 1px 3px black;
 }
 
-/* IMAGEM */
-#portrait {
-    width: 200px;
-    height: 200px;
-    object-fit: cover;
-
-    animation: flutuar 3s ease-in-out infinite;
-}
-
-/* BLOCO DIREITA */
+/* BLOCO */
 .info {
     display: flex;
     flex-direction: column;
@@ -71,40 +62,12 @@ body {
         0 0 24px #0000FF;
     width: 120px;
 }
-
-/* ANIMAÇÃO BASE + ACHATAR */
-@keyframes flutuar {
-    0% {
-        transform: translateY(0px) scaleY(1);
-    }
-    50% {
-        transform: translateY(-10px) scaleY(0.98);
-    }
-    100% {
-        transform: translateY(0px) scaleY(1);
-    }
-}
-
-/* CRÍTICO (TREMER + ACHATAR) */
-.critico {
-    animation: flutuar 3s ease-in-out infinite, tremer 0.15s infinite;
-}
-
-@keyframes tremer {
-    0% { transform: translate(0px, 0px) scaleY(0.92); }
-    25% { transform: translate(4px, -4px) scaleY(0.92); }
-    50% { transform: translate(-4px, 4px) scaleY(0.92); }
-    75% { transform: translate(4px, 4px) scaleY(0.92); }
-    100% { transform: translate(0px, 0px) scaleY(0.92); }
-}
 </style>
 </head>
 
 <body>
 
 <div class="overlay">
-
-    <img id="portrait" src="normal.png">
 
     <div class="info">
         <div class="nome" id="nome">Carregando...</div>
@@ -136,7 +99,6 @@ if (!id) {
 const nomeEl = document.getElementById("nome");
 const hpEl = document.getElementById("hp");
 const pdEl = document.getElementById("pd");
-const portrait = document.getElementById("portrait");
 
 onValue(ref(db, "personagens/" + id), (snap) => {
     const p = snap.val();
@@ -152,23 +114,6 @@ onValue(ref(db, "personagens/" + id), (snap) => {
 
     hpEl.textContent = `${hpAtual} / ${hpMax}`;
     pdEl.textContent = `${c.pd_turno ?? 0}`;
-
-    const porcentagem = hpAtual / hpMax;
-
-    let novaImagem = "Adelaide.png";
-
-    portrait.classList.remove("critico");
-
-    if (porcentagem <= 0.3) {
-        novaImagem = "AdelaideMachucada.png";
-        portrait.classList.add("critico");
-    } else if (porcentagem <= 0.5) {
-        novaImagem = "AdelaideMachucada.png";
-    }
-
-    if (!portrait.src.includes(novaImagem)) {
-        portrait.src = novaImagem;
-    }
 });
 </script>
 
