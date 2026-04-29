@@ -41,7 +41,6 @@ small {
 
 <h2>Gerenciador de Personagens</h2>
 
-<!-- CRIAÇÃO -->
 <button onclick="criarPersonagem('assimilar')">➕ Criar Assimilação</button>
 <button onclick="criarPersonagem('ordem')">➕ Criar Ordem Paranormal</button>
 <button onclick="carregar()">🔄 Atualizar</button>
@@ -75,6 +74,9 @@ window.child = child;
 
 <script>
 
+/* =======================
+   CRIAR PERSONAGEM
+======================= */
 async function criarPersonagem(sistema) {
 
     const contadorRef = ref(db, "contadorPersonagens");
@@ -84,10 +86,10 @@ async function criarPersonagem(sistema) {
 
     await set(contadorRef, id);
 
-    // 🔥 ASSIMILAÇÃO (modelo antigo)
+    // 🔥 ASSIMILAÇÃO
     if (sistema === "assimilar") {
         await set(ref(db, "personagens/" + id), {
-            id: id,
+            id,
             tipo: "assimilar",
             nome: "Novo Personagem",
             evento: "",
@@ -95,17 +97,19 @@ async function criarPersonagem(sistema) {
         });
     }
 
-    // 🔥 ORDEM PARANORMAL (modelo novo)
+    // 🔥 ORDEM PARANORMAL
     if (sistema === "ordem") {
         await set(ref(db, "personagens/" + id), {
-            id: id,
+            id,
             tipo: "ordem",
+
             dados: {
                 info: {
-                    nome: "",
+                    nome: "Novo Personagem",
                     origem: "",
                     classe: ""
                 },
+
                 atributos: {
                     agi: 0,
                     for: 0,
@@ -115,6 +119,7 @@ async function criarPersonagem(sistema) {
                     nivel: 0,
                     nex: 0
                 },
+
                 combate: {
                     hp_max: 0,
                     hp_atual: 0,
@@ -127,6 +132,9 @@ async function criarPersonagem(sistema) {
     carregar();
 }
 
+/* =======================
+   CARREGAR LISTA
+======================= */
 function carregar() {
     get(child(ref(db), "personagens")).then(snapshot => {
 
@@ -145,7 +153,13 @@ function carregar() {
 
             const tipo = p.tipo || "desconhecido";
 
-            let sistema = "";
+            // 🔥 nome seguro (resolve os dois sistemas)
+            const nome =
+                p.nome ||
+                p.dados?.info?.nome ||
+                "Sem nome";
+
+            let sistema = "Desconhecido";
 
             if (tipo === "assimilar") sistema = "Assimilação";
             if (tipo === "ordem") sistema = "Ordem Paranormal";
@@ -154,18 +168,15 @@ function carregar() {
             div.className = "card";
 
             div.innerHTML = `
-                <strong>${p.nome || "Sem nome"}</strong><br>
+                <strong>${nome}</strong><br>
                 <small>ID: ${id}</small><br>
                 <small>Sistema: ${sistema}</small>
             `;
 
             div.onclick = () => {
-
                 if (tipo === "ordem") {
                     window.location.href = "editor-novo.html?id=" + id;
-                }
-
-                if (tipo === "assimilar") {
+                } else {
                     window.location.href = "editor-antigo.html?id=" + id;
                 }
             };
