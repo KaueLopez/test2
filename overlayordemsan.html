@@ -22,11 +22,37 @@ body {
     font-size: 28px;
     font-weight: bold;
     margin-bottom: 6px;
-}
+
+    color: #ffffff;
+    text-shadow:
+        0 0 2px #ff1a1a,
+        0 0 6px #ff1a1a,
+        0 0 12px #ff1a1a,
+        0 0 20px #ff1a1a;
 
 .stat {
     font-size: 18px;
-    margin-top: 4px;
+
+    color: #ffffff;
+    text-shadow:
+        0 0 2px #ff1a1a,
+        0 0 6px #ff1a1a;
+    
+.stat1 {
+    font-size: 18px;
+
+    color: #7F00FF;
+    text-shadow:
+        0 0 2px #ff1a1a,
+        0 0 6px #ff1a1a;
+.stat2 {
+    font-size: 18px;
+
+    color: #E4D00A;
+    text-shadow:
+        0 0 2px #ff1a1a,
+        0 0 6px #ff1a1a;
+    
 }
 </style>
 </head>
@@ -36,9 +62,9 @@ body {
 <div class="overlay">
     <div class="nome" id="nome">Carregando...</div>
 
-    <div class="stat" id="hp">HP: 0 / 0</div>
-    <div class="stat" id="san">SAN: 0 / 0</div>
-    <div class="stat" id="pe">PE: 0 / 0</div>
+    <div class="stat" id="hp"> 0 / 0</div>
+    <div class="stat" id="san"> 0 / 0</div>
+    <div class="stat" id="pe"> 0 / 0</div>
 </div>
 
 <script type="module">
@@ -74,9 +100,9 @@ onValue(ref(db, "personagens/" + id), (snap) => {
 
     nomeEl.textContent = info.nome || "Sem nome";
 
-    hpEl.textContent = `HP: ${c.hp_atual ?? 0} / ${c.hp_max ?? 0}`;
-    sanEl.textContent = `SAN: ${c.sanidade_atual ?? 0} / ${c.sanidade_max ?? 0}`;
-    peEl.textContent = `PE: ${c.pe_atual ?? 0} / ${c.pe_max ?? 0}`;
+    hpEl.textContent = `${c.hp_atual ?? 0} / ${c.hp_max ?? 0}`;
+    sanEl.textContent = `${c.sanidade_atual ?? 0} / ${c.sanidade_max ?? 0}`;
+    peEl.textContent = `${c.pe_atual ?? 0} / ${c.pe_max ?? 0}`;
 });
 
 </script>
