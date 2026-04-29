@@ -77,7 +77,6 @@ if (!id) {
 
 /* ELEMENTOS */
 const nomeEl = document.getElementById("nome");
-const hpEl = document.getElementById("hp");
 
 /* FIREBASE */
 onValue(ref(db, "personagens/" + id), (snap) => {
@@ -93,9 +92,9 @@ onValue(ref(db, "personagens/" + id), (snap) => {
     nomeEl.textContent = info.nome || "Sem nome";
 
     const hpAtual = c.hp_atual ?? 0;
-    const hpMax = c.hp_max ?? 0;
+    
 
-    hpEl.textContent = `${hpAtual} / ${hpMax}`;
+    
 });
 </script>
 
