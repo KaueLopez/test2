@@ -181,62 +181,28 @@ const app = initializeApp({
 });
 
 const db = getDatabase(app);
-const id = new URLSearchParams(location.search).get("id");
+
+const id = new URLSearchParams(location.search).get("id") || crypto.randomUUID();
+history.replaceState({}, "", "?id=" + id);
 
 let carregando = true;
 
-const nome = document.getElementById("nome");
-const origem = document.getElementById("origem");
-const classe = document.getElementById("classe");
+const $ = (id) => document.getElementById(id);
 
-const hp_atual = document.getElementById("hp_atual");
-const hp_max = document.getElementById("hp_max");
-
-const sanidade_atual = document.getElementById("sanidade_atual");
-const sanidade_max = document.getElementById("sanidade_max");
-
-const pe_atual = document.getElementById("pe_atual");
-const pe_max = document.getElementById("pe_max");
-const pd_turno = document.getElementById("pd_turno");
-
-const defesa = document.getElementById("defesa");
-const bloqueio = document.getElementById("bloqueio");
-const esquiva = document.getElementById("esquiva");
-
-const nivel = document.getElementById("nivel");
-const nex = document.getElementById("nex");
-
-const agi = document.getElementById("agi");
-const forca = document.getElementById("for");
-const int = document.getElementById("int");
-const vig = document.getElementById("vig");
-const pre = document.getElementById("pre");
-const deslocamento = document.getElementById("deslocamento");
-
-const pericias = document.getElementById("pericias");
-const hab_texto = document.getElementById("hab_texto");
-const hab_protecao = document.getElementById("hab_protecao");
-const hab_resistencias = document.getElementById("hab_resistencias");
-const hab_proficiencias = document.getElementById("hab_proficiencias");
-
-const rituais = document.getElementById("rituais");
-const descricao = document.getElementById("descricao");
-const equipamentos = document.getElementById("equipamentos");
-
-const arma1 = document.getElementById("arma1");
-const arma2 = document.getElementById("arma2");
-const arma3 = document.getElementById("arma3");
-
+/* LOAD */
 async function carregar() {
-    if (!id) return;
-
     const snap = await get(child(ref(db), "personagens/" + id));
-    if (!snap.exists()) return;
+    if (!snap.exists()) {
+        carregando = false;
+        return;
+    }
 
     const p = snap.val();
+
     const i = p.dados?.info || {};
     const a = p.dados?.atributos || {};
     const c = p.dados?.combate || {};
+    const e = p.extras || {};
 
     nome.value = i.nome || "";
     origem.value = i.origem || "";
@@ -256,48 +222,36 @@ async function carregar() {
     bloqueio.value = c.bloqueio || 0;
     esquiva.value = c.esquiva || 0;
 
-    nivel.value = c.nivel || 0;
-    nex.value = c.nex || 0;
-
     agi.value = a.agi || 0;
-    forca.value = a.for || 0;
+    for.value = a.for || 0;
     int.value = a.int || 0;
     vig.value = a.vig || 0;
     pre.value = a.pre || 0;
     deslocamento.value = a.deslocamento || 0;
 
-    pericias.value = p.pericias || "";
-
-    hab_texto.value = p.habilidades || "";
-    hab_protecao.value = p.hab_protecao || "";
-    hab_resistencias.value = p.hab_resistencias || "";
-    hab_proficiencias.value = p.hab_proficiencias || "";
-
-    rituais.value = p.rituais || "";
-    descricao.value = p.descricao || "";
-    equipamentos.value = p.equipamentos || "";
-
-    arma1.value = c.arma1 || "";
-    arma2.value = c.arma2 || "";
-    arma3.value = c.arma3 || "";
+    pericias.value = e.pericias || "";
+    hab_texto.value = e.habilidades || "";
+    rituais.value = e.rituais || "";
+    equipamentos.value = e.equipamentos || "";
+    descricao.value = e.descricao || "";
 
     carregando = false;
 }
 
+/* SAVE */
 function salvar() {
     if (!id || carregando) return;
 
     const data = {
-        tipo: "ordem",
         dados: {
             info: {
-                nome: nome.value,
-                origem: origem.value,
-                classe: classe.value
+                nome: nome.value || "",
+                origem: origem.value || "",
+                classe: classe.value || ""
             },
             atributos: {
                 agi: +agi.value || 0,
-                for: +forca.value || 0,
+                for: +for.value || 0,
                 int: +int.value || 0,
                 vig: +vig.value || 0,
                 pre: +pre.value || 0,
@@ -313,29 +267,22 @@ function salvar() {
                 pd_turno: +pd_turno.value || 0,
                 defesa: +defesa.value || 0,
                 bloqueio: +bloqueio.value || 0,
-                esquiva: +esquiva.value || 0,
-                nivel: +nivel.value || 0,
-                nex: +nex.value || 0,
-                arma1: arma1.value || "",
-                arma2: arma2.value || "",
-                arma3: arma3.value || ""
+                esquiva: +esquiva.value || 0
             }
         },
-        pericias: pericias.value || "",
-        habilidades: hab_texto.value || "",
-        hab_protecao: hab_protecao.value || "",
-        hab_resistencias: hab_resistencias.value || "",
-        hab_proficiencias: hab_proficiencias.value || "",
-        rituais: rituais.value || "",
-        descricao: descricao.value || "",
-        equipamentos: equipamentos.value || ""
+        extras: {
+            pericias: pericias.value || "",
+            habilidades: hab_texto.value || "",
+            rituais: rituais.value || "",
+            equipamentos: equipamentos.value || "",
+            descricao: descricao.value || ""
+        }
     };
 
-    set(ref(db, "personagens/" + id), data)
-        .catch(err => console.error("Erro ao salvar:", err));
+    set(ref(db, "personagens/" + id), data);
 }
 
-setInterval(() => salvar(), 5000);
+setInterval(salvar, 5000);
 window.onload = carregar;
 </script>
 
