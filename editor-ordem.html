@@ -187,9 +187,7 @@ const app = initializeApp({
 });
 
 const db = getDatabase(app);
-
-const id = new URLSearchParams(location.search).get("id") || crypto.randomUUID();
-history.replaceState({}, "", "?id=" + id);
+const id = new URLSearchParams(location.search).get("id");
 
 let carregando = true;
 
@@ -197,6 +195,8 @@ const $ = (id) => document.getElementById(id);
 
 /* LOAD */
 async function carregar() {
+    if (!id) return;
+
     const snap = await get(child(ref(db), "personagens/" + id));
     if (!snap.exists()) {
         carregando = false;
@@ -206,86 +206,95 @@ async function carregar() {
     const p = snap.val();
 
     const i = p.dados?.info || {};
-    const a = p.dados?.atributos || {};
     const c = p.dados?.combate || {};
+    const a = p.dados?.atributos || {};
     const e = p.extras || {};
 
-    nome.value = i.nome || "";
-    origem.value = i.origem || "";
-    classe.value = i.classe || "";
+    $("nome").value = i.nome || "";
+    $("classe").value = i.classe || "";
+    $("origem").value = i.origem || "";
 
-    hp_atual.value = c.hp_atual || 0;
-    hp_max.value = c.hp_max || 0;
+    $("hp_atual").value = c.hp_atual || 0;
+    $("hp_max").value = c.hp_max || 0;
 
-    sanidade_atual.value = c.sanidade_atual || 0;
-    sanidade_max.value = c.sanidade_max || 0;
+    $("san_atual").value = c.sanidade_atual || 0;
+    $("san_max").value = c.sanidade_max || 0;
 
-    pe_atual.value = c.pe_atual || 0;
-    pe_max.value = c.pe_max || 0;
-    pd_turno.value = c.pd_turno || 0;
+    $("pe_atual").value = c.pe_atual || 0;
+    $("pe_max").value = c.pe_max || 0;
+    $("pd_turno").value = c.pd_turno || 0;
 
-    defesa.value = c.defesa || 0;
-    bloqueio.value = c.bloqueio || 0;
-    esquiva.value = c.esquiva || 0;
+    $("defesa").value = c.defesa || 0;
+    $("bloqueio").value = c.bloqueio || 0;
+    $("esquiva").value = c.esquiva || 0;
 
-    agi.value = a.agi || 0;
-    for.value = a.for || 0;
-    int.value = a.int || 0;
-    vig.value = a.vig || 0;
-    pre.value = a.pre || 0;
-    deslocamento.value = a.deslocamento || 0;
+    $("for").value = a.for || 0;
+    $("agi").value = a.agi || 0;
+    $("int").value = a.int || 0;
+    $("vig").value = a.vig || 0;
+    $("pre").value = a.pre || 0;
+    $("desl").value = a.deslocamento || 0;
 
-    pericias.value = e.pericias || "";
-    hab_texto.value = e.habilidades || "";
-    rituais.value = e.rituais || "";
-    equipamentos.value = e.equipamentos || "";
-    descricao.value = e.descricao || "";
+    $("pericias").value = e.pericias || "";
+    $("habilidades").value = e.habilidades || "";
+    $("rituais").value = e.rituais || "";
+    $("equipamentos").value = e.equipamentos || "";
+    $("descricao").value = e.descricao || "";
+
+    // 🔥 CONFIG NOVA
+    $("modoPD").checked = p.config?.modoPD || false;
 
     carregando = false;
 }
 
 /* SAVE */
-function salvar() {
-    if (!id || carregando) return;
+async function salvar() {
+    if (carregando) return;
 
     const data = {
         dados: {
             info: {
-                nome: nome.value || "",
-                origem: origem.value || "",
-                classe: classe.value || ""
+                nome: $("nome").value || "",
+                classe: $("classe").value || "",
+                origem: $("origem").value || ""
             },
             atributos: {
-                agi: +agi.value || 0,
-                for: +for.value || 0,
-                int: +int.value || 0,
-                vig: +vig.value || 0,
-                pre: +pre.value || 0,
-                deslocamento: +deslocamento.value || 0
+                for: +$("for").value || 0,
+                agi: +$("agi").value || 0,
+                int: +$("int").value || 0,
+                vig: +$("vig").value || 0,
+                pre: +$("pre").value || 0,
+                deslocamento: +$("desl").value || 0
             },
             combate: {
-                hp_atual: +hp_atual.value || 0,
-                hp_max: +hp_max.value || 0,
-                sanidade_atual: +sanidade_atual.value || 0,
-                sanidade_max: +sanidade_max.value || 0,
-                pe_atual: +pe_atual.value || 0,
-                pe_max: +pe_max.value || 0,
-                pd_turno: +pd_turno.value || 0,
-                defesa: +defesa.value || 0,
-                bloqueio: +bloqueio.value || 0,
-                esquiva: +esquiva.value || 0
+                hp_atual: +$("hp_atual").value || 0,
+                hp_max: +$("hp_max").value || 0,
+                sanidade_atual: +$("san_atual").value || 0,
+                sanidade_max: +$("san_max").value || 0,
+                pe_atual: +$("pe_atual").value || 0,
+                pe_max: +$("pe_max").value || 0,
+                pd_turno: +$("pd_turno").value || 0,
+                defesa: +$("defesa").value || 0,
+                bloqueio: +$("bloqueio").value || 0,
+                esquiva: +$("esquiva").value || 0
             }
         },
+
         extras: {
-            pericias: pericias.value || "",
-            habilidades: hab_texto.value || "",
-            rituais: rituais.value || "",
-            equipamentos: equipamentos.value || "",
-            descricao: descricao.value || ""
+            pericias: $("pericias").value || "",
+            habilidades: $("habilidades").value || "",
+            rituais: $("rituais").value || "",
+            equipamentos: $("equipamentos").value || "",
+            descricao: $("descricao").value || ""
+        },
+
+        // 🔥 CONFIG SALVA AQUI
+        config: {
+            modoPD: $("modoPD").checked
         }
     };
 
-    set(ref(db, "personagens/" + id), data);
+    await set(ref(db, "personagens/" + id), data);
 }
 
 setInterval(salvar, 5000);
