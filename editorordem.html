@@ -42,10 +42,11 @@ input, textarea {
     box-sizing: border-box;
 }
 
-/* 🔥 AUTO RESIZE */
+/* 🔥 AUTO RESIZE REAL */
 textarea {
     resize: none;
     overflow: hidden;
+    min-height: 60px;
 }
 
 .grid {
@@ -85,13 +86,11 @@ label {
 <div class="grid">
     <div><label>PE Atual</label><input id="pe_atual" type="number"></div>
     <div><label>PE Máx</label><input id="pe_max" type="number"></div>
-    <div><label>PE / Turno</label><input id="pe_turno" type="number"></div>
 </div>
 
 <div class="grid">
     <div><label>PD Atual</label><input id="pd_atual" type="number"></div>
     <div><label>PD Máx</label><input id="pd_max" type="number"></div>
-    <div><label>PD / Turno</label><input id="pd_turno" type="number"></div>
 </div>
 
 <div class="grid">
@@ -137,48 +136,39 @@ label {
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-/* 🔥 CONFIG FIREBASE */
 const app = initializeApp({
-  apiKey: "SUA_KEY",
-  authDomain: "SEU_AUTH",
-  databaseURL: "SEU_DB"
+  apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
+  authDomain: "fichasrpg-45934.firebaseapp.com",
+  databaseURL: "https://fichasrpg-45934-default-rtdb.firebaseio.com"
 });
 
 const db = getDatabase(app);
 const id = new URLSearchParams(location.search).get("id");
 
-if(!id){
-    alert("ID não fornecido na URL");
-}
-
-/* HELPERS */
-const $ = id => document.getElementById(id);
+const $ = (id) => document.getElementById(id);
 
 let carregando = true;
 let userEditing = false;
 
-/* 🔒 evita overwrite */
-document.querySelectorAll("input, textarea").forEach(el=>{
-    el.addEventListener("focus", ()=> userEditing = true);
-    el.addEventListener("blur", ()=> userEditing = false);
-});
-
-/* 🔥 AUTO RESIZE GLOBAL */
+/* 🔥 AUTO RESIZE FUNCTION */
 function autoResize(el) {
     el.style.height = "auto";
     el.style.height = el.scrollHeight + "px";
 }
 
-function aplicarAutoResize() {
-    document.querySelectorAll("textarea").forEach(autoResize);
-}
-
-document.querySelectorAll("textarea").forEach(el=>{
-    el.addEventListener("input", ()=> autoResize(el));
+/* aplica em todos */
+document.querySelectorAll("textarea").forEach(el => {
+    el.addEventListener("input", () => autoResize(el));
 });
 
-/* 🔁 SYNC */
-onValue(ref(db,"personagens/"+id), snap=>{
+/* evita overwrite */
+document.querySelectorAll("input, textarea").forEach(el=>{
+    el.addEventListener("focus", ()=> userEditing = true);
+    el.addEventListener("blur", ()=> userEditing = false);
+});
+
+/* sync */
+onValue(ref(db,"personagens/"+id), (snap)=>{
     if(!snap.exists() || userEditing) return;
 
     const p = snap.val();
@@ -200,11 +190,9 @@ onValue(ref(db,"personagens/"+id), snap=>{
 
     $("pe_atual").value = c.pe_atual || 0;
     $("pe_max").value = c.pe_max || 0;
-    $("pe_turno").value = c.pe_turno || 0;
 
     $("pd_atual").value = c.pd_atual || 0;
     $("pd_max").value = c.pd_max || 0;
-    $("pd_turno").value = c.pd_turno || 0;
 
     $("defesa").value = c.defesa || 0;
     $("bloqueio").value = c.bloqueio || 0;
@@ -227,12 +215,13 @@ onValue(ref(db,"personagens/"+id), snap=>{
     $("equipamentos").value = e.equipamentos || "";
     $("descricao").value = e.descricao || "";
 
-    aplicarAutoResize();
+    /* 🔥 aplica resize após carregar */
+    document.querySelectorAll("textarea").forEach(autoResize);
 
     carregando = false;
 });
 
-/* 💾 AUTOSAVE */
+/* autosave */
 function bind(idField, path, key){
     $(idField).addEventListener("input", async ()=>{
         if(carregando) return;
@@ -240,35 +229,30 @@ function bind(idField, path, key){
         const value = $(idField).value;
         const parsed = isNaN(value) ? value : +value;
 
-        await update(ref(db,"personagens/"+id+"/"+path), {
-            [key]: parsed
-        });
+        const obj = {};
+        obj[key] = parsed;
+
+        await update(ref(db,"personagens/"+id+"/"+path), obj);
     });
 }
 
-/* BINDS */
+/* binds */
 bind("nome","dados/info","nome");
 bind("classe","dados/info","classe");
 bind("origem","dados/info","origem");
 
 bind("hp_atual","dados/combate","hp_atual");
 bind("hp_max","dados/combate","hp_max");
-
 bind("san_atual","dados/combate","sanidade_atual");
 bind("san_max","dados/combate","sanidade_max");
-
 bind("pe_atual","dados/combate","pe_atual");
 bind("pe_max","dados/combate","pe_max");
-bind("pe_turno","dados/combate","pe_turno");
-
 bind("pd_atual","dados/combate","pd_atual");
 bind("pd_max","dados/combate","pd_max");
-bind("pd_turno","dados/combate","pd_turno");
 
 bind("defesa","dados/combate","defesa");
 bind("bloqueio","dados/combate","bloqueio");
 bind("esquiva","dados/combate","esquiva");
-
 bind("arma1","dados/combate","arma1");
 bind("arma2","dados/combate","arma2");
 bind("arma3","dados/combate","arma3");
