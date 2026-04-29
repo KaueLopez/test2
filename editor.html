@@ -22,6 +22,23 @@ button {
     padding: 10px;
     margin-top: 10px;
 }
+    .grid2x3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.grid2x3 input {
+    width: 100%;
+    text-align: center;
+}
+
+.grid2x3 div {
+    text-align: center;
+    font-size: 12px;
+    margin-top: -5px;
+}
 </style>
 </head>
 
@@ -36,29 +53,71 @@ button {
 <input id="social" placeholder="Posição Social">
 
 <h3>Instintos</h3>
-<input id="reacao" type="number" placeholder="Reação">
-<input id="percepcao" type="number" placeholder="Percepção">
-<input id="sagacidade" type="number" placeholder="Sagacidade">
-<input id="potencia" type="number" placeholder="Potência">
-<input id="influencia" type="number" placeholder="Influência">
-<input id="resolucao" type="number" placeholder="Resolução">
-        
-<h3>conhecimentos</h3>
-<input id="agrario" type="number" placeholder="agrario">
-<input id="biologico" type="number" placeholder="biologico">
-<input id="exato" type="number" placeholder="exato">
-<input id="medicina" type="number" placeholder="medicina">    
-<input id="social" type="number" placeholder="social">
-<input id="artistico" type="number" placeholder="artistico">
 
-<h3>praticas</h3>
-<input id="esportivas" type="number" placeholder="esportivas">
-<input id="ferramentas" type="number" placeholder="ferramentas">
-<input id="oficios" type="number" placeholder="oficios">
-<input id="armas" type="number" placeholder="armas">
-<input id="veiculos" type="number" placeholder="veiculos">
-<input id="infiltracao" type="number" placeholder="infiltracao">
+<div class="grid2x3">
+    <input id="reacao" type="number">
+    <input id="percepcao" type="number">
+    <input id="sagacidade" type="number">
 
+    <div>Reação</div>
+    <div>Percepção</div>
+    <div>Sagacidade</div>
+</div>
+
+<div class="grid2x3">
+    <input id="potencia" type="number">
+    <input id="influencia" type="number">
+    <input id="resolucao" type="number">
+
+    <div>Potência</div>
+    <div>Influência</div>
+    <div>Resolução</div>
+</div>
+    
+<h3>Conhecimentos</h3>
+
+<div class="grid2x3">
+    <input id="agrario" type="number">
+    <input id="biologico" type="number">
+    <input id="exato" type="number">
+
+    <div>Agrário</div>
+    <div>Biológico</div>
+    <div>Exato</div>
+</div>
+
+<div class="grid2x3">
+    <input id="medicina" type="number">
+    <input id="social" type="number">
+    <input id="artistico" type="number">
+
+    <div>Medicina</div>
+    <div>Social</div>
+    <div>Artístico</div>
+</div>
+    
+<h3>Práticas</h3>
+
+<div class="grid2x3">
+    <input id="esportivas" type="number">
+    <input id="ferramentas" type="number">
+    <input id="oficios" type="number">
+
+    <div>Esportivas</div>
+    <div>Ferramentas</div>
+    <div>Ofícios</div>
+</div>
+
+<div class="grid2x3">
+    <input id="armas" type="number">
+    <input id="veiculos" type="number">
+    <input id="infiltracao" type="number">
+
+    <div>Armas</div>
+    <div>Veículos</div>
+    <div>Infiltração</div>
+</div>
+    
 <h3>Características</h3>
 <textarea id="caracteristicas"></textarea>
 
