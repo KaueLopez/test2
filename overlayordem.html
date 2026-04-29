@@ -74,6 +74,10 @@ const db = getDatabase(app);
 
 const id = new URLSearchParams(location.search).get("id");
 
+if (!id) {
+    console.error("ID não encontrado na URL");
+}
+
 /* ELEMENTOS */
 const nomeEl = document.getElementById("nome");
 const hpEl = document.getElementById("hp");
@@ -82,11 +86,10 @@ const peEl = document.getElementById("pe");
 const pdEl = document.getElementById("pd");
 const toggle = document.getElementById("toggle");
 
-/* ESTADO GLOBAL (IMPORTANTE) */
 let modoPD = false;
 
-/* RENDER CENTRAL (REGRA ÚNICA DE VISIBILIDADE) */
-function render() {
+/* render único */
+function renderUI() {
     toggle.innerText = "Modo PD: " + (modoPD ? "ON" : "OFF");
 
     if (modoPD) {
@@ -100,33 +103,35 @@ function render() {
     }
 }
 
-/* TOGGLE */
 toggle.onclick = () => {
     modoPD = !modoPD;
-    render();
+    renderUI();
 };
 
-/* FIREBASE */
+/* FIREBASE REALTIME FIX */
 onValue(ref(db, "personagens/" + id), (snap) => {
     const p = snap.val();
-    if (!p) return;
 
-    const info = p.dados?.info || {};
-    const c = p.dados?.combate || {};
+    if (!p || !p.dados) {
+        nomeEl.textContent = "Sem dados";
+        return;
+    }
+
+    const info = p.dados.info || {};
+    const c = p.dados.combate || {};
 
     nomeEl.textContent = info.nome || "Sem nome";
 
-    hpEl.textContent = `HP: ${c.hp_atual || 0} / ${c.hp_max || 0}`;
-    sanEl.textContent = `SAN: ${c.sanidade_atual || 0} / ${c.sanidade_max || 0}`;
-    peEl.textContent = `PE: ${c.pe_atual || 0} / ${c.pe_max || 0}`;
-    pdEl.textContent = `PD: ${c.pd_turno || 0} / turno`;
+    hpEl.textContent = `HP: ${c.hp_atual ?? 0} / ${c.hp_max ?? 0}`;
+    sanEl.textContent = `SAN: ${c.sanidade_atual ?? 0} / ${c.sanidade_max ?? 0}`;
+    peEl.textContent = `PE: ${c.pe_atual ?? 0} / ${c.pe_max ?? 0}`;
+    pdEl.textContent = `PD: ${c.pd_turno ?? 0}`;
 
-    // NÃO sobrescreve modoPD aqui (evita conflito com toggle manual)
-    render();
+    renderUI();
 });
 
-/* INIT */
-render();
+/* init */
+renderUI();
 
 </script>
 
