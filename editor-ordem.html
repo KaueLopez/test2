@@ -158,9 +158,9 @@ const app = initializeApp({
 
 const db = getDatabase(app);
 
-let id = new URLSearchParams(location.search).get("id");
+const id = new URLSearchParams(location.search).get("id");
+
 let carregando = true;
-let timeout = null;
 
 /* ================= LOAD ================= */
 async function carregar() {
@@ -180,7 +180,7 @@ async function carregar() {
     classe.value = i.classe || "";
 
     agi.value = a.agi || 0;
-    for.value = a.for || 0;
+    forca.value = a.for || 0;
     int.value = a.int || 0;
     vig.value = a.vig || 0;
     pre.value = a.pre || 0;
@@ -191,13 +191,13 @@ async function carregar() {
     hp_atual.value = c.hp_atual || 0;
     defesa.value = c.defesa || 0;
 
-    habilidades.value = p.habilidades || "";
+    hab_texto.value = p.habilidades || "";
     rituais.value = p.rituais || "";
 
     carregando = false;
 }
 
-/* ================= SAVE (CORRETO) ================= */
+/* ================= SAVE ================= */
 function salvar() {
     if (!id || carregando) return;
 
@@ -211,7 +211,7 @@ function salvar() {
             },
             atributos: {
                 agi: +agi.value || 0,
-                for: +for.value || 0,
+                for: +forca.value || 0,
                 int: +int.value || 0,
                 vig: +vig.value || 0,
                 pre: +pre.value || 0,
@@ -225,23 +225,19 @@ function salvar() {
             }
         },
 
-        habilidades: habilidades.value || "",
+        habilidades: hab_texto.value || "",
         rituais: rituais.value || ""
     };
 
     set(ref(db, "personagens/" + id), data);
 }
 
-/* ================= AUTO SAVE LIMPO ================= */
-document.querySelectorAll("input, textarea").forEach(el => {
-    el.addEventListener("input", () => {
-        if (carregando) return;
+/* ================= AUTO SAVE 5s ================= */
+setInterval(() => {
+    salvar();
+}, 5000);
 
-        clearTimeout(timeout);
-        timeout = setTimeout(salvar, 400);
-    });
-});
-
+/* ================= INIT ================= */
 window.onload = carregar;
 </script>
 
