@@ -10,19 +10,40 @@ body {
     font-family: "Segoe UI", sans-serif;
 }
 
+/* CONTAINER */
 .overlay {
     position: absolute;
     bottom: 30px;
     left: 30px;
+
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
     color: white;
     text-shadow: 1px 1px 3px black;
 }
 
+/* IMAGEM */
+#portrait {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+
+    animation: flutuar 3s ease-in-out infinite;
+}
+
+/* BLOCO DIREITA */
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+/* NOME */
 .nome {
     font-size: 48px;
     font-weight: bold;
     margin-bottom: 6px;
-
 
     color: #FFFFFF;
     text-shadow:
@@ -31,22 +52,49 @@ body {
         0 0 12px #ff1a1a,
         0 0 20px #ff1a1a;
 }
+
+/* HP */
 .stat {
     font-size: 28px;
-
-
     color: #9B111E;
     text-shadow:
         0 0 12px #960018,
         0 0 24px #960018;
 }
+
+/* PD */
 .stat1 {
     font-size: 28px;
-
     color: #FFFFFF;
     text-shadow:
-        6 6 12px #0000FF,
-        12 12 24px #0000FF;
+        0 0 12px #0000FF,
+        0 0 24px #0000FF;
+}
+
+/* ANIMAÇÃO BASE + ACHATAR */
+@keyframes flutuar {
+    0% {
+        transform: translateY(0px) scaleY(1);
+    }
+    50% {
+        transform: translateY(-10px) scaleY(0.92);
+    }
+    100% {
+        transform: translateY(0px) scaleY(1);
+    }
+}
+
+/* CRÍTICO (TREMER + ACHATAR) */
+.critico {
+    animation: flutuar 3s ease-in-out infinite, tremer 0.15s infinite;
+}
+
+@keyframes tremer {
+    0% { transform: translate(0px, 0px) scaleY(0.92); }
+    25% { transform: translate(4px, -4px) scaleY(0.92); }
+    50% { transform: translate(-4px, 4px) scaleY(0.92); }
+    75% { transform: translate(4px, 4px) scaleY(0.92); }
+    100% { transform: translate(0px, 0px) scaleY(0.92); }
 }
 </style>
 </head>
@@ -54,10 +102,15 @@ body {
 <body>
 
 <div class="overlay">
-    <div class="nome" id="nome">Carregando...</div>
 
-    <div class="stat" id="hp"> 0 / 0</div>
-    <div class="stat1" id="pd"> 0</div>
+    <img id="portrait" src="normal.png">
+
+    <div class="info">
+        <div class="nome" id="nome">Carregando...</div>
+        <div class="stat" id="hp">0 / 0</div>
+        <div class="stat1" id="pd">0</div>
+    </div>
+
 </div>
 
 <script type="module">
@@ -82,6 +135,7 @@ if (!id) {
 const nomeEl = document.getElementById("nome");
 const hpEl = document.getElementById("hp");
 const pdEl = document.getElementById("pd");
+const portrait = document.getElementById("portrait");
 
 onValue(ref(db, "personagens/" + id), (snap) => {
     const p = snap.val();
@@ -92,10 +146,29 @@ onValue(ref(db, "personagens/" + id), (snap) => {
 
     nomeEl.textContent = info.nome || "Sem nome";
 
-    hpEl.textContent = `${c.hp_atual ?? 0} / ${c.hp_max ?? 0}`;
-    pdEl.textContent = `${c.pd_turno ?? 0}`;
-});
+    const hpAtual = c.hp_atual ?? 0;
+    const hpMax = c.hp_max ?? 1;
 
+    hpEl.textContent = `${hpAtual} / ${hpMax}`;
+    pdEl.textContent = `${c.pd_turno ?? 0}`;
+
+    const porcentagem = hpAtual / hpMax;
+
+    let novaImagem = "normal.png";
+
+    portrait.classList.remove("critico");
+
+    if (porcentagem <= 0.3) {
+        novaImagem = "critico.png";
+        portrait.classList.add("critico");
+    } else if (porcentagem <= 0.6) {
+        novaImagem = "ferido.png";
+    }
+
+    if (!portrait.src.includes(novaImagem)) {
+        portrait.src = novaImagem;
+    }
+});
 </script>
 
 </body>
