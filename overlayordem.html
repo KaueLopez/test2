@@ -74,8 +74,6 @@ const db = getDatabase(app);
 
 const id = new URLSearchParams(location.search).get("id");
 
-let modoPD = false;
-
 /* ELEMENTOS */
 const nomeEl = document.getElementById("nome");
 const hpEl = document.getElementById("hp");
@@ -84,16 +82,13 @@ const peEl = document.getElementById("pe");
 const pdEl = document.getElementById("pd");
 const toggle = document.getElementById("toggle");
 
-/* TOGGLE */
-toggle.onclick = () => {
-    modoPD = !modoPD;
+/* ESTADO GLOBAL (IMPORTANTE) */
+let modoPD = false;
+
+/* RENDER CENTRAL (REGRA ÚNICA DE VISIBILIDADE) */
+function render() {
     toggle.innerText = "Modo PD: " + (modoPD ? "ON" : "OFF");
 
-    renderVisibility(); // 🔥 chave da correção
-};
-
-/* FUNÇÃO CENTRAL DE VISIBILIDADE */
-function renderVisibility() {
     if (modoPD) {
         sanEl.classList.add("hidden");
         peEl.classList.add("hidden");
@@ -105,6 +100,12 @@ function renderVisibility() {
     }
 }
 
+/* TOGGLE */
+toggle.onclick = () => {
+    modoPD = !modoPD;
+    render();
+};
+
 /* FIREBASE */
 onValue(ref(db, "personagens/" + id), (snap) => {
     const p = snap.val();
@@ -113,31 +114,20 @@ onValue(ref(db, "personagens/" + id), (snap) => {
     const info = p.dados?.info || {};
     const c = p.dados?.combate || {};
 
-    const nome = info.nome || "Sem nome";
+    nomeEl.textContent = info.nome || "Sem nome";
 
-    const hpAtual = c.hp_atual || 0;
-    const hpMax = c.hp_max || 0;
+    hpEl.textContent = `HP: ${c.hp_atual || 0} / ${c.hp_max || 0}`;
+    sanEl.textContent = `SAN: ${c.sanidade_atual || 0} / ${c.sanidade_max || 0}`;
+    peEl.textContent = `PE: ${c.pe_atual || 0} / ${c.pe_max || 0}`;
+    pdEl.textContent = `PD: ${c.pd_turno || 0} / turno`;
 
-    const sanAtual = c.sanidade_atual || 0;
-    const sanMax = c.sanidade_max || 0;
-
-    const peAtual = c.pe_atual || 0;
-    const peMax = c.pe_max || 0;
-
-    const pd = c.pd_turno || 0;
-
-    nomeEl.textContent = nome;
-
-    hpEl.textContent = `HP: ${hpAtual} / ${hpMax}`;
-    sanEl.textContent = `SAN: ${sanAtual} / ${sanMax}`;
-    peEl.textContent = `PE: ${peAtual} / ${peMax}`;
-    pdEl.textContent = `PD: ${pd} / turno`;
-
-    renderVisibility(); // 🔥 garante estado correto após update
+    // NÃO sobrescreve modoPD aqui (evita conflito com toggle manual)
+    render();
 });
 
-/* estado inicial */
-renderVisibility();
+/* INIT */
+render();
+
 </script>
 
 </body>
