@@ -7,9 +7,10 @@
 body {
     margin: 0;
     background: transparent;
-    font-family: Arial;
+    font-family: "Segoe UI", sans-serif;
 }
 
+/* CONTAINER */
 .overlay {
     position: absolute;
     bottom: 30px;
@@ -17,18 +18,40 @@ body {
 
     color: white;
     text-shadow: 1px 1px 3px black;
-
-    font-size: 20px;
 }
 
+/* NOME */
 .nome {
-    font-size: 28px;
+    font-size: 48px;
     font-weight: bold;
+    margin-bottom: 6px;
+
+    color: #FFFFFF;
+    text-shadow:
+        0 0 2px #ff1a1a,
+        0 0 6px #ff1a1a,
+        0 0 12px #ff1a1a,
+        0 0 20px #ff1a1a;
 }
 
-.hp {
-    margin-top: 5px;
-    font-size: 18px;
+/* HP */
+.stat {
+    font-size: 28px;
+
+    color: #9B111E;
+    text-shadow:
+        0 0 12px #960018,
+        0 0 24px #960018;
+}
+
+/* PD */
+.stat1 {
+    font-size: 28px;
+
+    color: #FFFFFF;
+    text-shadow:
+        0 0 12px #0000FF,
+        0 0 24px #0000FF;
 }
 </style>
 </head>
@@ -36,11 +59,12 @@ body {
 <body>
 
 <div class="overlay">
-    <div class="nome" id="nome">Nome</div>
-    <div class="hp" id="hp">HP: 0 / 0</div>
+    <div class="nome" id="nome">Carregando...</div>
+
+    <div class="stat" id="hp">0 / 0</div>
+    <div class="stat1" id="pd">0</div>
 </div>
 
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -48,40 +72,33 @@ import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10
 const firebaseConfig = {
   apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
   authDomain: "fichasrpg-45934.firebaseapp.com",
-  databaseURL: "https://fichasrpg-45934-default-rtdb.firebaseio.com",
-  projectId: "fichasrpg-45934",
-  storageBucket: "fichasrpg-45934.firebasestorage.app",
-  messagingSenderId: "523682127281",
-  measurementId: "G-L22V165GJX"
+  databaseURL: "https://fichasrpg-45934-default-rtdb.firebaseio.com"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// 🔥 ID do personagem
-const id = new URLSearchParams(window.location.search).get("id");
+const id = new URLSearchParams(location.search).get("id");
 
 if (!id) {
     console.error("ID não encontrado na URL");
 }
 
-// 🔁 listener em tempo real
-onValue(ref(db, "personagens/" + id), (snapshot) => {
-    const p = snapshot.val();
+const nomeEl = document.getElementById("nome");
+const hpEl = document.getElementById("hp");
+const pdEl = document.getElementById("pd");
 
-    console.log("UPDATE:", p);
+onValue(ref(db, "personagens/" + id), (snap) => {
+    const p = snap.val();
+    if (!p || !p.dados) return;
 
-    if (!p) return;
+    const info = p.dados.info || {};
+    const c = p.dados.combate || {};
 
-    const nome = p.nome || "Sem nome";
-
-    const hpAtual = Number(p.saude?.hp_atual || 0);
-    const hpMax = Number(p.saude?.hp_max || 0);
-
-    document.getElementById("nome").textContent = nome;
-    document.getElementById("hp").textContent = `HP: ${hpAtual} / ${hpMax}`;
+    nomeEl.textContent = info.nome || "Sem nome";
+    hpEl.textContent = `${c.hp_atual ?? 0} / ${c.hp_max ?? 0}`;
+    pdEl.textContent = `${c.pd_turno ?? 0}`;
 });
-
 </script>
 
 </body>
