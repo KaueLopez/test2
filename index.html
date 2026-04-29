@@ -2,102 +2,72 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<style>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
+<style>
 html, body {
-    background: rgba(0,0,0,0);
+    background: transparent;
     margin: 0;
-    padding: 0;
     color: white;
     font-family: Arial;
 }
 
-.card {
-    width: 250px;
-}
-
 .hp-bar {
-    width: 100%;
+    width: 200px;
     height: 18px;
     background: #333;
-    border-radius: 4px;
-    overflow: hidden;
 }
 
 .hp-fill {
     height: 100%;
     background: red;
-    width: 100%;
-    transition: width 0.3s ease;
 }
-
 </style>
 </head>
 
 <body>
 
-<div class="card">
-    <h2 id="nome">Carregando...</h2>
-
-    <div class="hp-bar">
-        <div id="hp" class="hp-fill"></div>
-    </div>
-
-    <p id="texto">...</p>
+<h2 id="nome"></h2>
+<div class="hp-bar">
+    <div id="hp" class="hp-fill"></div>
 </div>
+<p id="texto"></p>
 
 <script>
-const url = "https://opensheet.elk.sh/1YdYNlO22v4JD_qlTx-PZBppwqpTD14ib3Q-h_QpPOio/P%C3%A1gina1";
 
-async function atualizar() {
-    try {
-        // 🔥 evita cache
-        const res = await fetch(url + "?t=" + Date.now());
-        const data = await res.json();
+// 🔥 CONFIG DO FIREBASE (pega no console)
+const firebaseConfig = {
+  apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
+  authDomain: "fichasrpg-45934.firebaseapp.com",
+  databaseURL: "https://fichasrpg-45934-default-rtdb.firebaseio.com",
+  projectId: "fichasrpg-45934"
+};
 
-        if (!data || data.length === 0) return;
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
 
-        const player = data[0];
+// pega ID da URL (?id=1)
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id") || "1";
 
-        const nome = player.Nome || player.nome || "Sem nome";
-        let hp = parseInt(player.HP || player.hp || 0);
-        let max = parseInt(player.MAX || player.max || 1);
+const ref = db.ref("players/" + id);
 
-        if (isNaN(hp)) hp = 0;
-        if (isNaN(max) || max <= 0) max = 1;
+// 🔥 TEMPO REAL (sem delay)
+ref.on("value", snapshot => {
+    const data = snapshot.val();
 
-        // 🔥 limita valores
-        hp = Math.max(0, Math.min(hp, max));
+    if (!data) return;
 
-        // atualiza nome
-        document.getElementById("nome").innerText = nome;
+    let hp = data.hp;
+    let max = data.max;
 
-        // barra
-        const porcentagem = (hp / max) * 100;
-        document.getElementById("hp").style.width = porcentagem + "%";
+    document.getElementById("nome").innerText = data.nome;
+    document.getElementById("texto").innerText = `${hp} / ${max}`;
 
-        // texto
-        document.getElementById("texto").innerText = `${hp} / ${max}`;
-
-        // 🔥 cor dinâmica
-        let cor = "red";
-        if (hp / max > 0.6) cor = "lime";
-        else if (hp / max > 0.3) cor = "yellow";
-
-        document.getElementById("hp").style.background = cor;
-
-    } catch (err) {
-        console.error("Erro:", err);
-    }
-}
-
-// 🔥 loop melhor que setInterval
-async function loop() {
-    await atualizar();
-    setTimeout(loop, 1000); // 1 segundo (ideal)
-}
-
-loop();
+    let porcentagem = (hp / max) * 100;
+    document.getElementById("hp").style.width = porcentagem + "%";
+});
 </script>
 
 </body>
