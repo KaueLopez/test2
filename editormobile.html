@@ -1,229 +1,30 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Ficha</title>
-
-<style>
-body {
-    margin: 0;
-    font-family: Arial;
-    background: #111;
-    color: white;
-}
-
-h2 {
-    text-align: center;
-    margin: 10px 0;
-}
-
-.tabs {
-    display: flex;
-    background: #222;
-}
-
-.tabs button {
-    flex: 1;
-    padding: 14px;
-    border: none;
-    background: #222;
-    color: white;
-}
-
-.tab {
-    display: none;
-    padding: 12px;
-}
-
-input, textarea {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 6px;
-    border: none;
-    margin-bottom: 12px;
-    box-sizing: border-box;
-    text-align: center;
-}
-
-textarea {
-    height: 80px;
-    text-align: left;
-}
-
-.save-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background: #00c853;
-    color: white;
-    border: none;
-    padding: 15px 20px;
-    border-radius: 50px;
-}
-
-/* GRID */
-.grid2x3 {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.cell {
-    text-align: center;
-}
-
-.cell input {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 6px;
-    border: none;
-    text-align: center;
-    box-sizing: border-box;
-}
-
-.label {
-    font-size: 12px;
-    margin-top: 4px;
-    opacity: 0.7;
-}
-
-h3 {
-    margin: 10px 0;
-    font-size: 16px;
-    opacity: 0.9;
-}
-</style>
-</head>
-
-<body>
-
-<h2>Ficha Assimilação RPG</h2>
-
-<div class="tabs">
-    <button onclick="showTab('basico')">Básico</button>
-    <button onclick="showTab('combate')">Combate</button>
-    <button onclick="showTab('extras')">Extras</button>
-</div>
-
-<!-- BÁSICO -->
-<div id="basico" class="tab">
-    <input id="nome" placeholder="Nome">
-    <textarea id="evento" placeholder="Evento Marcante"></textarea>
-    <input id="social" placeholder="Posição Social">
-</div>
-
-<!-- COMBATE (TUDO UNIFICADO) -->
-<div id="combate" class="tab">
-
-<h3>Combate</h3>
-
-<!-- HP PRIMEIRO -->
-<div class="grid2x3">
-
-    <div class="cell">
-        <input id="hp_atual" type="number">
-        <div class="label">HP Atual</div>
-    </div>
-
-    <div class="cell">
-        <input id="hp_max" type="number">
-        <div class="label">HP Máximo</div>
-    </div>
-
-</div>
-
-<h3>Instintos</h3>
-
-<div class="grid2x3">
-    <div class="cell"><input id="reacao" type="number"><div class="label">Reação</div></div>
-    <div class="cell"><input id="percepcao" type="number"><div class="label">Percepção</div></div>
-    <div class="cell"><input id="sagacidade" type="number"><div class="label">Sagacidade</div></div>
-</div>
-
-<div class="grid2x3">
-    <div class="cell"><input id="potencia" type="number"><div class="label">Potência</div></div>
-    <div class="cell"><input id="influencia" type="number"><div class="label">Influência</div></div>
-    <div class="cell"><input id="resolucao" type="number"><div class="label">Resolução</div></div>
-</div>
-
-<h3>Conhecimentos</h3>
-
-<div class="grid2x3">
-    <div class="cell"><input id="agrario" type="number"><div class="label">Agrário</div></div>
-    <div class="cell"><input id="biologico" type="number"><div class="label">Biológico</div></div>
-    <div class="cell"><input id="exato" type="number"><div class="label">Exato</div></div>
-</div>
-
-<div class="grid2x3">
-    <div class="cell"><input id="medicina" type="number"><div class="label">Medicina</div></div>
-    <div class="cell"><input id="social2" type="number"><div class="label">Social</div></div>
-    <div class="cell"><input id="artistico" type="number"><div class="label">Artístico</div></div>
-</div>
-
-<h3>Práticas</h3>
-
-<div class="grid2x3">
-    <div class="cell"><input id="esportivas" type="number"><div class="label">Esportivas</div></div>
-    <div class="cell"><input id="ferramentas" type="number"><div class="label">Ferramentas</div></div>
-    <div class="cell"><input id="oficios" type="number"><div class="label">Ofícios</div></div>
-</div>
-
-<div class="grid2x3">
-    <div class="cell"><input id="armas" type="number"><div class="label">Armas</div></div>
-    <div class="cell"><input id="veiculos" type="number"><div class="label">Veículos</div></div>
-    <div class="cell"><input id="infiltracao" type="number"><div class="label">Infiltração</div></div>
-</div>
-
-</div>
-
-<!-- EXTRAS -->
-<div id="extras" class="tab">
-    <textarea id="caracteristicas" placeholder="Características"></textarea>
-    <textarea id="equipamentos" placeholder="Equipamentos"></textarea>
-</div>
-
-<!-- FIREBASE -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
-  authDomain: "fichasrpg-45934.firebaseapp.com",
-  databaseURL: "https://fichasrpg-45934-default-rtdb.firebaseio.com",
-  projectId: "fichasrpg-45934",
-  storageBucket: "fichasrpg-45934.firebasestorage.app",
-  messagingSenderId: "523682127281",
-  measurementId: "G-L22V165GJX"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-window.db = db;
-window.ref = ref;
-window.set = set;
-window.get = get;
-window.child = child;
-</script>
-
 <script>
-let idAtual = new URLSearchParams(window.location.search).get("id");
+/* =========================
+   ID SEMPRE VÁLIDO
+========================= */
+const params = new URLSearchParams(window.location.search);
+let idAtual = params.get("id");
 
+if (!idAtual) {
+    idAtual = crypto.randomUUID();
+    window.history.replaceState({}, "", "?id=" + idAtual);
+}
+
+/* =========================
+   ESTADO
+========================= */
 let carregando = true;
 let timeout = null;
 
-/* SALVAR COMPLETO */
+/* =========================
+   SALVAR
+========================= */
 function salvar() {
     if (!idAtual || carregando) return;
 
-    set(ref(db, "personagens/" + idAtual), {
+    console.log("SALVANDO:", idAtual);
 
+    set(ref(db, "personagens/" + idAtual), {
         nome: document.getElementById("nome").value || "",
         evento: document.getElementById("evento").value || "",
         social: document.getElementById("social").value || "",
@@ -265,9 +66,11 @@ function salvar() {
     });
 }
 
-/* CARREGAR */
+/* =========================
+   CARREGAR
+========================= */
 function carregar() {
-    if (!idAtual) return;
+    console.log("CARREGANDO:", idAtual);
 
     get(child(ref(db), "personagens/" + idAtual)).then(snapshot => {
         if (!snapshot.exists()) {
@@ -312,17 +115,22 @@ function carregar() {
     });
 }
 
-/* UI */
-function showTab(id) {
-    document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
-    document.getElementById(id).style.display = "block";
-}
+/* =========================
+   AUTOSAVE
+========================= */
+document.querySelectorAll("input, textarea").forEach(el => {
+    el.addEventListener("input", () => {
+        if (carregando) return;
 
-window.onload = () => {
-    showTab("basico");
-    carregar();
-};
+        clearTimeout(timeout);
+        timeout = setTimeout(() => {
+            salvar();
+        }, 500);
+    });
+});
+
+/* =========================
+   START
+========================= */
+window.onload = carregar;
 </script>
-
-</body>
-</html>
