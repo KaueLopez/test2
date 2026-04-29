@@ -82,45 +82,20 @@ label {
 
 <div class="box">
 
-<!-- INFO -->
 <h3>Informações</h3>
 
-<div class="field">
-<label>Nome</label>
-<input id="nome">
-</div>
+<div class="field"><label>Nome</label><input id="nome"></div>
+<div class="field"><label>Origem</label><input id="origem"></div>
+<div class="field"><label>Classe</label><input id="classe"></div>
 
-<div class="field">
-<label>Origem</label>
-<input id="origem">
-</div>
-
-<div class="field">
-<label>Classe</label>
-<input id="classe">
-</div>
-
-<!-- SAÚDE -->
 <h3>Saúde</h3>
 
 <div class="grid">
-<div class="field">
-<label>HP Atual</label>
-<input id="hp_atual" type="number">
+<div class="field"><label>HP Atual</label><input id="hp_atual" type="number"></div>
+<div class="field"><label>HP Máximo</label><input id="hp_max" type="number"></div>
+<div class="field"><label>Defesa</label><input id="defesa" type="number"></div>
 </div>
 
-<div class="field">
-<label>HP Máximo</label>
-<input id="hp_max" type="number">
-</div>
-
-<div class="field">
-<label>Defesa</label>
-<input id="defesa" type="number">
-</div>
-</div>
-
-<!-- ATRIBUTOS -->
 <h3>Atributos</h3>
 
 <div class="grid">
@@ -137,7 +112,6 @@ label {
 <input id="nex" type="number">
 </div>
 
-<!-- HABILIDADES -->
 <h3>Habilidades</h3>
 
 <div class="field">
@@ -146,23 +120,11 @@ label {
 </div>
 
 <div class="grid">
-<div class="field">
-<label>Proteção</label>
-<input id="hab_protecao" type="number">
+<div class="field"><label>Proteção</label><input id="hab_protecao" type="number"></div>
+<div class="field"><label>Resistências</label><input id="hab_resistencias" type="number"></div>
+<div class="field"><label>Proficiências</label><input id="hab_proficiencias" type="number"></div>
 </div>
 
-<div class="field">
-<label>Resistências</label>
-<input id="hab_resistencias" type="number">
-</div>
-
-<div class="field">
-<label>Proficiências</label>
-<input id="hab_proficiencias" type="number">
-</div>
-</div>
-
-<!-- RITUAIS -->
 <h3>Rituais</h3>
 
 <div class="field">
@@ -170,7 +132,6 @@ label {
 <textarea id="rituais"></textarea>
 </div>
 
-<!-- OUTROS -->
 <h3>Outros</h3>
 
 <div class="field">
@@ -185,7 +146,6 @@ label {
 
 </div>
 
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -199,10 +159,19 @@ const app = initializeApp({
 const db = getDatabase(app);
 
 let id = new URLSearchParams(location.search).get("id");
+
 let carregando = true;
+let prontoParaSalvar = false;
+let timeout;
 
 /* ================= LOAD ================= */
 get(child(ref(db), "personagens/" + id)).then(snap => {
+
+    if (!snap.exists()) {
+        alert("Personagem não encontrado");
+        return;
+    }
+
     const p = snap.val();
 
     const i = p.dados?.info || {};
@@ -236,11 +205,12 @@ get(child(ref(db), "personagens/" + id)).then(snap => {
     equipamentos.value = p.equipamentos || "";
 
     carregando = false;
+    prontoParaSalvar = true;
 });
 
 /* ================= SAVE ================= */
-setInterval(() => {
-    if (carregando) return;
+function salvar() {
+    if (!id || carregando || !prontoParaSalvar) return;
 
     set(ref(db, "personagens/" + id), {
         tipo: "ordem",
@@ -281,7 +251,17 @@ setInterval(() => {
         descricao: descricao.value,
         equipamentos: equipamentos.value
     });
-}, 500);
+}
+
+/* ================= AUTOSAVE ================= */
+document.querySelectorAll("input, textarea").forEach(el => {
+    el.addEventListener("input", () => {
+        if (!prontoParaSalvar) return;
+
+        clearTimeout(timeout);
+        timeout = setTimeout(salvar, 400);
+    });
+});
 </script>
 
 </body>
