@@ -48,18 +48,9 @@ input, textarea {
     gap: 10px;
 }
 
-.field {
-    display: flex;
-    flex-direction: column;
-}
-
 label {
     font-size: 12px;
     color: #bbb;
-}
-
-@media (max-width: 800px) {
-    .grid { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 </head>
@@ -98,9 +89,9 @@ label {
 </div>
 
 <h3>Armas</h3>
-<input id="arma1" placeholder="Arma 1">
-<input id="arma2" placeholder="Arma 2">
-<input id="arma3" placeholder="Arma 3">
+<input id="arma1">
+<input id="arma2">
+<input id="arma3">
 
 <h3>Atributos</h3>
 
@@ -113,11 +104,19 @@ label {
     <div><label>DESL</label><input id="desl" type="number"></div>
 </div>
 
-<h3>Extras</h3>
+<h3>Perícias</h3>
 <textarea id="pericias"></textarea>
+
+<h3>Habilidades</h3>
 <textarea id="habilidades"></textarea>
+
+<h3>Rituais</h3>
 <textarea id="rituais"></textarea>
+
+<h3>Equipamentos</h3>
 <textarea id="equipamentos"></textarea>
+
+<h3>Descrição</h3>
 <textarea id="descricao"></textarea>
 
 <label>
@@ -196,7 +195,7 @@ async function load(){
     carregando = false;
 }
 
-/* SAVE (PADRÃO ÚNICO COM MOBILE) */
+/* SAVE */
 async function save(){
     if(carregando) return;
 
