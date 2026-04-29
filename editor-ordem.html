@@ -6,43 +6,43 @@
 
 <style>
 body {
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     margin: 20px;
     background: #0a0a0a;
     color: #eaeaea;
 }
 
 .box {
-    max-width: 1200px;
+    max-width: 1100px;
     margin: auto;
     background: #121212;
+    border: 1px solid #2a2a2a;
     border-radius: 12px;
     padding: 20px;
-    border: 1px solid #2a2a2a;
 }
 
-h2 {
-    text-align: center;
+/* CAMPOS */
+.field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
 }
 
-h3 {
-    margin-top: 25px;
-    padding: 8px;
-    background: #1f1f1f;
-    border-left: 4px solid #7c3aed;
-    border-radius: 6px;
-    font-size: 14px;
+label {
+    font-size: 12px;
+    color: #bbb;
+    margin-bottom: 4px;
 }
 
+/* INPUTS */
 input, textarea {
     width: 100%;
     padding: 10px;
-    margin-top: 6px;
-    margin-bottom: 10px;
     border-radius: 8px;
     border: none;
     background: #fff;
     color: #000;
+    font-size: 14px;
     box-sizing: border-box;
 }
 
@@ -50,29 +50,32 @@ textarea {
     min-height: 80px;
 }
 
+/* TÍTULOS */
+h2 {
+    text-align: center;
+}
+
+h3 {
+    margin-top: 20px;
+    padding: 8px;
+    background: #1f1f1f;
+    border-left: 4px solid #7c3aed;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* GRID */
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
 }
 
-.field {
-    display: flex;
-    flex-direction: column;
-}
-
-.label {
-    font-size: 11px;
-    color: #aaa;
-    text-align: center;
-    margin-top: 3px;
-}
-
-/* separação clara entre blocos */
-.section {
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #2a2a2a;
+/* RESPONSIVO */
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 </style>
 </head>
@@ -83,71 +86,92 @@ textarea {
 
 <div class="box">
 
-<!-- ================= INFO ================= -->
-<div class="section">
+<!-- INFO -->
 <h3>Informações</h3>
 
-<input id="nome" placeholder="Nome">
-<input id="origem" placeholder="Origem">
-<input id="classe" placeholder="Classe">
+<div class="field">
+<label>Nome</label>
+<input id="nome">
 </div>
 
-<!-- ================= ATRIBUTOS ================= -->
-<div class="section">
+<div class="field">
+<label>Origem</label>
+<input id="origem">
+</div>
+
+<div class="field">
+<label>Classe</label>
+<input id="classe">
+</div>
+
+<!-- SAÚDE -->
+<h3>Saúde</h3>
+
+<div class="grid">
+
+<div class="field">
+<label>HP Atual</label>
+<input id="hp_atual" type="number">
+</div>
+
+<div class="field">
+<label>HP Máximo</label>
+<input id="hp_max" type="number">
+</div>
+
+<div class="field">
+<label>Defesa</label>
+<input id="defesa" type="number">
+</div>
+
+</div>
+
+<!-- ATRIBUTOS -->
 <h3>Atributos</h3>
 
 <div class="grid">
-<div class="field"><input id="agi" type="number"><div class="label">AGI</div></div>
-<div class="field"><input id="for" type="number"><div class="label">FOR</div></div>
-<div class="field"><input id="int" type="number"><div class="label">INT</div></div>
-<div class="field"><input id="vig" type="number"><div class="label">VIG</div></div>
-<div class="field"><input id="pre" type="number"><div class="label">PRE</div></div>
-<div class="field"><input id="nivel" type="number"><div class="label">NÍVEL</div></div>
+
+<div class="field"><label>AGI</label><input id="agi" type="number"></div>
+<div class="field"><label>FOR</label><input id="for" type="number"></div>
+<div class="field"><label>INT</label><input id="int" type="number"></div>
+<div class="field"><label>VIG</label><input id="vig" type="number"></div>
+<div class="field"><label>PRE</label><input id="pre" type="number"></div>
+<div class="field"><label>NÍVEL</label><input id="nivel" type="number"></div>
+
 </div>
 
-<input id="nex" type="number" placeholder="NEX">
+<div class="field">
+<label>NEX</label>
+<input id="nex" type="number">
 </div>
 
-<!-- ================= COMBATE ================= -->
-<div class="section">
+<!-- COMBATE -->
 <h3>Combate</h3>
 
-<input id="hp_max" type="number" placeholder="HP Máximo">
-<input id="hp_atual" type="number" placeholder="HP Atual">
-<input id="defesa" type="number" placeholder="Defesa">
+<div class="grid">
+
+<div class="field"><label>Deslocamento</label><input id="deslocamento" type="number"></div>
+<div class="field"><label>Bloqueio</label><input id="bloqueio" type="number"></div>
+<div class="field"><label>Esquiva</label><input id="esquiva" type="number"></div>
+
 </div>
 
-<!-- ================= PERICIAS ================= -->
-<div class="section">
-<h3>Perícias</h3>
-<textarea id="pericias"></textarea>
+<!-- OUTROS -->
+<h3>Outros</h3>
+
+<div class="field">
+<label>Descrição</label>
+<textarea id="descricao"></textarea>
 </div>
 
-<!-- ================= HABILIDADES ================= -->
-<div class="section">
-<h3>Habilidades</h3>
-<textarea id="habilidades"></textarea>
-</div>
-
-<!-- ================= RITUAIS ================= -->
-<div class="section">
-<h3>Rituais</h3>
-<textarea id="rituais"></textarea>
-</div>
-
-<!-- ================= DESCRIÇÃO ================= -->
-<div class="section">
-<h3>Descrição</h3>
-
-<textarea id="anotacoes" placeholder="Anotações"></textarea>
-<textarea id="aparencia" placeholder="Aparência"></textarea>
-<textarea id="personalidade" placeholder="Personalidade"></textarea>
-<textarea id="historia" placeholder="História"></textarea>
-<textarea id="objetivo" placeholder="Objetivo"></textarea>
+<div class="field">
+<label>Equipamentos</label>
+<textarea id="equipamentos"></textarea>
 </div>
 
 </div>
 
+<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -165,17 +189,19 @@ let carregando = true;
 
 /* LOAD */
 get(child(ref(db), "personagens/" + id)).then(snap => {
+    const p = snap.val();
 
-    const p = snap.val() || {};
-    const d = p.dados || {};
-    const i = d.info || {};
-    const a = d.atributos || {};
-    const c = d.combate || {};
-    const desc = d.descricao || {};
+    const i = p.dados?.info || {};
+    const a = p.dados?.atributos || {};
+    const c = p.dados?.combate || {};
 
     nome.value = i.nome || "";
     origem.value = i.origem || "";
     classe.value = i.classe || "";
+
+    hp_atual.value = c.hp_atual || 0;
+    hp_max.value = c.hp_max || 0;
+    defesa.value = c.defesa || 0;
 
     agi.value = a.agi || 0;
     for.value = a.for || 0;
@@ -185,26 +211,19 @@ get(child(ref(db), "personagens/" + id)).then(snap => {
     nivel.value = a.nivel || 0;
     nex.value = a.nex || 0;
 
-    hp_max.value = c.hp_max || 0;
-    hp_atual.value = c.hp_atual || 0;
-    defesa.value = c.defesa || 0;
+    deslocamento.value = c.deslocamento || 0;
+    bloqueio.value = c.bloqueio || 0;
+    esquiva.value = c.esquiva || 0;
 
-    pericias.value = d.pericias || "";
-    habilidades.value = d.habilidades?.texto || "";
-    rituais.value = d.rituais || "";
-
-    anotacoes.value = desc.anotacoes || "";
-    aparencia.value = desc.aparencia || "";
-    personalidade.value = desc.personalidade || "";
-    historia.value = desc.historia || "";
-    objetivo.value = desc.objetivo || "";
+    descricao.value = p.descricao || "";
+    equipamentos.value = p.equipamentos || "";
 
     carregando = false;
 });
 
 /* SAVE */
 setInterval(() => {
-    if (carregando || !id) return;
+    if (carregando) return;
 
     set(ref(db, "personagens/" + id), {
         tipo: "ordem",
@@ -224,28 +243,18 @@ setInterval(() => {
                 nex: +nex.value || 0
             },
             combate: {
-                hp_max: +hp_max.value || 0,
                 hp_atual: +hp_atual.value || 0,
-                defesa: +defesa.value || 0
-            },
-            pericias: pericias.value,
-            habilidades: {
-                texto: habilidades.value
-            },
-            rituais: rituais.value,
-            descricao: {
-                anotacoes: anotacoes.value,
-                aparencia: aparencia.value,
-                personalidade: personalidade.value,
-                historia: historia.value,
-                objetivo: objetivo.value
+                hp_max: +hp_max.value || 0,
+                defesa: +defesa.value || 0,
+                deslocamento: +deslocamento.value || 0,
+                bloqueio: +bloqueio.value || 0,
+                esquiva: +esquiva.value || 0
             }
-        }
+        },
+        descricao: descricao.value,
+        equipamentos: equipamentos.value
     });
-
-}, 600);
-
+}, 500);
 </script>
 
 </body>
-</html>
