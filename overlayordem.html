@@ -15,13 +15,30 @@ body {
     position: absolute;
     bottom: 30px;
     left: 30px;
+
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* IMAGEM */
+#portrait {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    transition: 0.3s;
+}
+
+/* BLOCO DE INFO */
+.info {
+    display: flex;
+    flex-direction: column;
 }
 
 /* NOME */
 .nome {
     font-size: 48px;
     font-weight: bold;
-    margin-bottom: 6px;
 
     color: #FFFFFF;
     text-shadow:
@@ -30,24 +47,6 @@ body {
         0 0 12px #ff1a1a,
         0 0 20px #ff1a1a;
 }
-
-/* IMAGEM */
-#portrait {
-    width: 200px;
-    display: block;
-    margin-bottom: 10px;
-    transition: 0.3s;
-}
-
-/* ESTADOS */
-.ferido {
-    filter: brightness(0.7);
-}
-
-.critico {
-    filter: brightness(0.4) hue-rotate(-20deg);
-}
-
 </style>
 
 </head>
@@ -58,7 +57,9 @@ body {
 
     <img id="portrait" src="Adelaide.png">
 
-    <div class="nome" id="nome">Carregando...</div>
+    <div class="info">
+        <div class="nome" id="nome">Carregando...</div>
+    </div>
 
 </div>
 
@@ -95,16 +96,18 @@ onValue(ref(db, "personagens/" + id), (snap) => {
 
     const porcentagem = hpAtual / hpMax;
 
-    // limpa estados
-    portrait.classList.remove("ferido", "critico");
+    let novaImagem = "normal.png";
 
-    // aplica estado
     if (porcentagem <= 0.3) {
-        portrait.classList.add("critico");
-    } else if (porcentagem <= 0.6) {
-        portrait.classList.add("ferido");
+        novaImagem = "AdelaideMachucada.png";
+    } else if (porcentagem <= 0.5) {
+        novaImagem = "AdelaideMachucada.png";
     }
 
+    // evita troca desnecessária
+    if (!portrait.src.includes(novaImagem)) {
+        portrait.src = novaImagem;
+    }
 });
 </script>
 
