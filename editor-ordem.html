@@ -6,15 +6,14 @@
 
 <style>
 body {
-    font-family: Arial, sans-serif;
+    font-family: Arial;
     margin: 20px;
     background: #0a0a0a;
     color: #eaeaea;
 }
 
-/* CONTAINER */
 .box {
-    max-width: 1100px;
+    max-width: 1200px;
     margin: auto;
     background: #121212;
     border: 1px solid #2a2a2a;
@@ -22,8 +21,7 @@ body {
     padding: 20px;
 }
 
-/* INPUTS */
-input {
+input, textarea {
     width: 100%;
     padding: 10px;
     border-radius: 8px;
@@ -32,57 +30,41 @@ input {
     color: #000;
     font-size: 14px;
     box-sizing: border-box;
+    margin-bottom: 10px;
 }
 
-/* TÍTULO */
+textarea {
+    min-height: 80px;
+}
+
 h2 {
     text-align: center;
-    margin-bottom: 20px;
 }
 
 h3 {
     margin-top: 20px;
-    margin-bottom: 10px;
-    padding: 8px 10px;
+    padding: 8px;
     background: #1f1f1f;
     border-left: 4px solid #7c3aed;
     border-radius: 6px;
-    font-size: 14px;
 }
 
-/* SEÇÃO */
-.section {
-    margin-bottom: 18px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #2a2a2a;
-}
-
-/* GRID CORRETO */
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
 }
 
-/* LABEL VISUAL */
-.label {
-    font-size: 11px;
-    color: #aaa;
-    text-align: center;
-    margin-top: 4px;
-}
-
-/* BLOCO DE CAMPO */
 .field {
     display: flex;
     flex-direction: column;
 }
 
-/* RESPONSIVO */
-@media (max-width: 768px) {
-    .grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+.label {
+    font-size: 11px;
+    color: #aaa;
+    text-align: center;
+    margin-top: 4px;
 }
 </style>
 </head>
@@ -94,51 +76,49 @@ h3 {
 <div class="box">
 
 <!-- INFO -->
-<div class="section">
-    <h3>Informações</h3>
-    <input id="nome" placeholder="Nome">
-    <input id="origem" placeholder="Origem">
-    <input id="classe" placeholder="Classe">
-</div>
+<h3>Informações</h3>
+<input id="nome" placeholder="Nome">
+<input id="origem" placeholder="Origem">
+<input id="classe" placeholder="Classe">
 
 <!-- ATRIBUTOS -->
-<div class="section">
-    <h3>Atributos</h3>
-
-    <div class="grid">
-        <div class="field">
-            <input id="agi" type="number">
-            <div class="label">AGI</div>
-        </div>
-
-        <div class="field">
-            <input id="for" type="number">
-            <div class="label">FOR</div>
-        </div>
-
-        <div class="field">
-            <input id="int" type="number">
-            <div class="label">INT</div>
-        </div>
-
-        <div class="field">
-            <input id="vig" type="number">
-            <div class="label">VIG</div>
-        </div>
-
-        <div class="field">
-            <input id="pre" type="number">
-            <div class="label">PRE</div>
-        </div>
-
-        <div class="field">
-            <input id="nivel" type="number">
-            <div class="label">NÍVEL</div>
-        </div>
-    </div>
-
-    <input id="nex" type="number" placeholder="NEX">
+<h3>Atributos</h3>
+<div class="grid">
+<div class="field"><input id="agi" type="number"><div class="label">AGI</div></div>
+<div class="field"><input id="for" type="number"><div class="label">FOR</div></div>
+<div class="field"><input id="int" type="number"><div class="label">INT</div></div>
+<div class="field"><input id="vig" type="number"><div class="label">VIG</div></div>
+<div class="field"><input id="pre" type="number"><div class="label">PRE</div></div>
+<div class="field"><input id="nivel" type="number"><div class="label">NÍVEL</div></div>
 </div>
+
+<input id="nex" type="number" placeholder="NEX">
+
+<!-- COMBATE -->
+<h3>Combate</h3>
+<input id="hp_max" type="number" placeholder="HP Máximo">
+<input id="hp_atual" type="number" placeholder="HP Atual">
+<input id="defesa" type="number" placeholder="Defesa">
+
+<!-- PERÍCIAS -->
+<h3>Perícias (texto livre ou expansão futura)</h3>
+<textarea id="pericias"></textarea>
+
+<!-- HABILIDADES -->
+<h3>Habilidades</h3>
+<textarea id="habilidades"></textarea>
+
+<!-- RITUAIS -->
+<h3>Rituais</h3>
+<textarea id="rituais"></textarea>
+
+<!-- DESCRIÇÃO -->
+<h3>Descrição</h3>
+<textarea id="anotacoes" placeholder="Anotações"></textarea>
+<textarea id="aparencia" placeholder="Aparência"></textarea>
+<textarea id="personalidade" placeholder="Personalidade"></textarea>
+<textarea id="historia" placeholder="História"></textarea>
+<textarea id="objetivo" placeholder="Objetivo"></textarea>
 
 </div>
 
@@ -157,12 +137,17 @@ const db = getDatabase(app);
 let id = new URLSearchParams(location.search).get("id");
 let carregando = true;
 
-/* ===== LOAD ===== */
+/* LOAD */
 get(child(ref(db), "personagens/" + id)).then(snap => {
 
     const p = snap.val() || {};
-    const i = p.dados?.info || {};
-    const a = p.dados?.atributos || {};
+    const d = p.dados || {};
+    const i = d.info || {};
+    const a = d.atributos || {};
+    const c = d.combate || {};
+    const h = d.habilidades || {};
+    const r = d.rituais || "";
+    const desc = d.descricao || {};
 
     nome.value = i.nome || "";
     origem.value = i.origem || "";
@@ -176,10 +161,24 @@ get(child(ref(db), "personagens/" + id)).then(snap => {
     nivel.value = a.nivel || 0;
     nex.value = a.nex || 0;
 
+    hp_max.value = c.hp_max || 0;
+    hp_atual.value = c.hp_atual || 0;
+    defesa.value = c.defesa || 0;
+
+    pericias.value = d.pericias || "";
+    habilidades.value = h.texto || "";
+    rituais.value = r || "";
+
+    anotacoes.value = desc.anotacoes || "";
+    aparencia.value = desc.aparencia || "";
+    personalidade.value = desc.personalidade || "";
+    historia.value = desc.historia || "";
+    objetivo.value = desc.objetivo || "";
+
     carregando = false;
 });
 
-/* ===== SAVE (mais seguro) ===== */
+/* SAVE */
 setInterval(() => {
     if (carregando || !id) return;
 
@@ -199,6 +198,23 @@ setInterval(() => {
                 pre: +pre.value || 0,
                 nivel: +nivel.value || 0,
                 nex: +nex.value || 0
+            },
+            combate: {
+                hp_max: +hp_max.value || 0,
+                hp_atual: +hp_atual.value || 0,
+                defesa: +defesa.value || 0
+            },
+            pericias: pericias.value,
+            habilidades: {
+                texto: habilidades.value
+            },
+            rituais: rituais.value,
+            descricao: {
+                anotacoes: anotacoes.value,
+                aparencia: aparencia.value,
+                personalidade: personalidade.value,
+                historia: historia.value,
+                objetivo: objetivo.value
             }
         }
     });
