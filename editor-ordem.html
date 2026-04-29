@@ -88,6 +88,7 @@ label {
 <div class="field"><label>Origem</label><input id="origem"></div>
 <div class="field"><label>Classe</label><input id="classe"></div>
 
+<!-- 🩸 SAÚDE ATUALIZADA -->
 <h3>Saúde</h3>
 
 <div class="grid">
@@ -96,6 +97,14 @@ label {
 <div class="field"><label>Defesa</label><input id="defesa" type="number"></div>
 </div>
 
+<div class="grid">
+<div class="field"><label>Bloqueio</label><input id="bloqueio" type="number"></div>
+<div class="field"><label>Esquiva</label><input id="esquiva" type="number"></div>
+<div class="field"><label>Nível</label><input id="nivel" type="number"></div>
+<div class="field"><label>NEX</label><input id="nex" type="number"></div>
+</div>
+
+<!-- 🧠 ATRIBUTOS ATUALIZADO -->
 <h3>Atributos</h3>
 
 <div class="grid">
@@ -104,30 +113,20 @@ label {
 <div class="field"><label>INT</label><input id="int" type="number"></div>
 <div class="field"><label>VIG</label><input id="vig" type="number"></div>
 <div class="field"><label>PRE</label><input id="pre" type="number"></div>
-<div class="field"><label>NÍVEL</label><input id="nivel" type="number"></div>
+<div class="field"><label>Deslocamento</label><input id="deslocamento" type="number"></div>
 </div>
 
-<div class="field">
-<label>NEX</label>
-<input id="nex" type="number">
-</div>
-
-<!-- PERÍCIAS -->
 <h3>Perícias</h3>
 <div class="field">
-<label>Lista de Perícias</label>
 <textarea id="pericias"></textarea>
 </div>
 
-<!-- HABILIDADES -->
 <h3>Habilidades</h3>
 
 <div class="field">
-<label>Texto</label>
 <textarea id="hab_texto"></textarea>
 </div>
 
-<!-- NOVO SISTEMA (TEXTOS) -->
 <h3>Defesas e Proficiências</h3>
 
 <div class="field">
@@ -148,19 +147,16 @@ label {
 <h3>Rituais</h3>
 
 <div class="field">
-<label>Rituais</label>
 <textarea id="rituais"></textarea>
 </div>
 
 <h3>Outros</h3>
 
 <div class="field">
-<label>Descrição</label>
 <textarea id="descricao"></textarea>
 </div>
 
 <div class="field">
-<label>Equipamentos</label>
 <textarea id="equipamentos"></textarea>
 </div>
 
@@ -188,25 +184,27 @@ const nome = document.getElementById("nome");
 const origem = document.getElementById("origem");
 const classe = document.getElementById("classe");
 
+const hp_atual = document.getElementById("hp_atual");
+const hp_max = document.getElementById("hp_max");
+const defesa = document.getElementById("defesa");
+
+const bloqueio = document.getElementById("bloqueio");
+const esquiva = document.getElementById("esquiva");
+const nivel = document.getElementById("nivel");
+const nex = document.getElementById("nex");
+
 const agi = document.getElementById("agi");
 const forca = document.getElementById("for");
 const int = document.getElementById("int");
 const vig = document.getElementById("vig");
 const pre = document.getElementById("pre");
-const nivel = document.getElementById("nivel");
-const nex = document.getElementById("nex");
-
-const hp_atual = document.getElementById("hp_atual");
-const hp_max = document.getElementById("hp_max");
-const defesa = document.getElementById("defesa");
+const deslocamento = document.getElementById("deslocamento");
 
 const pericias = document.getElementById("pericias");
-
 const hab_texto = document.getElementById("hab_texto");
 const hab_protecao = document.getElementById("hab_protecao");
 const hab_resistencias = document.getElementById("hab_resistencias");
 const hab_proficiencias = document.getElementById("hab_proficiencias");
-
 const rituais = document.getElementById("rituais");
 const descricao = document.getElementById("descricao");
 const equipamentos = document.getElementById("equipamentos");
@@ -228,17 +226,21 @@ async function carregar() {
     origem.value = i.origem || "";
     classe.value = i.classe || "";
 
+    hp_max.value = c.hp_max || 0;
+    hp_atual.value = c.hp_atual || 0;
+    defesa.value = c.defesa || 0;
+
+    bloqueio.value = c.bloqueio || 0;
+    esquiva.value = c.esquiva || 0;
+    nivel.value = c.nivel || 0;
+    nex.value = c.nex || 0;
+
     agi.value = a.agi || 0;
     forca.value = a.for || 0;
     int.value = a.int || 0;
     vig.value = a.vig || 0;
     pre.value = a.pre || 0;
-    nivel.value = a.nivel || 0;
-    nex.value = a.nex || 0;
-
-    hp_max.value = c.hp_max || 0;
-    hp_atual.value = c.hp_atual || 0;
-    defesa.value = c.defesa || 0;
+    deslocamento.value = a.deslocamento || 0;
 
     pericias.value = p.pericias || "";
 
@@ -261,48 +263,40 @@ function salvar() {
     const data = {
         tipo: "ordem",
         dados: {
-            info: {
-                nome: nome.value,
-                origem: origem.value,
-                classe: classe.value
-            },
+            info: { nome: nome.value, origem: origem.value, classe: classe.value },
             atributos: {
                 agi: +agi.value || 0,
                 for: +forca.value || 0,
                 int: +int.value || 0,
                 vig: +vig.value || 0,
                 pre: +pre.value || 0,
-                nivel: +nivel.value || 0,
-                nex: +nex.value || 0
+                deslocamento: +deslocamento.value || 0
             },
             combate: {
                 hp_max: +hp_max.value || 0,
                 hp_atual: +hp_atual.value || 0,
-                defesa: +defesa.value || 0
+                defesa: +defesa.value || 0,
+                bloqueio: +bloqueio.value || 0,
+                esquiva: +esquiva.value || 0,
+                nivel: +nivel.value || 0,
+                nex: +nex.value || 0
             }
         },
-
         pericias: pericias.value || "",
-
         habilidades: hab_texto.value || "",
         hab_protecao: hab_protecao.value || "",
         hab_resistencias: hab_resistencias.value || "",
         hab_proficiencias: hab_proficiencias.value || "",
-
         rituais: rituais.value || "",
         descricao: descricao.value || "",
         equipamentos: equipamentos.value || ""
     };
 
-    set(ref(db, "personagens/" + id), data)
-        .then(() => console.log("Salvo"))
-        .catch(err => console.error("Erro ao salvar:", err));
+    set(ref(db, "personagens/" + id), data);
 }
 
 /* AUTO SAVE */
-setInterval(() => {
-    salvar();
-}, 5000);
+setInterval(() => salvar(), 5000);
 
 /* INIT */
 window.onload = carregar;
