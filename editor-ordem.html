@@ -112,13 +112,14 @@ label {
 <input id="nex" type="number">
 </div>
 
-<!-- PERÍCIAS CORRIGIDO -->
+<!-- PERÍCIAS -->
 <h3>Perícias</h3>
 <div class="field">
 <label>Lista de Perícias</label>
 <textarea id="pericias"></textarea>
 </div>
 
+<!-- HABILIDADES -->
 <h3>Habilidades</h3>
 
 <div class="field">
@@ -126,10 +127,22 @@ label {
 <textarea id="hab_texto"></textarea>
 </div>
 
-<div class="grid">
-<div class="field"><label>Proteção</label><input id="hab_protecao" type="number"></div>
-<div class="field"><label>Resistências</label><input id="hab_resistencias" type="number"></div>
-<div class="field"><label>Proficiências</label><input id="hab_proficiencias" type="number"></div>
+<!-- NOVO SISTEMA (TEXTOS) -->
+<h3>Defesas e Proficiências</h3>
+
+<div class="field">
+<label>Proteção</label>
+<textarea id="hab_protecao"></textarea>
+</div>
+
+<div class="field">
+<label>Resistências</label>
+<textarea id="hab_resistencias"></textarea>
+</div>
+
+<div class="field">
+<label>Proficiências</label>
+<textarea id="hab_proficiencias"></textarea>
 </div>
 
 <h3>Rituais</h3>
@@ -190,7 +203,13 @@ const defesa = document.getElementById("defesa");
 const pericias = document.getElementById("pericias");
 
 const hab_texto = document.getElementById("hab_texto");
+const hab_protecao = document.getElementById("hab_protecao");
+const hab_resistencias = document.getElementById("hab_resistencias");
+const hab_proficiencias = document.getElementById("hab_proficiencias");
+
 const rituais = document.getElementById("rituais");
+const descricao = document.getElementById("descricao");
+const equipamentos = document.getElementById("equipamentos");
 
 /* LOAD */
 async function carregar() {
@@ -224,7 +243,13 @@ async function carregar() {
     pericias.value = p.pericias || "";
 
     hab_texto.value = p.habilidades || "";
+    hab_protecao.value = p.hab_protecao || "";
+    hab_resistencias.value = p.hab_resistencias || "";
+    hab_proficiencias.value = p.hab_proficiencias || "";
+
     rituais.value = p.rituais || "";
+    descricao.value = p.descricao || "";
+    equipamentos.value = p.equipamentos || "";
 
     carregando = false;
 }
@@ -256,9 +281,17 @@ function salvar() {
                 defesa: +defesa.value || 0
             }
         },
+
         pericias: pericias.value || "",
+
         habilidades: hab_texto.value || "",
-        rituais: rituais.value || ""
+        hab_protecao: hab_protecao.value || "",
+        hab_resistencias: hab_resistencias.value || "",
+        hab_proficiencias: hab_proficiencias.value || "",
+
+        rituais: rituais.value || "",
+        descricao: descricao.value || "",
+        equipamentos: equipamentos.value || ""
     };
 
     set(ref(db, "personagens/" + id), data)
