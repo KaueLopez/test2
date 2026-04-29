@@ -1,3 +1,5 @@
+overlayordem
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,60 +9,27 @@
 body {
     margin: 0;
     background: transparent;
-    font-family: "Times New Roman", Times, serif;
+    font-family: Arial;
 }
 
-/* CONTAINER */
 .overlay {
     position: absolute;
     bottom: 30px;
     left: 30px;
+    color: white;
+    text-shadow: 1px 1px 3px black;
 }
 
-/* NOME (NEON VERMELHO FORTE) */
 .nome {
     font-size: 28px;
     font-weight: bold;
     margin-bottom: 6px;
-
-    color: #ff1a1a;
-    text-shadow:
-        0 0 5px #ff1a1a,
-        0 0 10px #ff1a1a,
-        0 0 20px #ff1a1a,
-        0 0 40px #ff1a1a;
-
-    animation: pulseRed 2s infinite;
 }
 
-/* STATUS (HP) */
 .stat {
     font-size: 18px;
-
-    color: #ffffff;
-    text-shadow:
-        0 0 3px #ff1a1a,
-        0 0 8px #ff1a1a;
-}
-
-/* ANIMAÇÃO PULSO */
-@keyframes pulseRed {
-    0%, 100% {
-        text-shadow:
-            0 0 5px #ff1a1a,
-            0 0 10px #ff1a1a,
-            0 0 20px #ff1a1a;
-    }
-
-    50% {
-        text-shadow:
-            0 0 2px #ff1a1a,
-            0 0 6px #ff1a1a,
-            0 0 12px #ff1a1a;
-    }
 }
 </style>
-
 </head>
 
 <body>
@@ -85,14 +54,14 @@ const db = getDatabase(app);
 
 const id = new URLSearchParams(location.search).get("id");
 
+if (!id) {
+    console.error("ID não encontrado na URL");
+}
+
 const nomeEl = document.getElementById("nome");
 const hpEl = document.getElementById("hp");
 
-if (!id) {
-    nomeEl.textContent = "ID não encontrado";
-}
-
-/* LIVE SYNC */
+/* LIVE UPDATE */
 onValue(ref(db, "personagens/" + id), (snap) => {
     const p = snap.val();
     if (!p || !p.dados) return;
@@ -103,6 +72,7 @@ onValue(ref(db, "personagens/" + id), (snap) => {
     nomeEl.textContent = info.nome || "Sem nome";
     hpEl.textContent = `HP: ${c.hp_atual ?? 0} / ${c.hp_max ?? 0}`;
 });
+
 </script>
 
 </body>
