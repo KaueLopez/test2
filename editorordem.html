@@ -19,7 +19,6 @@ h2 {
     margin: 10px 0;
 }
 
-/* TABS */
 .tabs {
     display: flex;
     background: #222;
@@ -33,13 +32,11 @@ h2 {
     color: white;
 }
 
-/* CONTEÚDO */
 .tab {
     display: none;
     padding: 12px;
 }
 
-/* INPUTS */
 input, textarea {
     width: 100%;
     padding: 12px;
@@ -57,18 +54,23 @@ textarea {
     text-align: left;
 }
 
-/* GRID */
 .grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    margin-bottom: 15px;
 }
 
 .grid3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
+}
+
+.block {
+    background: #1a1a1a;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
 }
 
 .cell {
@@ -78,13 +80,6 @@ textarea {
 .label {
     font-size: 12px;
     opacity: 0.7;
-}
-
-.block {
-    background: #1a1a1a;
-    padding: 10px;
-    border-radius: 10px;
-    margin-bottom: 10px;
 }
 </style>
 </head>
@@ -113,28 +108,16 @@ textarea {
 <div class="block">
 <h3>HP</h3>
 <div class="grid">
-    <div class="cell">
-        <input id="hp_atual" type="number">
-        <div class="label">Atual</div>
-    </div>
-    <div class="cell">
-        <input id="hp_max" type="number">
-        <div class="label">Máx</div>
-    </div>
+    <div class="cell"><input id="hp_atual" type="number"><div class="label">Atual</div></div>
+    <div class="cell"><input id="hp_max" type="number"><div class="label">Máx</div></div>
 </div>
 </div>
 
 <div class="block">
 <h3>Sanidade</h3>
 <div class="grid">
-    <div class="cell">
-        <input id="san_atual" type="number">
-        <div class="label">Atual</div>
-    </div>
-    <div class="cell">
-        <input id="san_max" type="number">
-        <div class="label">Máx</div>
-    </div>
+    <div class="cell"><input id="san_atual" type="number"><div class="label">Atual</div></div>
+    <div class="cell"><input id="san_max" type="number"><div class="label">Máx</div></div>
 </div>
 </div>
 
@@ -142,43 +125,24 @@ textarea {
 <h3>PE / PD</h3>
 
 <div class="grid">
-    <div class="cell">
-        <input id="pe_atual" type="number">
-        <div class="label">PE Atual</div>
-    </div>
-    <div class="cell">
-        <input id="pe_max" type="number">
-        <div class="label">PE Máx</div>
-    </div>
+    <div class="cell"><input id="pe_atual" type="number"><div class="label">PE Atual</div></div>
+    <div class="cell"><input id="pe_max" type="number"><div class="label">PE Máx</div></div>
 </div>
 
 <div class="grid">
-    <div class="cell">
-        <input id="pe_turno" type="number">
-        <div class="label">PE/Turno</div>
-    </div>
+    <div class="cell"><input id="pe_turno" type="number"><div class="label">PE Turno</div></div>
 </div>
 
 <div class="grid">
-    <div class="cell">
-        <input id="pd_atual" type="number">
-        <div class="label">PD Atual</div>
-    </div>
-    <div class="cell">
-        <input id="pd_max" type="number">
-        <div class="label">PD Máx</div>
-    </div>
+    <div class="cell"><input id="pd_atual" type="number"><div class="label">PD Atual</div></div>
+    <div class="cell"><input id="pd_max" type="number"><div class="label">PD Máx</div></div>
 </div>
 
 <div class="grid">
-    <div class="cell">
-        <input id="pd_turno" type="number">
-        <div class="label">PD/Turno</div>
-    </div>
+    <div class="cell"><input id="pd_turno" type="number"><div class="label">PD Turno</div></div>
 </div>
 </div>
 
-<!-- 🔥 Atributos AGORA AQUI -->
 <div class="block">
 <h3>Atributos</h3>
 <div class="grid3">
@@ -191,7 +155,6 @@ textarea {
 </div>
 </div>
 
-<!-- 🔥 Armas AGORA AQUI -->
 <div class="block">
 <h3>Armas</h3>
 <input id="arma1" placeholder="Arma 1">
@@ -209,13 +172,137 @@ textarea {
     <textarea id="equipamentos" placeholder="Equipamentos"></textarea>
 </div>
 
-<!-- TAB SCRIPT -->
+<!-- TAB -->
 <script>
-window.showTab = function(id) {
+window.showTab = function(id){
     document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
     document.getElementById(id).style.display = "block";
 };
 window.onload = ()=> showTab("info");
+</script>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
+  authDomain: "fichasrpg-45934.firebaseapp.com",
+  databaseURL: "https://fichasrpg-45934-default-rtdb.firebaseio.com"
+});
+
+const db = getDatabase(app);
+const id = new URLSearchParams(location.search).get("id");
+
+const $ = (id) => document.getElementById(id);
+
+let carregando = true;
+
+/* LOAD */
+onValue(ref(db,"personagens/"+id), (snap)=>{
+
+    if(!snap.exists()) return;
+
+    const p = snap.val();
+    const i = p.dados?.info || {};
+    const c = p.dados?.combate || {};
+    const a = p.dados?.atributos || {};
+    const e = p.extras || {};
+
+    $("nome").value=i.nome||"";
+    $("classe").value=i.classe||"";
+    $("origem").value=i.origem||"";
+    $("descricao").value=e.descricao||"";
+
+    $("hp_atual").value=c.hp_atual||0;
+    $("hp_max").value=c.hp_max||0;
+
+    $("san_atual").value=c.sanidade_atual||0;
+    $("san_max").value=c.sanidade_max||0;
+
+    $("pe_atual").value=c.pe_atual||0;
+    $("pe_max").value=c.pe_max||0;
+    $("pe_turno").value=c.pe_turno||0;
+
+    $("pd_atual").value=c.pd_atual||0;
+    $("pd_max").value=c.pd_max||0;
+    $("pd_turno").value=c.pd_turno||0;
+
+    $("for").value=a.for||0;
+    $("agi").value=a.agi||0;
+    $("int").value=a.int||0;
+    $("vig").value=a.vig||0;
+    $("pre").value=a.pre||0;
+    $("desl").value=a.desl||0;
+
+    $("arma1").value=c.arma1||"";
+    $("arma2").value=c.arma2||"";
+    $("arma3").value=c.arma3||"";
+
+    $("pericias").value=e.pericias||"";
+    $("habilidades").value=e.habilidades||"";
+    $("rituais").value=e.rituais||"";
+    $("equipamentos").value=e.equipamentos||"";
+
+    carregando=false;
+});
+
+/* SAVE */
+function bind(idField, path, key){
+    $(idField).addEventListener("input", async ()=>{
+
+        if(carregando) return;
+
+        const value = $(idField).value;
+        const parsed = isNaN(value) ? value : +value;
+
+        const obj = {};
+        obj[key] = parsed;
+
+        await update(ref(db,"personagens/"+id+"/"+path), obj);
+    });
+}
+
+/* INFO */
+bind("nome","dados/info","nome");
+bind("classe","dados/info","classe");
+bind("origem","dados/info","origem");
+
+/* COMBATE */
+bind("hp_atual","dados/combate","hp_atual");
+bind("hp_max","dados/combate","hp_max");
+
+bind("san_atual","dados/combate","sanidade_atual");
+bind("san_max","dados/combate","sanidade_max");
+
+bind("pe_atual","dados/combate","pe_atual");
+bind("pe_max","dados/combate","pe_max");
+bind("pe_turno","dados/combate","pe_turno");
+
+bind("pd_atual","dados/combate","pd_atual");
+bind("pd_max","dados/combate","pd_max");
+bind("pd_turno","dados/combate","pd_turno");
+
+/* ATRIBUTOS */
+bind("for","dados/atributos","for");
+bind("agi","dados/atributos","agi");
+bind("int","dados/atributos","int");
+bind("vig","dados/atributos","vig");
+bind("pre","dados/atributos","pre");
+bind("desl","dados/atributos","desl");
+
+/* ARMAS */
+bind("arma1","dados/combate","arma1");
+bind("arma2","dados/combate","arma2");
+bind("arma3","dados/combate","arma3");
+
+/* EXTRAS */
+bind("pericias","extras","pericias");
+bind("habilidades","extras","habilidades");
+bind("rituais","extras","rituais");
+bind("equipamentos","extras","equipamentos");
+bind("descricao","extras","descricao");
 </script>
 
 </body>
