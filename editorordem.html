@@ -213,67 +213,77 @@ history.replaceState({}, "", "?id=" + id);
 
 let carregando = true;
 
+/* helper seguro */
 const $ = (id) => document.getElementById(id);
 
-/* TAB SYSTEM */
+/* TAB */
 function showTab(tab) {
     document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
-    $(tab).style.display = "block";
+    const el = $(tab);
+    if (el) el.style.display = "block";
 }
 window.showTab = showTab;
 
 /* LOAD */
 async function load() {
-    const snap = await get(child(ref(db), "personagens/" + id));
+    try {
+        const snap = await get(child(ref(db), "personagens/" + id));
 
-    if (!snap.exists()) {
+        if (!snap.exists()) {
+            carregando = false;
+            showTab("info");
+            return;
+        }
+
+        const p = snap.val();
+
+        const i = p.dados?.info || {};
+        const a = p.dados?.atributos || {};
+        const c = p.dados?.combate || {};
+        const e = p.extras || {};
+
+        $("nome").value = i.nome || "";
+        $("classe").value = i.classe || "";
+        $("origem").value = i.origem || "";
+
+        $("hp_atual").value = c.hp_atual || 0;
+        $("hp_max").value = c.hp_max || 0;
+
+        $("san_atual").value = c.sanidade_atual || 0;
+        $("san_max").value = c.sanidade_max || 0;
+
+        $("pe_atual").value = c.pe_atual || 0;
+        $("pe_max").value = c.pe_max || 0;
+        $("pd_turno").value = c.pd_turno || 0;
+
+        $("defesa").value = c.defesa || 0;
+        $("bloqueio").value = c.bloqueio || 0;
+        $("esquiva").value = c.esquiva || 0;
+
+        $("arma1").value = c.arma1 || "";
+        $("arma2").value = c.arma2 || "";
+        $("arma3").value = c.arma3 || "";
+
+        // ⚠️ FIX CRÍTICO: NÃO usar "for"
+        $("for").value = a.for || 0;
+        $("agi").value = a.agi || 0;
+        $("int").value = a.int || 0;
+        $("vig").value = a.vig || 0;
+        $("pre").value = a.pre || 0;
+        $("desl").value = a.deslocamento || 0;
+
+        $("pericias").value = e.pericias || "";
+        $("habilidades").value = e.habilidades || "";
+        $("rituais").value = e.rituais || "";
+        $("equipamentos").value = e.equipamentos || "";
+        $("descricao").value = e.descricao || "";
+
         carregando = false;
-        return;
+
+    } catch (err) {
+        console.error("Erro load:", err);
+        carregando = false;
     }
-
-    const p = snap.val();
-
-    const i = p.dados?.info || {};
-    const a = p.dados?.atributos || {};
-    const c = p.dados?.combate || {};
-    const e = p.extras || {};
-
-    $("nome").value = i.nome || "";
-    $("classe").value = i.classe || "";
-    $("origem").value = i.origem || "";
-
-    $("hp_atual").value = c.hp_atual || 0;
-    $("hp_max").value = c.hp_max || 0;
-
-    $("san_atual").value = c.sanidade_atual || 0;
-    $("san_max").value = c.sanidade_max || 0;
-
-    $("pe_atual").value = c.pe_atual || 0;
-    $("pe_max").value = c.pe_max || 0;
-    $("pd_turno").value = c.pd_turno || 0;
-
-    $("defesa").value = c.defesa || 0;
-    $("bloqueio").value = c.bloqueio || 0;
-    $("esquiva").value = c.esquiva || 0;
-
-    $("arma1").value = c.arma1 || "";
-    $("arma2").value = c.arma2 || "";
-    $("arma3").value = c.arma3 || "";
-
-    $("for").value = a.for || 0;
-    $("agi").value = a.agi || 0;
-    $("int").value = a.int || 0;
-    $("vig").value = a.vig || 0;
-    $("pre").value = a.pre || 0;
-    $("desl").value = a.deslocamento || 0;
-
-    $("pericias").value = e.pericias || "";
-    $("habilidades").value = e.habilidades || "";
-    $("rituais").value = e.rituais || "";
-    $("equipamentos").value = e.equipamentos || "";
-    $("descricao").value = e.descricao || "";
-
-    carregando = false;
 }
 
 /* SAVE */
@@ -320,16 +330,19 @@ async function save() {
         }
     };
 
-    await set(ref(db, "personagens/" + id), data);
-
-    $("status").innerText = "Salvo ✔";
-    setTimeout(() => $("status").innerText = "Salvando...", 1200);
+    try {
+        await set(ref(db, "personagens/" + id), data);
+        $("status").innerText = "Salvo ✔";
+        setTimeout(() => $("status").innerText = "Salvando...", 1200);
+    } catch (err) {
+        console.error("Erro save:", err);
+    }
 }
 
 /* AUTO SAVE */
 setInterval(save, 5000);
 
-/* INIT */
+/* START */
 window.onload = () => {
     showTab("info");
     load();
