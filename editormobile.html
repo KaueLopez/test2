@@ -64,7 +64,7 @@ textarea {
     border-radius: 50px;
 }
 
-/* GRID ATRIBUTOS */
+/* GRID */
 .grid2x3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -107,7 +107,6 @@ h3 {
 <div class="tabs">
     <button onclick="showTab('basico')">Básico</button>
     <button onclick="showTab('combate')">Combate</button>
-    <button onclick="showTab('atributos')">Atributos</button>
     <button onclick="showTab('extras')">Extras</button>
 </div>
 
@@ -118,13 +117,14 @@ h3 {
     <input id="social" placeholder="Posição Social">
 </div>
 
-<!-- COMBATE + ATRIBUTOS -->
+<!-- COMBATE (TUDO UNIFICADO) -->
 <div id="combate" class="tab">
 
 <h3>Combate</h3>
 
 <!-- HP PRIMEIRO -->
 <div class="grid2x3">
+
     <div class="cell">
         <input id="hp_atual" type="number">
         <div class="label">HP Atual</div>
@@ -134,6 +134,7 @@ h3 {
         <input id="hp_max" type="number">
         <div class="label">HP Máximo</div>
     </div>
+
 </div>
 
 <h3>Instintos</h3>
@@ -217,12 +218,11 @@ let idAtual = new URLSearchParams(window.location.search).get("id");
 let carregando = true;
 let timeout = null;
 
-// SALVAR
+/* SALVAR COMPLETO */
 function salvar() {
     if (!idAtual || carregando) return;
 
     set(ref(db, "personagens/" + idAtual), {
-        id: idAtual,
 
         nome: document.getElementById("nome").value || "",
         evento: document.getElementById("evento").value || "",
@@ -265,28 +265,13 @@ function salvar() {
     });
 }
 
-// AUTOSAVE DEBOUCE 5S
-function ativarAutosave() {
-    document.querySelectorAll("input, textarea").forEach(el => {
-        el.addEventListener("input", () => {
-            if (carregando) return;
-
-            clearTimeout(timeout);
-            timeout = setTimeout(() => {
-                salvar();
-            }, 5000);
-        });
-    });
-}
-
-// CARREGAR
+/* CARREGAR */
 function carregar() {
     if (!idAtual) return;
 
     get(child(ref(db), "personagens/" + idAtual)).then(snapshot => {
         if (!snapshot.exists()) {
             carregando = false;
-            ativarAutosave();
             return;
         }
 
@@ -324,11 +309,10 @@ function carregar() {
         document.getElementById("equipamentos").value = p.equipamentos || "";
 
         carregando = false;
-        ativarAutosave();
     });
 }
 
-// UI
+/* UI */
 function showTab(id) {
     document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
     document.getElementById(id).style.display = "block";
