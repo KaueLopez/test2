@@ -47,9 +47,7 @@ input, textarea {
     box-sizing: border-box;
 }
 
-textarea {
-    min-height: 80px;
-}
+textarea { min-height: 80px; }
 
 .grid {
     display: grid;
@@ -69,9 +67,7 @@ label {
 }
 
 @media (max-width: 768px) {
-    .grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    .grid { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 </head>
@@ -83,7 +79,6 @@ label {
 <div class="box">
 
 <h3>Informações</h3>
-
 <div class="field"><label>Nome</label><input id="nome"></div>
 <div class="field"><label>Origem</label><input id="origem"></div>
 <div class="field"><label>Classe</label><input id="classe"></div>
@@ -101,8 +96,8 @@ label {
 </div>
 
 <div class="grid">
-    <div class="field"><label>PD/PE Atual</label><input id="pe_atual" type="number"></div>
-    <div class="field"><label>PD/PE Máximo</label><input id="pe_max" type="number"></div>
+    <div class="field"><label>PE Atual</label><input id="pe_atual" type="number"></div>
+    <div class="field"><label>PE Máximo</label><input id="pe_max" type="number"></div>
     <div class="field"><label>PD por Turno</label><input id="pd_turno" type="number"></div>
 </div>
 
@@ -129,66 +124,42 @@ label {
 </div>
 
 <h3>Combate</h3>
-
-<div class="field">
-    <label>Arma 1</label>
-    <input id="arma1" type="text">
-</div>
-
-<div class="field">
-    <label>Arma 2</label>
-    <input id="arma2" type="text">
-</div>
-
-<div class="field">
-    <label>Arma 3</label>
-    <input id="arma3" type="text">
-</div>
+<div class="field"><label>Arma 1</label><input id="arma1"></div>
+<div class="field"><label>Arma 2</label><input id="arma2"></div>
+<div class="field"><label>Arma 3</label><input id="arma3"></div>
 
 <h3>Perícias</h3>
-<div class="field">
-    <textarea id="pericias"></textarea>
-</div>
+<textarea id="pericias"></textarea>
 
 <h3>Habilidades</h3>
-<div class="field">
-    <textarea id="hab_texto"></textarea>
-</div>
-
-<h3>Defesas / Extras</h3>
-
-<div class="field"><label>Proteção</label><textarea id="hab_protecao"></textarea></div>
-<div class="field"><label>Resistências</label><textarea id="hab_resistencias"></textarea></div>
-<div class="field"><label>Proficiências</label><textarea id="hab_proficiencias"></textarea></div>
+<textarea id="habilidades"></textarea>
 
 <h3>Rituais</h3>
-<div class="field"><textarea id="rituais"></textarea></div>
+<textarea id="rituais"></textarea>
 
-<h3>Outros</h3>
-<div class="field"><textarea id="descricao"></textarea></div>
-<div class="field"><textarea id="equipamentos"></textarea></div>
-    
-<h3>Configurações</h3>
+<h3>Equipamentos</h3>
+<textarea id="equipamentos"></textarea>
 
-<label style="display:block;margin-bottom:10px;">
-    <input id="modoPD" type="checkbox">
-    Usar modo PD (oculta Sanidade e usa PD)
-</label>
+<h3>Descrição</h3>
+<textarea id="descricao"></textarea>
+
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-const app = initializeApp({
+/* 🔥 FIREBASE ÚNICO (SEM CONFLITO) */
+const firebaseConfig = {
   apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
   authDomain: "fichasrpg-45934.firebaseapp.com",
   databaseURL: "https://fichasrpg-45934-default-rtdb.firebaseio.com"
-});
+};
 
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const db = getDatabase(app);
-const id = new URLSearchParams(location.search).get("id");
 
+const id = new URLSearchParams(location.search).get("id");
 let carregando = true;
 
 const $ = (id) => document.getElementById(id);
@@ -217,8 +188,8 @@ async function carregar() {
     $("hp_atual").value = c.hp_atual || 0;
     $("hp_max").value = c.hp_max || 0;
 
-    $("san_atual").value = c.sanidade_atual || 0;
-    $("san_max").value = c.sanidade_max || 0;
+    $("sanidade_atual").value = c.sanidade_atual || 0;
+    $("sanidade_max").value = c.sanidade_max || 0;
 
     $("pe_atual").value = c.pe_atual || 0;
     $("pe_max").value = c.pe_max || 0;
@@ -228,21 +199,25 @@ async function carregar() {
     $("bloqueio").value = c.bloqueio || 0;
     $("esquiva").value = c.esquiva || 0;
 
+    $("nivel").value = c.nivel || 0;
+    $("nex").value = c.nex || 0;
+
     $("for").value = a.for || 0;
     $("agi").value = a.agi || 0;
     $("int").value = a.int || 0;
     $("vig").value = a.vig || 0;
     $("pre").value = a.pre || 0;
-    $("desl").value = a.deslocamento || 0;
+    $("deslocamento").value = a.deslocamento || 0;
+
+    $("arma1").value = c.arma1 || "";
+    $("arma2").value = c.arma2 || "";
+    $("arma3").value = c.arma3 || "";
 
     $("pericias").value = e.pericias || "";
     $("habilidades").value = e.habilidades || "";
     $("rituais").value = e.rituais || "";
     $("equipamentos").value = e.equipamentos || "";
     $("descricao").value = e.descricao || "";
-
-    // 🔥 CONFIG NOVA
-    $("modoPD").checked = p.config?.modoPD || false;
 
     carregando = false;
 }
@@ -264,33 +239,32 @@ async function salvar() {
                 int: +$("int").value || 0,
                 vig: +$("vig").value || 0,
                 pre: +$("pre").value || 0,
-                deslocamento: +$("desl").value || 0
+                deslocamento: +$("deslocamento").value || 0
             },
             combate: {
                 hp_atual: +$("hp_atual").value || 0,
                 hp_max: +$("hp_max").value || 0,
-                sanidade_atual: +$("san_atual").value || 0,
-                sanidade_max: +$("san_max").value || 0,
+                sanidade_atual: +$("sanidade_atual").value || 0,
+                sanidade_max: +$("sanidade_max").value || 0,
                 pe_atual: +$("pe_atual").value || 0,
                 pe_max: +$("pe_max").value || 0,
                 pd_turno: +$("pd_turno").value || 0,
                 defesa: +$("defesa").value || 0,
                 bloqueio: +$("bloqueio").value || 0,
-                esquiva: +$("esquiva").value || 0
+                esquiva: +$("esquiva").value || 0,
+                nivel: +$("nivel").value || 0,
+                nex: +$("nex").value || 0,
+                arma1: $("arma1").value || "",
+                arma2: $("arma2").value || "",
+                arma3: $("arma3").value || ""
             }
         },
-
         extras: {
             pericias: $("pericias").value || "",
             habilidades: $("habilidades").value || "",
             rituais: $("rituais").value || "",
             equipamentos: $("equipamentos").value || "",
             descricao: $("descricao").value || ""
-        },
-
-        // 🔥 CONFIG SALVA AQUI
-        config: {
-            modoPD: $("modoPD").checked
         }
     };
 
