@@ -33,16 +33,6 @@ body {
         0 0 12px #ff1a1a,
         0 0 20px #ff1a1a;
 }
-
-/* HP */
-.stat {
-    font-size: 28px;
-
-    color: #9B111E;
-    text-shadow:
-        0 0 12px #960018,
-        0 0 24px #960018;
-}
 </style>
 </head>
 
@@ -50,7 +40,6 @@ body {
 
 <div class="overlay">
     <div class="nome" id="nome">Carregando...</div>
-    <div class="stat" id="hp">0 / 0</div>
 </div>
 
 <script type="module">
@@ -75,7 +64,7 @@ if (!id) {
     console.error("ID não encontrado na URL");
 }
 
-/* ELEMENTOS */
+/* ELEMENTO */
 const nomeEl = document.getElementById("nome");
 
 /* FIREBASE */
@@ -87,14 +76,9 @@ onValue(ref(db, "personagens/" + id), (snap) => {
     if (!p || !p.dados) return;
 
     const info = p.dados.info || {};
-    const c = p.dados.combate || {};
 
     nomeEl.textContent = info.nome || "Sem nome";
 
-    const hpAtual = c.hp_atual ?? 0;
-    
-
-    
 });
 </script>
 
