@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    margin: 0;
+    background: transparent;
+    font-family: Arial;
+}
+
+/* CONTAINER */
+.overlay {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    color: white;
+    text-shadow: 1px 1px 3px black;
+}
+
+/* NOME */
+.nome {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* HP */
+.hp {
+    font-size: 18px;
+    margin-top: 5px;
+}
+
+/* ANIMAÇÃO */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+.pulse {
+    animation: pulse 0.3s ease;
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay">
+    <div class="nome" id="nome">Carregando...</div>
+    <div class="hp" id="hp">HP: 0 / 0</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
+  authDomain: "fichasrpg-45934.firebaseapp.com",
+  databaseURL: "https://fichasrpg-45934-default-rtdb.firebaseio.com"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const id = new URLSearchParams(window.location.search).get("id");
+
+const nomeEl = document.getElementById("nome");
+const hpEl = document.getElementById("hp");
+
+function anim(el) {
+    el.classList.remove("pulse");
+    void el.offsetWidth;
+    el.classList.add("pulse");
+}
+
+onValue(ref(db, "personagens/" + id), (snap) => {
+    const p = snap.val();
+    if (!p) return;
+
+    const info = p.dados?.info || {};
+    const combate = p.dados?.combate || {};
+
+    const nome = info.nome || "Sem nome";
+
+    const hpAtual = Number(combate.hp_atual || 0);
+    const hpMax = Number(combate.hp_max || 0);
+
+    if (nomeEl.textContent !== nome) {
+        nomeEl.textContent = nome;
+        anim(nomeEl);
+    }
+
+    const hpTexto = `HP: ${hpAtual} / ${hpMax}`;
+
+    if (hpEl.textContent !== hpTexto) {
+        hpEl.textContent = hpTexto;
+        anim(hpEl);
+    }
+});
+</script>
+
+</body>
+</html>
