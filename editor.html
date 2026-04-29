@@ -22,7 +22,8 @@ button {
     padding: 10px;
     margin-top: 10px;
 }
-    .grid2x3 {
+
+.grid2x3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
@@ -46,29 +47,25 @@ button {
 
 <h2>Editor de Ficha</h2>
 
-<div class="box" id="ficha">
+<div class="box">
 
 <input id="nome" placeholder="Nome">
 <textarea id="evento" placeholder="Evento Marcante"></textarea>
 <input id="social" placeholder="Posição Social">
 
 <h3>Saúde (HP)</h3>
-
 <div class="grid2x3">
     <input id="hp_atual" type="number">
     <input id="hp_max" type="number">
-
     <div>HP Atual</div>
     <div>HP Máximo</div>
 </div>
-    
-<h3>Instintos</h3>
 
+<h3>Instintos</h3>
 <div class="grid2x3">
     <input id="reacao" type="number">
     <input id="percepcao" type="number">
     <input id="sagacidade" type="number">
-
     <div>Reação</div>
     <div>Percepção</div>
     <div>Sagacidade</div>
@@ -78,19 +75,16 @@ button {
     <input id="potencia" type="number">
     <input id="influencia" type="number">
     <input id="resolucao" type="number">
-
     <div>Potência</div>
     <div>Influência</div>
     <div>Resolução</div>
 </div>
-    
-<h3>Conhecimentos</h3>
 
+<h3>Conhecimentos</h3>
 <div class="grid2x3">
     <input id="agrario" type="number">
     <input id="biologico" type="number">
     <input id="exato" type="number">
-
     <div>Agrário</div>
     <div>Biológico</div>
     <div>Exato</div>
@@ -98,21 +92,18 @@ button {
 
 <div class="grid2x3">
     <input id="medicina" type="number">
-    <input id="social" type="number">
+    <input id="social2" type="number">
     <input id="artistico" type="number">
-
     <div>Medicina</div>
     <div>Social</div>
     <div>Artístico</div>
 </div>
-    
-<h3>Práticas</h3>
 
+<h3>Práticas</h3>
 <div class="grid2x3">
     <input id="esportivas" type="number">
     <input id="ferramentas" type="number">
     <input id="oficios" type="number">
-
     <div>Esportivas</div>
     <div>Ferramentas</div>
     <div>Ofícios</div>
@@ -122,12 +113,11 @@ button {
     <input id="armas" type="number">
     <input id="veiculos" type="number">
     <input id="infiltracao" type="number">
-
     <div>Armas</div>
     <div>Veículos</div>
     <div>Infiltração</div>
 </div>
-    
+
 <h3>Características</h3>
 <textarea id="caracteristicas"></textarea>
 
@@ -135,8 +125,6 @@ button {
 <textarea id="equipamentos"></textarea>
 
 </div>
-
-<button onclick="exportar()">🖼 Exportar PNG</button>
 
 <!-- FIREBASE -->
 <script type="module">
@@ -163,17 +151,14 @@ window.get = get;
 window.child = child;
 </script>
 
-<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-
 <script>
-
 let idAtual = new URLSearchParams(window.location.search).get("id");
 
-let dbRef;
+let carregando = true;
 
-// 🔥 SALVAR (ÚNICA FUNÇÃO)
+// 🔥 SALVAR
 function salvar() {
-    if (!idAtual) return;
+    if (!idAtual || carregando) return;
 
     set(ref(db, "personagens/" + idAtual), {
         id: idAtual,
@@ -200,7 +185,7 @@ function salvar() {
             biologico: Number(document.getElementById("biologico").value) || 0,
             exato: Number(document.getElementById("exato").value) || 0,
             medicina: Number(document.getElementById("medicina").value) || 0,
-            social: Number(document.getElementById("social").value) || 0,
+            social: Number(document.getElementById("social2").value) || 0,
             artistico: Number(document.getElementById("artistico").value) || 0
         },
 
@@ -218,13 +203,15 @@ function salvar() {
     });
 }
 
-
-// 📥 CARREGAR PERSONAGEM (AGORA EXISTE)
+// 📥 CARREGAR
 function carregar() {
     if (!idAtual) return;
 
     get(child(ref(db), "personagens/" + idAtual)).then(snapshot => {
-        if (!snapshot.exists()) return;
+        if (!snapshot.exists()) {
+            carregando = false;
+            return;
+        }
 
         const p = snapshot.val();
 
@@ -235,10 +222,6 @@ function carregar() {
         document.getElementById("hp_atual").value = p.saude?.hp_atual || "";
         document.getElementById("hp_max").value = p.saude?.hp_max || "";
 
-        document.getElementById("caracteristicas").value = p.caracteristicas || "";
-        document.getElementById("equipamentos").value = p.equipamentos || "";
-
-        // instintos
         document.getElementById("reacao").value = p.instintos?.reacao || "";
         document.getElementById("percepcao").value = p.instintos?.percepcao || "";
         document.getElementById("sagacidade").value = p.instintos?.sagacidade || "";
@@ -246,28 +229,32 @@ function carregar() {
         document.getElementById("influencia").value = p.instintos?.influencia || "";
         document.getElementById("resolucao").value = p.instintos?.resolucao || "";
 
-        // conhecimentos
         document.getElementById("agrario").value = p.conhecimentos?.agrario || "";
         document.getElementById("biologico").value = p.conhecimentos?.biologico || "";
         document.getElementById("exato").value = p.conhecimentos?.exato || "";
         document.getElementById("medicina").value = p.conhecimentos?.medicina || "";
-        document.getElementById("social").value = p.conhecimentos?.social || "";
+        document.getElementById("social2").value = p.conhecimentos?.social || "";
         document.getElementById("artistico").value = p.conhecimentos?.artistico || "";
 
-        // praticas
         document.getElementById("esportivas").value = p.praticas?.esportivas || "";
         document.getElementById("ferramentas").value = p.praticas?.ferramentas || "";
         document.getElementById("oficios").value = p.praticas?.oficios || "";
         document.getElementById("armas").value = p.praticas?.armas || "";
         document.getElementById("veiculos").value = p.praticas?.veiculos || "";
         document.getElementById("infiltracao").value = p.praticas?.infiltracao || "";
+
+        document.getElementById("caracteristicas").value = p.caracteristicas || "";
+        document.getElementById("equipamentos").value = p.equipamentos || "";
+
+        carregando = false;
     });
 }
 
-
-// 🔁 AUTOSAVE
+// 🔁 AUTOSAVE SEGURO
 document.querySelectorAll("input, textarea").forEach(el => {
     el.addEventListener("input", () => {
+        if (carregando) return;
+
         clearTimeout(window.t);
         window.t = setTimeout(salvar, 500);
     });
@@ -276,3 +263,6 @@ document.querySelectorAll("input, textarea").forEach(el => {
 window.onload = carregar;
 
 </script>
+
+</body>
+</html>
