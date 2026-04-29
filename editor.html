@@ -170,17 +170,20 @@ window.child = child;
 let idAtual = new URLSearchParams(window.location.search).get("id");
 
 // 📥 CARREGAR PERSONAGEM
-function carregar() {
-    get(child(ref(db), "personagens/" + idAtual)).then(snap => {
-        const p = snap.val();
+function salvar() {
+    set(ref(db, "personagens/" + idAtual), {
+        id: idAtual,
+        nome: document.getElementById("nome").value,
+        evento: document.getElementById("evento").value,
+        social: document.getElementById("social").value,
 
-        document.getElementById("nome").value = p.nome || "";
-        document.getElementById("evento").value = p.evento || "";
-        document.getElementById("social").value = p.social || "";
-        document.getElementById("caracteristicas").value = p.caracteristicas || "";
-        document.getElementById("equipamentos").value = p.equipamentos || "";
-        document.getElementById("hp_atual").value = p.saude?.hp_atual || "";
-        document.getElementById("hp_max").value = p.saude?.hp_max || "";
+        saude: {
+            hp_atual: document.getElementById("hp_atual").value,
+            hp_max: document.getElementById("hp_max").value
+        },
+
+        caracteristicas: document.getElementById("caracteristicas").value,
+        equipamentos: document.getElementById("equipamentos").value
     });
 }
 
