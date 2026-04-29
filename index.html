@@ -2,33 +2,48 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Painel RPG</title>
+<title>Gerenciador RPG</title>
 
 <style>
 body {
     font-family: Arial;
     margin: 20px;
+    background: #111;
+    color: white;
 }
 
 button {
     padding: 10px;
     margin-bottom: 10px;
+    cursor: pointer;
 }
 
 .card {
-    border: 1px solid #ccc;
+    border: 1px solid #333;
+    background: #1a1a1a;
     padding: 10px;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     cursor: pointer;
+    border-radius: 6px;
+}
+
+.card:hover {
+    background: #222;
+}
+
+small {
+    color: #aaa;
 }
 </style>
 </head>
 
 <body>
 
-<h2>Painel de Personagens</h2>
+<h2>Gerenciador de Personagens</h2>
 
-<button onclick="criarPersonagem()">➕ Criar Personagem</button>
+<!-- CRIAÇÃO -->
+<button onclick="criarPersonagem('assimilar')">➕ Criar Assimilação</button>
+<button onclick="criarPersonagem('ordem')">➕ Criar Ordem Paranormal</button>
 <button onclick="carregar()">🔄 Atualizar</button>
 
 <div id="lista"></div>
@@ -60,33 +75,58 @@ window.child = child;
 
 <script>
 
-// 🔢 CRIA ID NUMÉRICO SEQUENCIAL
-async function criarPersonagem() {
+async function criarPersonagem(sistema) {
 
     const contadorRef = ref(db, "contadorPersonagens");
     const snapshot = await get(contadorRef);
 
-    let id = 1;
+    let id = snapshot.exists() ? snapshot.val() + 1 : 1;
 
-    if (snapshot.exists()) {
-        id = snapshot.val() + 1;
-    }
-
-    // atualiza contador global
     await set(contadorRef, id);
 
-    // cria personagem
-    await set(ref(db, "personagens/" + id), {
-        id: id,
-        nome: "Novo Personagem",
-        evento: "",
-        social: ""
-    });
+    // 🔥 ASSIMILAÇÃO (modelo antigo)
+    if (sistema === "assimilar") {
+        await set(ref(db, "personagens/" + id), {
+            id: id,
+            tipo: "assimilar",
+            nome: "Novo Personagem",
+            evento: "",
+            social: ""
+        });
+    }
+
+    // 🔥 ORDEM PARANORMAL (modelo novo)
+    if (sistema === "ordem") {
+        await set(ref(db, "personagens/" + id), {
+            id: id,
+            tipo: "ordem",
+            dados: {
+                info: {
+                    nome: "",
+                    origem: "",
+                    classe: ""
+                },
+                atributos: {
+                    agi: 0,
+                    for: 0,
+                    int: 0,
+                    vig: 0,
+                    pre: 0,
+                    nivel: 0,
+                    nex: 0
+                },
+                combate: {
+                    hp_max: 0,
+                    hp_atual: 0,
+                    defesa: 0
+                }
+            }
+        });
+    }
 
     carregar();
 }
 
-// 📋 LISTA PERSONAGENS
 function carregar() {
     get(child(ref(db), "personagens")).then(snapshot => {
 
@@ -94,7 +134,7 @@ function carregar() {
         lista.innerHTML = "";
 
         if (!snapshot.exists()) {
-            lista.innerHTML = "<p>Sem personagens</p>";
+            lista.innerHTML = "<p>Nenhum personagem encontrado</p>";
             return;
         }
 
@@ -103,16 +143,31 @@ function carregar() {
         Object.keys(data).forEach(id => {
             const p = data[id];
 
+            const tipo = p.tipo || "desconhecido";
+
+            let sistema = "";
+
+            if (tipo === "assimilar") sistema = "Assimilação";
+            if (tipo === "ordem") sistema = "Ordem Paranormal";
+
             const div = document.createElement("div");
             div.className = "card";
 
             div.innerHTML = `
-                <strong>${p.nome}</strong><br>
-                ID: ${id}
+                <strong>${p.nome || "Sem nome"}</strong><br>
+                <small>ID: ${id}</small><br>
+                <small>Sistema: ${sistema}</small>
             `;
 
             div.onclick = () => {
-                window.location.href = "editor.html?id=" + id;
+
+                if (tipo === "ordem") {
+                    window.location.href = "editor-novo.html?id=" + id;
+                }
+
+                if (tipo === "assimilar") {
+                    window.location.href = "editor-antigo.html?id=" + id;
+                }
             };
 
             lista.appendChild(div);
