@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Ficha</title>
+<title>Editor RPG</title>
 
 <style>
 body {
@@ -48,7 +48,6 @@ h3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    margin-bottom: 15px;
 }
 
 .grid2x3 > div {
@@ -57,35 +56,36 @@ h3 {
     align-items: center;
 }
 
-.grid2x3 .label {
-    background: #3a3a3a;
-    color: #fff;
-    font-size: 12px;
-    padding: 4px 6px;
-    border-radius: 4px;
-    margin-top: 5px;
-    width: 100%;
-    text-align: center;
-}
-
 .grid2x3 input {
     text-align: center;
     font-weight: bold;
 }
 
+.label {
+    background: #3a3a3a;
+    color: #fff;
+    font-size: 12px;
+    padding: 4px;
+    border-radius: 4px;
+    width: 100%;
+    text-align: center;
+}
+
 #hp_atual, #hp_max {
     background: #ff2b2b;
     color: #000;
-    font-weight: bold;
 }
 </style>
 </head>
 
 <body>
 
-<h2>Ficha Assimilação RPG</h2>
+<h2 id="titulo">Editor de Personagem</h2>
 
 <div class="box">
+
+<!-- ===== ASSIMILAÇÃO ===== -->
+<div id="assimilar">
 
 <input id="nome" placeholder="Nome">
 <textarea id="evento" placeholder="Evento Marcante"></textarea>
@@ -144,9 +144,30 @@ h3 {
 
 <h3>Características</h3>
 <textarea id="caracteristicas"></textarea>
-
-<h3>Equipamentos</h3>
 <textarea id="equipamentos"></textarea>
+
+</div>
+
+<!-- ===== ORDEM PARANORMAL ===== -->
+<div id="ordem" style="display:none">
+
+<input id="o_nome" placeholder="Nome">
+<input id="o_origem" placeholder="Origem">
+<input id="o_classe" placeholder="Classe">
+
+<h3>Atributos</h3>
+<div class="grid2x3">
+<input id="agi" type="number"><div class="label">AGI</div>
+<input id="for" type="number"><div class="label">FOR</div>
+<input id="int" type="number"><div class="label">INT</div>
+<input id="vig" type="number"><div class="label">VIG</div>
+<input id="pre" type="number"><div class="label">PRE</div>
+<input id="nivel" type="number"><div class="label">NIVEL</div>
+</div>
+
+<input id="nex" type="number" placeholder="NEX">
+
+</div>
 
 </div>
 
@@ -168,117 +189,78 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-window.db = db;
-window.ref = ref;
-window.set = set;
-window.get = get;
-window.child = child;
-</script>
-
-<script>
-let idAtual = new URLSearchParams(window.location.search).get("id");
+let id = new URLSearchParams(window.location.search).get("id");
 let carregando = true;
-let timeout = null;
+let tipo = null;
+let timeout;
 
-/* SALVAR COMPLETO */
-function salvar() {
-    if (!idAtual || carregando) return;
-
-    set(ref(db, "personagens/" + idAtual), {
-
-        nome: document.getElementById("nome").value || "",
-        evento: document.getElementById("evento").value || "",
-        social: document.getElementById("social").value || "",
-
-        saude: {
-            hp_atual: Number(document.getElementById("hp_atual").value) || 0,
-            hp_max: Number(document.getElementById("hp_max").value) || 0
-        },
-
-        instintos: {
-            reacao: Number(document.getElementById("reacao").value) || 0,
-            percepcao: Number(document.getElementById("percepcao").value) || 0,
-            sagacidade: Number(document.getElementById("sagacidade").value) || 0,
-            potencia: Number(document.getElementById("potencia").value) || 0,
-            influencia: Number(document.getElementById("influencia").value) || 0,
-            resolucao: Number(document.getElementById("resolucao").value) || 0
-        },
-
-        conhecimentos: {
-            agrario: Number(document.getElementById("agrario").value) || 0,
-            biologico: Number(document.getElementById("biologico").value) || 0,
-            exato: Number(document.getElementById("exato").value) || 0,
-            medicina: Number(document.getElementById("medicina").value) || 0,
-            social: Number(document.getElementById("social2").value) || 0,
-            artistico: Number(document.getElementById("artistico").value) || 0
-        },
-
-        praticas: {
-            esportivas: Number(document.getElementById("esportivas").value) || 0,
-            ferramentas: Number(document.getElementById("ferramentas").value) || 0,
-            oficios: Number(document.getElementById("oficios").value) || 0,
-            armas: Number(document.getElementById("armas").value) || 0,
-            veiculos: Number(document.getElementById("veiculos").value) || 0,
-            infiltracao: Number(document.getElementById("infiltracao").value) || 0
-        },
-
-        caracteristicas: document.getElementById("caracteristicas").value || "",
-        equipamentos: document.getElementById("equipamentos").value || ""
-    });
-}
-
-/* CARREGAR COMPLETO */
+/* ===== CARREGAR ===== */
 function carregar() {
-    if (!idAtual) return;
+    if (!id) return;
 
-    get(child(ref(db), "personagens/" + idAtual)).then(snapshot => {
-        if (!snapshot.exists()) {
-            carregando = false;
-            return;
-        }
+    get(child(ref(db), "personagens/" + id)).then(snapshot => {
+        if (!snapshot.exists()) return;
 
         const p = snapshot.val();
+        tipo = p.tipo;
 
-        document.getElementById("nome").value = p.nome || "";
-        document.getElementById("evento").value = p.evento || "";
-        document.getElementById("social").value = p.social || "";
+        if (tipo === "assimilar") {
+            document.getElementById("assimilar").style.display = "block";
+            document.getElementById("ordem").style.display = "none";
 
-        document.getElementById("hp_atual").value = p.saude?.hp_atual || "";
-        document.getElementById("hp_max").value = p.saude?.hp_max || "";
+            document.getElementById("nome").value = p.nome || "";
+            document.getElementById("evento").value = p.evento || "";
+            document.getElementById("social").value = p.social || "";
+        }
 
-        document.getElementById("reacao").value = p.instintos?.reacao || "";
-        document.getElementById("percepcao").value = p.instintos?.percepcao || "";
-        document.getElementById("sagacidade").value = p.instintos?.sagacidade || "";
-        document.getElementById("potencia").value = p.instintos?.potencia || "";
-        document.getElementById("influencia").value = p.instintos?.influencia || "";
-        document.getElementById("resolucao").value = p.instintos?.resolucao || "";
+        if (tipo === "ordem") {
+            document.getElementById("assimilar").style.display = "none";
+            document.getElementById("ordem").style.display = "block";
 
-        document.getElementById("agrario").value = p.conhecimentos?.agrario || "";
-        document.getElementById("biologico").value = p.conhecimentos?.biologico || "";
-        document.getElementById("exato").value = p.conhecimentos?.exato || "";
-        document.getElementById("medicina").value = p.conhecimentos?.medicina || "";
-        document.getElementById("social2").value = p.conhecimentos?.social || "";
-        document.getElementById("artistico").value = p.conhecimentos?.artistico || "";
-
-        document.getElementById("esportivas").value = p.praticas?.esportivas || "";
-        document.getElementById("ferramentas").value = p.praticas?.ferramentas || "";
-        document.getElementById("oficios").value = p.praticas?.oficios || "";
-        document.getElementById("armas").value = p.praticas?.armas || "";
-        document.getElementById("veiculos").value = p.praticas?.veiculos || "";
-        document.getElementById("infiltracao").value = p.praticas?.infiltracao || "";
-
-        document.getElementById("caracteristicas").value = p.caracteristicas || "";
-        document.getElementById("equipamentos").value = p.equipamentos || "";
+            document.getElementById("o_nome").value = p.dados?.info?.nome || "";
+            document.getElementById("o_origem").value = p.dados?.info?.origem || "";
+            document.getElementById("o_classe").value = p.dados?.info?.classe || "";
+        }
 
         carregando = false;
     });
+}
+
+/* ===== SALVAR (SIMPLES E SEGURO) ===== */
+function salvar() {
+    if (!id || carregando) return;
+
+    let data = {};
+
+    if (tipo === "assimilar") {
+        data = {
+            tipo: "assimilar",
+            nome: document.getElementById("nome").value,
+            evento: document.getElementById("evento").value,
+            social: document.getElementById("social").value
+        };
+    }
+
+    if (tipo === "ordem") {
+        data = {
+            tipo: "ordem",
+            dados: {
+                info: {
+                    nome: document.getElementById("o_nome").value,
+                    origem: document.getElementById("o_origem").value,
+                    classe: document.getElementById("o_classe").value
+                }
+            }
+        };
+    }
+
+    set(ref(db, "personagens/" + id), data);
 }
 
 /* AUTOSAVE */
 document.querySelectorAll("input, textarea").forEach(el => {
     el.addEventListener("input", () => {
         if (carregando) return;
-
         clearTimeout(timeout);
         timeout = setTimeout(salvar, 500);
     });
