@@ -1,3 +1,8 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
 <style>
 body {
     margin: 0;
@@ -10,10 +15,9 @@ body {
     position: absolute;
     bottom: 30px;
     left: 30px;
-    color: #ffffff;
 }
 
-/* NOME COM NEON VERMELHO */
+/* NOME (NEON VERMELHO FORTE) */
 .nome {
     font-size: 28px;
     font-weight: bold;
@@ -25,9 +29,11 @@ body {
         0 0 10px #ff1a1a,
         0 0 20px #ff1a1a,
         0 0 40px #ff1a1a;
+
+    animation: pulseRed 2s infinite;
 }
 
-/* HP COM NEON VERMELHO MAIS SUAVE */
+/* STATUS (HP) */
 .stat {
     font-size: 18px;
 
@@ -37,7 +43,7 @@ body {
         0 0 8px #ff1a1a;
 }
 
-/* PULSO NO NOME (efeito vivo) */
+/* ANIMAÇÃO PULSO */
 @keyframes pulseRed {
     0%, 100% {
         text-shadow:
@@ -53,8 +59,51 @@ body {
             0 0 12px #ff1a1a;
     }
 }
-
-.nome {
-    animation: pulseRed 2s infinite;
-}
 </style>
+
+</head>
+
+<body>
+
+<div class="overlay">
+    <div class="nome" id="nome">Carregando...</div>
+    <div class="stat" id="hp">HP: 0 / 0</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
+  authDomain: "fichasrpg-45934.firebaseapp.com",
+  databaseURL: "https://fichasrpg-45934-default-rtdb.firebaseio.com"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const id = new URLSearchParams(location.search).get("id");
+
+const nomeEl = document.getElementById("nome");
+const hpEl = document.getElementById("hp");
+
+if (!id) {
+    nomeEl.textContent = "ID não encontrado";
+}
+
+/* LIVE SYNC */
+onValue(ref(db, "personagens/" + id), (snap) => {
+    const p = snap.val();
+    if (!p || !p.dados) return;
+
+    const info = p.dados.info || {};
+    const c = p.dados.combate || {};
+
+    nomeEl.textContent = info.nome || "Sem nome";
+    hpEl.textContent = `HP: ${c.hp_atual ?? 0} / ${c.hp_max ?? 0}`;
+});
+</script>
+
+</body>
+</html>
