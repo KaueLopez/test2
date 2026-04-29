@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<style>
+body {
+    margin: 0;
+    background: transparent;
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* CONTAINER */
+.overlay {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* IMAGEM */
+#portrait {
+    width: 240px;
+    height: 240px;
+    object-fit: cover;
+
+    animation: flutuar 3s ease-in-out infinite;
+}
+
+/* INFO */
+.info {
+    display: flex;
+    flex-direction: column;
+}
+
+/* NOME */
+.nome {
+    font-size: 48px;
+    font-weight: bold;
+
+    color: #FFFFFF;
+    text-shadow:
+        0 0 2px #ff1a1a,
+        0 0 6px #ff1a1a,
+        0 0 12px #ff1a1a,
+        0 0 20px #ff1a1a;
+}
+
+/* ANIMAÇÃO (flutuar + leve achatado) */
+@keyframes flutuar {
+    0%   { transform: translateY(0px) scaleY(1); }
+    50%  { transform: translateY(-8px) scaleY(0.92); }
+    100% { transform: translateY(0px) scaleY(1); }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="overlay">
+
+    <!-- imagem inicial -->
+    <img id="portrait" src="img/GIIII/Adelaide.png">
+
+    <div class="info">
+        <div class="nome" id="nome">Carregando...</div>
+    </div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
+  authDomain: "fichasrpg-45934.firebaseapp.com",
+  databaseURL: "https://fichasrpg-45934-default-rtdb.firebaseio.com"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const id = new URLSearchParams(location.search).get("id");
+
+const nomeEl = document.getElementById("nome");
+const portrait = document.getElementById("portrait");
+
+onValue(ref(db, "personagens/" + id), (snap) => {
+    const p = snap.val();
+    if (!p || !p.dados) return;
+
+    const info = p.dados.info || {};
+    const c = p.dados.combate || {};
+
+    nomeEl.textContent = info.nome || "Sem nome";
+
+    const hpAtual = c.hp_atual ?? 0;
+    const hpMax = c.hp_max ?? 1;
+
+    const porcentagem = hpAtual / hpMax;
+
+    /* DEFINE PASTA */
+    const pasta = id;
+
+    /* DEFINE ESTADO */
+    let estado = "Adelaide";
+
+    if (porcentagem <= 0.5) {
+        estado = "AdelaideMachucada";
+    }
+
+    /* CAMINHO */
+    const caminho = `img/${pasta}/${estado}.png`;
+
+    /* TROCA */
+    if (!portrait.src.includes(caminho)) {
+        portrait.src = caminho;
+    }
+});
+</script>
+
+</body>
+</html>
