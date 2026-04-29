@@ -13,6 +13,7 @@ body {
     background: #111;
     color: white;
 }
+
 h2 {
     text-align: center;
     margin: 10px 0;
@@ -39,10 +40,10 @@ h2 {
 input, textarea {
     width: 100%;
     padding: 12px;
-    margin-bottom: 10px;
     font-size: 16px;
-    border-radius: 5px;
+    border-radius: 6px;
     border: none;
+    margin-bottom: 12px;
     box-sizing: border-box;
 }
 
@@ -59,6 +60,17 @@ textarea {
     border: none;
     padding: 15px 20px;
     border-radius: 50px;
+}
+
+/* ATRIBUTOS */
+.attr {
+    margin-bottom: 12px;
+}
+
+.label {
+    font-size: 13px;
+    opacity: 0.8;
+    margin-bottom: 4px;
 }
 </style>
 </head>
@@ -87,107 +99,109 @@ textarea {
     <input id="hp_max" type="number" placeholder="HP Máximo">
 </div>
 
-<!-- ATRIBUTOS (REALMENTE UNIFICADO) -->
+<!-- ATRIBUTOS -->
 <div id="atributos" class="tab">
 
-<!-- INSTINTOS -->
+<h3>Instintos</h3>
+
 <div class="attr">
-    <input id="reacao" type="number">
     <div class="label">Reação</div>
+    <input id="reacao" type="number">
 </div>
 
 <div class="attr">
-    <input id="percepcao" type="number">
     <div class="label">Percepção</div>
+    <input id="percepcao" type="number">
 </div>
 
 <div class="attr">
-    <input id="sagacidade" type="number">
     <div class="label">Sagacidade</div>
+    <input id="sagacidade" type="number">
 </div>
 
 <div class="attr">
-    <input id="potencia" type="number">
     <div class="label">Potência</div>
+    <input id="potencia" type="number">
 </div>
 
 <div class="attr">
-    <input id="influencia" type="number">
     <div class="label">Influência</div>
+    <input id="influencia" type="number">
 </div>
 
 <div class="attr">
-    <input id="resolucao" type="number">
     <div class="label">Resolução</div>
+    <input id="resolucao" type="number">
 </div>
 
 <hr>
 
-<!-- CONHECIMENTOS -->
+<h3>Conhecimentos</h3>
+
 <div class="attr">
-    <input id="agrario" type="number">
     <div class="label">Agrário</div>
+    <input id="agrario" type="number">
 </div>
 
 <div class="attr">
-    <input id="biologico" type="number">
     <div class="label">Biológico</div>
+    <input id="biologico" type="number">
 </div>
 
 <div class="attr">
-    <input id="exato" type="number">
     <div class="label">Exato</div>
+    <input id="exato" type="number">
 </div>
 
 <div class="attr">
-    <input id="medicina" type="number">
     <div class="label">Medicina</div>
+    <input id="medicina" type="number">
 </div>
 
 <div class="attr">
-    <input id="social2" type="number">
     <div class="label">Social</div>
+    <input id="social2" type="number">
 </div>
 
 <div class="attr">
-    <input id="artistico" type="number">
     <div class="label">Artístico</div>
+    <input id="artistico" type="number">
 </div>
 
 <hr>
 
-<!-- PRÁTICAS -->
+<h3>Práticas</h3>
+
 <div class="attr">
-    <input id="esportivas" type="number">
     <div class="label">Esportivas</div>
+    <input id="esportivas" type="number">
 </div>
 
 <div class="attr">
-    <input id="ferramentas" type="number">
     <div class="label">Ferramentas</div>
+    <input id="ferramentas" type="number">
 </div>
 
 <div class="attr">
-    <input id="oficios" type="number">
     <div class="label">Ofícios</div>
+    <input id="oficios" type="number">
 </div>
 
 <div class="attr">
-    <input id="armas" type="number">
     <div class="label">Armas</div>
+    <input id="armas" type="number">
 </div>
 
 <div class="attr">
-    <input id="veiculos" type="number">
     <div class="label">Veículos</div>
+    <input id="veiculos" type="number">
 </div>
 
 <div class="attr">
-    <input id="infiltracao" type="number">
     <div class="label">Infiltração</div>
+    <input id="infiltracao" type="number">
 </div>
 
-</div>
 </div>
 
 <!-- EXTRAS -->
@@ -277,7 +291,7 @@ function salvar() {
     });
 }
 
-// 🔁 AUTOSAVE
+// AUTOSAVE
 function ativarAutosave() {
     document.querySelectorAll("input, textarea").forEach(el => {
         el.addEventListener("input", () => {
@@ -289,7 +303,7 @@ function ativarAutosave() {
     });
 }
 
-// 📥 CARREGAR
+// CARREGAR
 function carregar() {
     if (!idAtual) return;
 
