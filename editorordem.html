@@ -21,6 +21,7 @@ header {
     top: 0;
 }
 
+/* TABS */
 .tabs {
     display: flex;
     position: sticky;
@@ -37,11 +38,13 @@ header {
     cursor: pointer;
 }
 
+/* CONTEÚDO */
 .tab {
     display: none;
     padding: 12px;
 }
 
+/* INPUTS */
 input, textarea {
     width: 100%;
     padding: 12px;
@@ -52,6 +55,7 @@ input, textarea {
     box-sizing: border-box;
 }
 
+/* GRID */
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -66,6 +70,7 @@ input, textarea {
     .grid { grid-template-columns: 1fr; }
 }
 
+/* BLOCO */
 .block {
     background: #161616;
     padding: 10px;
@@ -74,6 +79,7 @@ input, textarea {
     margin-bottom: 12px;
 }
 
+/* LABEL */
 .label {
     font-size: 12px;
     opacity: 0.7;
@@ -81,10 +87,12 @@ input, textarea {
     text-align: center;
 }
 
+/* CELL */
 .cell {
     text-align: center;
 }
 
+/* STATUS */
 #status {
     position: fixed;
     bottom: 12px;
@@ -150,6 +158,7 @@ input, textarea {
 
 <div class="block">
 <h3>PD / PE</h3>
+
 <div class="grid">
     <div class="cell">
         <input id="pe_atual" type="number">
@@ -171,6 +180,7 @@ input, textarea {
         <div class="label">PD Máx</div>
     </div>
 </div>
+
 </div>
 
 <div class="block">
@@ -222,8 +232,20 @@ input, textarea {
 
 </div>
 
-<div id="status">Salvando...</div>
+<div id="status">Pronto</div>
 
+<!-- 🔥 FUNÇÃO QUE FALTAVA -->
+<script>
+function showTab(tabId) {
+    document.querySelectorAll(".tab").forEach(tab => {
+        tab.style.display = "none";
+    });
+
+    document.getElementById(tabId).style.display = "block";
+}
+</script>
+
+<!-- 🔥 FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, update, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -247,11 +269,11 @@ document.querySelectorAll("input, textarea").forEach(el=>{
     el.addEventListener("blur", ()=> userEditing = false);
 });
 
+/* SYNC */
 onValue(ref(db,"personagens/"+id), (snap)=>{
     if(!snap.exists() || userEditing) return;
 
     const p = snap.val();
-
     const i = p.dados?.info || {};
     const c = p.dados?.combate || {};
     const a = p.dados?.atributos || {};
@@ -297,6 +319,7 @@ onValue(ref(db,"personagens/"+id), (snap)=>{
     carregando=false;
 });
 
+/* AUTOSAVE */
 function bind(idField, path, key){
     $(idField).addEventListener("input", async ()=>{
         if(carregando) return;
@@ -311,7 +334,7 @@ function bind(idField, path, key){
     });
 }
 
-/* binds */
+/* BINDS */
 bind("nome","dados/info","nome");
 bind("classe","dados/info","classe");
 bind("origem","dados/info","origem");
@@ -346,6 +369,7 @@ bind("rituais","extras","rituais");
 bind("equipamentos","extras","equipamentos");
 bind("descricao","extras","descricao");
 
+/* ABRE PRIMEIRA ABA */
 window.onload = ()=> showTab("info");
 </script>
 
