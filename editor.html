@@ -194,7 +194,7 @@ function salvar() {
         caracteristicas: document.getElementById("caracteristicas").value,
         equipamentos: document.getElementById("equipamentos").value,
         hp_atual: document.getElementById("hp_atual").value,
-        hp_max: document.getElementById("hp_max").value
+        hp_max: document.getElementById("hp_max").value,
 },
     });
 }
@@ -206,16 +206,6 @@ document.querySelectorAll("input, textarea").forEach(el => {
         window.t = setTimeout(salvar, 500);
     });
 });
-
-// 🖼 EXPORTAR IMAGEM
-function exportar() {
-    html2canvas(document.getElementById("ficha")).then(canvas => {
-        const a = document.createElement("a");
-        a.download = "personagem.png";
-        a.href = canvas.toDataURL();
-        a.click();
-    });
-}
 
 window.onload = carregar;
 
