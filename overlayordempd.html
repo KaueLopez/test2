@@ -18,14 +18,12 @@ body {
     text-shadow: 1px 1px 3px black;
 }
 
-/* Nome */
 .nome {
     font-size: 28px;
     font-weight: bold;
     margin-bottom: 6px;
 }
 
-/* HP */
 .stat {
     font-size: 18px;
     margin-top: 4px;
@@ -39,7 +37,6 @@ body {
     <div class="nome" id="nome">Carregando...</div>
 
     <div class="stat" id="hp">HP: 0 / 0</div>
-    <div class="stat" id="pe">PE: 0 / 0</div>
     <div class="stat" id="pd">PD: 0</div>
 </div>
 
@@ -62,13 +59,10 @@ if (!id) {
     console.error("ID não encontrado na URL");
 }
 
-/* ELEMENTOS */
 const nomeEl = document.getElementById("nome");
 const hpEl = document.getElementById("hp");
-const peEl = document.getElementById("pe");
 const pdEl = document.getElementById("pd");
 
-/* FIREBASE */
 onValue(ref(db, "personagens/" + id), (snap) => {
     const p = snap.val();
     if (!p || !p.dados) return;
@@ -79,7 +73,6 @@ onValue(ref(db, "personagens/" + id), (snap) => {
     nomeEl.textContent = info.nome || "Sem nome";
 
     hpEl.textContent = `HP: ${c.hp_atual ?? 0} / ${c.hp_max ?? 0}`;
-    peEl.textContent = `PE: ${c.pe_atual ?? 0} / ${c.pe_max ?? 0}`;
     pdEl.textContent = `PD: ${c.pd_turno ?? 0}`;
 });
 
