@@ -18,15 +18,17 @@ body {
 
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
 }
 
-/* IMAGEM */
+/* IMAGEM (DOBRO DO TAMANHO) */
 #portrait {
-    width: 120px;
-    height: 120px;
+    width: 240px;
+    height: 240px;
     object-fit: cover;
-    transition: 0.3s;
+
+    /* animação base */
+    animation: flutuar 3s ease-in-out infinite;
 }
 
 /* BLOCO DE INFO */
@@ -46,6 +48,26 @@ body {
         0 0 6px #ff1a1a,
         0 0 12px #ff1a1a,
         0 0 20px #ff1a1a;
+}
+
+/* ANIMAÇÃO LEVE */
+@keyframes flutuar {
+    0%   { transform: translateY(0px); }
+    50%  { transform: translateY(-8px); }
+    100% { transform: translateY(0px); }
+}
+
+/* TREMER QUANDO CRÍTICO */
+.critico {
+    animation: flutuar 3s ease-in-out infinite, tremer 0.15s infinite;
+}
+
+@keyframes tremer {
+    0% { transform: translate(0px, 0px); }
+    25% { transform: translate(3px, -3px); }
+    50% { transform: translate(-3px, 3px); }
+    75% { transform: translate(3px, 3px); }
+    100% { transform: translate(0px, 0px); }
 }
 </style>
 
@@ -98,10 +120,14 @@ onValue(ref(db, "personagens/" + id), (snap) => {
 
     let novaImagem = "Adelaide.png";
 
+    // remove estado anterior
+    portrait.classList.remove("critico");
+
     if (porcentagem <= 0.3) {
-        novaImagem = "AdelaideMachucada.png";
+        novaImagem = "Adelaide.png";
+        portrait.classList.add("critico");
     } else if (porcentagem <= 0.5) {
-        novaImagem = "AdelaideMachucada.png";
+        novaImagem = "Adelaide.png";
     }
 
     // evita troca desnecessária
