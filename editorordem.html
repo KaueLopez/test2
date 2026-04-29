@@ -198,7 +198,7 @@ textarea {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const app = initializeApp({
   apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
@@ -216,7 +216,7 @@ let carregando = true;
 /* HELP */
 const $ = (id) => document.getElementById(id);
 
-/* LOAD */
+/* 🔥 LOAD SEGURO (não quebra com outros editores) */
 async function load() {
     try {
         const snap = await get(child(ref(db), "personagens/" + id));
@@ -228,29 +228,32 @@ async function load() {
 
         const d = snap.val();
 
-        Object.keys(d).forEach(k => {
-            if ($(k)) $(k).value = d[k];
-        });
+        // flat safe loader (ignora campos inexistentes)
+        for (const key in d) {
+            const el = $(key);
+            if (el) el.value = d[key];
+        }
 
         carregando = false;
 
     } catch (e) {
-        console.error(e);
+        console.error("LOAD ERROR:", e);
         carregando = false;
     }
 }
 
-/* SAVE */
+/* 🔥 SAVE INTELIGENTE (não destrói dados do outro editor) */
 async function save() {
     if (carregando) return;
 
-    let data = {};
+    let patch = {};
 
     document.querySelectorAll("input, textarea").forEach(el => {
-        if (el.id) data[el.id] = el.value;
+        if (el.id) patch[el.id] = el.value;
     });
 
-    await set(ref(db, "personagens/" + id), data);
+    // UPDATE ao invés de SET (isso resolve o conflito com PC editor)
+    await update(ref(db, "personagens/" + id), patch);
 
     $("status").innerText = "Salvo ✔";
     setTimeout(() => $("status").innerText = "Salvando...", 1000);
@@ -267,18 +270,22 @@ document.querySelectorAll("input, textarea").forEach(el => {
     });
 });
 
-/* TABS */
-function showTab(tab) {
-    document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
-    $(tab).style.display = "block";
+/* TABS FIX */
+function showTab(tabId) {
+    document.querySelectorAll(".tab").forEach(t => {
+        t.classList.remove("active");
+    });
+
+    const el = document.getElementById(tabId);
+    if (el) el.classList.add("active");
 }
 
 window.showTab = showTab;
 
-/* START */
-window.onload = () => {
+/* INIT */
+window.onload = async () => {
     showTab("info");
-    load();
+    await load();
 };
 </script>
 
