@@ -159,33 +159,25 @@ const app = initializeApp({
 const db = getDatabase(app);
 
 let id = new URLSearchParams(location.search).get("id");
-
 let carregando = true;
-let prontoParaSalvar = false;
-let timeout;
+let timeout = null;
 
 /* ================= LOAD ================= */
-get(child(ref(db), "personagens/" + id)).then(snap => {
+async function carregar() {
+    if (!id) return;
 
-    if (!snap.exists()) {
-        alert("Personagem não encontrado");
-        return;
-    }
+    const snap = await get(child(ref(db), "personagens/" + id));
+    if (!snap.exists()) return;
 
     const p = snap.val();
 
     const i = p.dados?.info || {};
     const a = p.dados?.atributos || {};
     const c = p.dados?.combate || {};
-    const h = p.dados?.habilidades || {};
 
     nome.value = i.nome || "";
     origem.value = i.origem || "";
     classe.value = i.classe || "";
-
-    hp_atual.value = c.hp_atual || 0;
-    hp_max.value = c.hp_max || 0;
-    defesa.value = c.defesa || 0;
 
     agi.value = a.agi || 0;
     for.value = a.for || 0;
@@ -195,33 +187,28 @@ get(child(ref(db), "personagens/" + id)).then(snap => {
     nivel.value = a.nivel || 0;
     nex.value = a.nex || 0;
 
-    hab_texto.value = h.texto || "";
-    hab_protecao.value = h.protecao || 0;
-    hab_resistencias.value = h.resistencias || 0;
-    hab_proficiencias.value = h.proficiencias || 0;
+    hp_max.value = c.hp_max || 0;
+    hp_atual.value = c.hp_atual || 0;
+    defesa.value = c.defesa || 0;
 
-    rituais.value = p.dados?.rituais || "";
-    descricao.value = p.descricao || "";
-    equipamentos.value = p.equipamentos || "";
+    habilidades.value = p.habilidades || "";
+    rituais.value = p.rituais || "";
 
     carregando = false;
-    prontoParaSalvar = true;
-});
+}
 
-/* ================= SAVE ================= */
+/* ================= SAVE (CORRETO) ================= */
 function salvar() {
-    if (!id || carregando || !prontoParaSalvar) return;
+    if (!id || carregando) return;
 
-    set(ref(db, "personagens/" + id), {
+    const data = {
         tipo: "ordem",
-
         dados: {
             info: {
                 nome: nome.value,
                 origem: origem.value,
                 classe: classe.value
             },
-
             atributos: {
                 agi: +agi.value || 0,
                 for: +for.value || 0,
@@ -231,37 +218,31 @@ function salvar() {
                 nivel: +nivel.value || 0,
                 nex: +nex.value || 0
             },
-
             combate: {
-                hp_atual: +hp_atual.value || 0,
                 hp_max: +hp_max.value || 0,
+                hp_atual: +hp_atual.value || 0,
                 defesa: +defesa.value || 0
-            },
-
-            habilidades: {
-                texto: hab_texto.value,
-                protecao: +hab_protecao.value || 0,
-                resistencias: +hab_resistencias.value || 0,
-                proficiencias: +hab_proficiencias.value || 0
-            },
-
-            rituais: rituais.value
+            }
         },
 
-        descricao: descricao.value,
-        equipamentos: equipamentos.value
-    });
+        habilidades: habilidades.value || "",
+        rituais: rituais.value || ""
+    };
+
+    set(ref(db, "personagens/" + id), data);
 }
 
-/* ================= AUTOSAVE ================= */
+/* ================= AUTO SAVE LIMPO ================= */
 document.querySelectorAll("input, textarea").forEach(el => {
     el.addEventListener("input", () => {
-        if (!prontoParaSalvar) return;
+        if (carregando) return;
 
         clearTimeout(timeout);
         timeout = setTimeout(salvar, 400);
     });
 });
+
+window.onload = carregar;
 </script>
 
 </body>
