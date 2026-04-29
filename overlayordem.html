@@ -78,7 +78,7 @@ onValue(ref(db, "personagens/" + id), (snap) => {
     const c = p.dados.combate || {};
 
     nomeEl.textContent = info.nome || "Sem nome";
-    hpEl.textContent = `HP: ${c.hp_atual ?? 0} / ${c.hp_max ?? 0}`;
+    hpEl.textContent = `${c.hp_atual ?? 0} / ${c.hp_max ?? 0}`;
 });
 </script>
 
