@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Editor RPG Mobile</title>
+<title>Ficha Assimilação</title>
 
 <style>
 body {
@@ -13,32 +13,7 @@ body {
     background: #111;
     color: white;
 }
-.grid2x3 {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 15px;
-}
 
-.cell {
-    text-align: center;
-}
-
-.cell input {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border-radius: 6px;
-    border: none;
-    text-align: center;
-    box-sizing: border-box;
-}
-
-.label {
-    font-size: 12px;
-    margin-top: 4px;
-    opacity: 0.7;
-}
 h2 {
     text-align: center;
     margin: 10px 0;
@@ -70,10 +45,12 @@ input, textarea {
     border: none;
     margin-bottom: 12px;
     box-sizing: border-box;
+    text-align: center;
 }
 
 textarea {
     height: 80px;
+    text-align: left;
 }
 
 .save-btn {
@@ -87,15 +64,38 @@ textarea {
     border-radius: 50px;
 }
 
-/* ATRIBUTOS */
-.attr {
-    margin-bottom: 12px;
+/* GRID ATRIBUTOS */
+.grid2x3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.cell {
+    text-align: center;
+}
+
+.cell input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: none;
+    text-align: center;
+    box-sizing: border-box;
 }
 
 .label {
-    font-size: 13px;
-    opacity: 0.8;
-    margin-bottom: 4px;
+    font-size: 12px;
+    margin-top: 4px;
+    opacity: 0.7;
+}
+
+h3 {
+    margin: 10px 0;
+    font-size: 16px;
+    opacity: 0.9;
 }
 </style>
 </head>
@@ -124,7 +124,8 @@ textarea {
     <input id="hp_max" type="number" placeholder="HP Máximo">
 </div>
 
-div id="atributos" class="tab">
+<!-- ATRIBUTOS -->
+<div id="atributos" class="tab">
 
 <h3>Instintos</h3>
 
@@ -133,12 +134,10 @@ div id="atributos" class="tab">
         <input id="reacao" type="number">
         <div class="label">Reação</div>
     </div>
-
     <div class="cell">
         <input id="percepcao" type="number">
         <div class="label">Percepção</div>
     </div>
-
     <div class="cell">
         <input id="sagacidade" type="number">
         <div class="label">Sagacidade</div>
@@ -150,12 +149,10 @@ div id="atributos" class="tab">
         <input id="potencia" type="number">
         <div class="label">Potência</div>
     </div>
-
     <div class="cell">
         <input id="influencia" type="number">
         <div class="label">Influência</div>
     </div>
-
     <div class="cell">
         <input id="resolucao" type="number">
         <div class="label">Resolução</div>
@@ -169,12 +166,10 @@ div id="atributos" class="tab">
         <input id="agrario" type="number">
         <div class="label">Agrário</div>
     </div>
-
     <div class="cell">
         <input id="biologico" type="number">
         <div class="label">Biológico</div>
     </div>
-
     <div class="cell">
         <input id="exato" type="number">
         <div class="label">Exato</div>
@@ -186,12 +181,10 @@ div id="atributos" class="tab">
         <input id="medicina" type="number">
         <div class="label">Medicina</div>
     </div>
-
     <div class="cell">
         <input id="social2" type="number">
         <div class="label">Social</div>
     </div>
-
     <div class="cell">
         <input id="artistico" type="number">
         <div class="label">Artístico</div>
@@ -205,12 +198,10 @@ div id="atributos" class="tab">
         <input id="esportivas" type="number">
         <div class="label">Esportivas</div>
     </div>
-
     <div class="cell">
         <input id="ferramentas" type="number">
         <div class="label">Ferramentas</div>
     </div>
-
     <div class="cell">
         <input id="oficios" type="number">
         <div class="label">Ofícios</div>
@@ -222,52 +213,16 @@ div id="atributos" class="tab">
         <input id="armas" type="number">
         <div class="label">Armas</div>
     </div>
-
     <div class="cell">
         <input id="veiculos" type="number">
         <div class="label">Veículos</div>
     </div>
-
     <div class="cell">
         <input id="infiltracao" type="number">
         <div class="label">Infiltração</div>
     </div>
 </div>
 
-</div>
-
-<hr>
-
-<h3>Práticas</h3>
-
-<div class="attr">
-    <div class="label">Esportivas</div>
-    <input id="esportivas" type="number">
-</div>
-
-<div class="attr">
-    <div class="label">Ferramentas</div>
-    <input id="ferramentas" type="number">
-</div>
-
-<div class="attr">
-    <div class="label">Ofícios</div>
-    <input id="oficios" type="number">
-</div>
-
-<div class="attr">
-    <div class="label">Armas</div>
-    <input id="armas" type="number">
-</div>
-
-<div class="attr">
-    <div class="label">Veículos</div>
-    <input id="veiculos" type="number">
-</div>
-
-<div class="attr">
-    <div class="label">Infiltração</div>
-    <input id="infiltracao" type="number">
 </div>
 
 <!-- EXTRAS -->
@@ -357,22 +312,21 @@ function salvar() {
     });
 }
 
-// AUTOSAVE
+// 🔁 AUTOSAVE 5s (DEBOUNCE)
 function ativarAutosave() {
     document.querySelectorAll("input, textarea").forEach(el => {
         el.addEventListener("input", () => {
             if (carregando) return;
 
             clearTimeout(timeout);
-
             timeout = setTimeout(() => {
                 salvar();
-            }, 5000); // ⬅️ 5 segundos de atraso
+            }, 5000);
         });
     });
 }
 
-// CARREGAR
+// 📥 CARREGAR
 function carregar() {
     if (!idAtual) return;
 
@@ -392,7 +346,6 @@ function carregar() {
         document.getElementById("hp_atual").value = p.saude?.hp_atual || "";
         document.getElementById("hp_max").value = p.saude?.hp_max || "";
 
-        // instintos
         document.getElementById("reacao").value = p.instintos?.reacao || "";
         document.getElementById("percepcao").value = p.instintos?.percepcao || "";
         document.getElementById("sagacidade").value = p.instintos?.sagacidade || "";
@@ -400,7 +353,6 @@ function carregar() {
         document.getElementById("influencia").value = p.instintos?.influencia || "";
         document.getElementById("resolucao").value = p.instintos?.resolucao || "";
 
-        // conhecimentos
         document.getElementById("agrario").value = p.conhecimentos?.agrario || "";
         document.getElementById("biologico").value = p.conhecimentos?.biologico || "";
         document.getElementById("exato").value = p.conhecimentos?.exato || "";
@@ -408,7 +360,6 @@ function carregar() {
         document.getElementById("social2").value = p.conhecimentos?.social || "";
         document.getElementById("artistico").value = p.conhecimentos?.artistico || "";
 
-        // práticas
         document.getElementById("esportivas").value = p.praticas?.esportivas || "";
         document.getElementById("ferramentas").value = p.praticas?.ferramentas || "";
         document.getElementById("oficios").value = p.praticas?.oficios || "";
