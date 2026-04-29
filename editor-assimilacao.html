@@ -33,6 +33,7 @@ input, textarea {
 
 textarea {
     min-height: 70px;
+    resize: vertical;
 }
 
 h3 {
@@ -57,7 +58,7 @@ h3 {
     align-items: center;
 }
 
-.grid2x3 .label {
+.label {
     background: #3a3a3a;
     color: #fff;
     font-size: 12px;
@@ -171,17 +172,18 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 const idAtual = new URLSearchParams(location.search).get("id");
-let carregando = true;
-let timeout;
 
-/* ================= HELPERS ================= */
+let carregando = true;
+let timeout = null;
+
+/* helpers */
 const $ = (id) => document.getElementById(id);
 
-/* ================= SALVAR ================= */
-function salvar() {
+/* SAVE */
+async function salvar() {
     if (!idAtual || carregando) return;
 
-    const data = {
+    await set(ref(db, "personagens/" + idAtual), {
         nome: $("nome").value || "",
         evento: $("evento").value || "",
         social: $("social").value || "",
@@ -220,18 +222,13 @@ function salvar() {
 
         caracteristicas: $("caracteristicas").value || "",
         equipamentos: $("equipamentos").value || ""
-    };
-
-    set(ref(db, "personagens/" + idAtual), data)
-        .then(() => console.log("SALVO"))
-        .catch(err => console.error("ERRO AO SALVAR:", err));
+    });
 }
 
-/* ================= CARREGAR ================= */
+/* LOAD */
 async function carregar() {
-    if (!idAtual) return;
-
     const snap = await get(child(ref(db), "personagens/" + idAtual));
+
     if (!snap.exists()) {
         carregando = false;
         return;
@@ -273,19 +270,16 @@ async function carregar() {
     carregando = false;
 }
 
-/* ================= AUTO SAVE ================= */
+/* autosave anti-spam */
 document.querySelectorAll("input, textarea").forEach(el => {
     el.addEventListener("input", () => {
         if (carregando) return;
 
         clearTimeout(timeout);
-        timeout = setTimeout(() => {
-            salvar();
-        }, 1000);
+        timeout = setTimeout(salvar, 800);
     });
 });
 
-/* ================= INIT ================= */
 window.onload = carregar;
 </script>
 
