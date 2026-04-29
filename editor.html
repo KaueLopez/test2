@@ -1,138 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Editor RPG</title>
-
-<style>
-body {
-    font-family: Arial;
-    margin: 20px;
-    background: #000;
-    color: white;
-}
-
-.box {
-    border: 1px solid #333;
-    padding: 15px;
-    background: #0b0b0b;
-    border-radius: 10px;
-}
-
-input, textarea {
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 10px;
-    border: none;
-    border-radius: 6px;
-    background: #fff;
-    color: #000;
-    font-size: 14px;
-    box-sizing: border-box;
-}
-
-textarea {
-    min-height: 70px;
-}
-
-h3 {
-    background: #2a2a2a;
-    padding: 8px 10px;
-    border-radius: 6px;
-    font-size: 14px;
-    margin: 15px 0 10px;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-}
-
-.label {
-    background: #3a3a3a;
-    font-size: 12px;
-    padding: 4px;
-    text-align: center;
-    border-radius: 4px;
-}
-
-#hp_atual, #hp_max {
-    background: #ff2b2b;
-    color: #000;
-}
-</style>
-</head>
-
-<body>
-
-<h2>Editor de Personagem</h2>
-
-<div class="box">
-
-<!-- ================= ASSIMILAÇÃO ================= -->
-<div id="assimilar">
-
-<input id="nome" placeholder="Nome">
-<textarea id="evento" placeholder="Evento Marcante"></textarea>
-<input id="social" placeholder="Posição Social">
-
-<h3>Saúde</h3>
-<div class="grid">
-<div>
-<input id="hp_atual" type="number">
-<div class="label">HP Atual</div>
-</div>
-<div>
-<input id="hp_max" type="number">
-<div class="label">HP Máx</div>
-</div>
-</div>
-
-<h3>Instintos</h3>
-<div class="grid">
-<input id="reacao" type="number"><input id="percepcao" type="number"><input id="sagacidade" type="number">
-<input id="potencia" type="number"><input id="influencia" type="number"><input id="resolucao" type="number">
-</div>
-
-<h3>Conhecimentos</h3>
-<div class="grid">
-<input id="agrario" type="number"><input id="biologico" type="number"><input id="exato" type="number">
-<input id="medicina" type="number"><input id="social2" type="number"><input id="artistico" type="number">
-</div>
-
-<h3>Práticas</h3>
-<div class="grid">
-<input id="esportivas" type="number"><input id="ferramentas" type="number"><input id="oficios" type="number">
-<input id="armas" type="number"><input id="veiculos" type="number"><input id="infiltracao" type="number">
-</div>
-
-<h3>Descrição</h3>
-<textarea id="caracteristicas"></textarea>
-<textarea id="equipamentos"></textarea>
-
-</div>
-
-<!-- ================= ORDEM ================= -->
-<div id="ordem" style="display:none">
-
-<input id="o_nome" placeholder="Nome">
-<input id="o_origem" placeholder="Origem">
-<input id="o_classe" placeholder="Classe">
-
-<h3>Atributos</h3>
-<div class="grid">
-<input id="agi" type="number"><input id="for" type="number"><input id="int" type="number">
-<input id="vig" type="number"><input id="pre" type="number"><input id="nivel" type="number">
-</div>
-
-<input id="nex" type="number" placeholder="NEX">
-
-</div>
-
-</div>
-
-<!-- ================= FIREBASE ================= -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -150,6 +15,8 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+const $ = (id) => document.getElementById(id);
+
 let id = new URLSearchParams(window.location.search).get("id");
 let tipo = null;
 let carregando = true;
@@ -163,66 +30,66 @@ function carregar() {
         if (!snap.exists()) return;
 
         const p = snap.val();
-        tipo = p.tipo;
+        tipo = p.tipo || "assimilar";
 
         if (tipo === "assimilar") {
-            document.getElementById("assimilar").style.display = "block";
-            document.getElementById("ordem").style.display = "none";
+            $("assimilar").style.display = "block";
+            $("ordem").style.display = "none";
 
-            document.getElementById("nome").value = p.nome || "";
-            document.getElementById("evento").value = p.evento || "";
-            document.getElementById("social").value = p.social || "";
+            $("nome").value = p.nome || "";
+            $("evento").value = p.evento || "";
+            $("social").value = p.social || "";
 
-            document.getElementById("hp_atual").value = p.saude?.hp_atual || 0;
-            document.getElementById("hp_max").value = p.saude?.hp_max || 0;
+            $("hp_atual").value = p.saude?.hp_atual || 0;
+            $("hp_max").value = p.saude?.hp_max || 0;
 
             const i = p.instintos || {};
-            document.getElementById("reacao").value = i.reacao || 0;
-            document.getElementById("percepcao").value = i.percepcao || 0;
-            document.getElementById("sagacidade").value = i.sagacidade || 0;
-            document.getElementById("potencia").value = i.potencia || 0;
-            document.getElementById("influencia").value = i.influencia || 0;
-            document.getElementById("resolucao").value = i.resolucao || 0;
+            $("reacao").value = i.reacao || 0;
+            $("percepcao").value = i.percepcao || 0;
+            $("sagacidade").value = i.sagacidade || 0;
+            $("potencia").value = i.potencia || 0;
+            $("influencia").value = i.influencia || 0;
+            $("resolucao").value = i.resolucao || 0;
 
             const c = p.conhecimentos || {};
-            document.getElementById("agrario").value = c.agrario || 0;
-            document.getElementById("biologico").value = c.biologico || 0;
-            document.getElementById("exato").value = c.exato || 0;
-            document.getElementById("medicina").value = c.medicina || 0;
-            document.getElementById("social2").value = c.social || 0;
-            document.getElementById("artistico").value = c.artistico || 0;
+            $("agrario").value = c.agrario || 0;
+            $("biologico").value = c.biologico || 0;
+            $("exato").value = c.exato || 0;
+            $("medicina").value = c.medicina || 0;
+            $("social2").value = c.social || 0;
+            $("artistico").value = c.artistico || 0;
 
             const pr = p.praticas || {};
-            document.getElementById("esportivas").value = pr.esportivas || 0;
-            document.getElementById("ferramentas").value = pr.ferramentas || 0;
-            document.getElementById("oficios").value = pr.oficios || 0;
-            document.getElementById("armas").value = pr.armas || 0;
-            document.getElementById("veiculos").value = pr.veiculos || 0;
-            document.getElementById("infiltracao").value = pr.infiltracao || 0;
+            $("esportivas").value = pr.esportivas || 0;
+            $("ferramentas").value = pr.ferramentas || 0;
+            $("oficios").value = pr.oficios || 0;
+            $("armas").value = pr.armas || 0;
+            $("veiculos").value = pr.veiculos || 0;
+            $("infiltracao").value = pr.infiltracao || 0;
 
-            document.getElementById("caracteristicas").value = p.caracteristicas || "";
-            document.getElementById("equipamentos").value = p.equipamentos || "";
+            $("caracteristicas").value = p.caracteristicas || "";
+            $("equipamentos").value = p.equipamentos || "";
         }
 
         if (tipo === "ordem") {
-            document.getElementById("assimilar").style.display = "none";
-            document.getElementById("ordem").style.display = "block";
+            $("assimilar").style.display = "none";
+            $("ordem").style.display = "block";
 
             const d = p.dados || {};
             const i = d.info || {};
             const a = d.atributos || {};
 
-            document.getElementById("o_nome").value = i.nome || "";
-            document.getElementById("o_origem").value = i.origem || "";
-            document.getElementById("o_classe").value = i.classe || "";
+            $("o_nome").value = i.nome || "";
+            $("o_origem").value = i.origem || "";
+            $("o_classe").value = i.classe || "";
 
-            document.getElementById("agi").value = a.agi || 0;
-            document.getElementById("for").value = a.for || 0;
-            document.getElementById("int").value = a.int || 0;
-            document.getElementById("vig").value = a.vig || 0;
-            document.getElementById("pre").value = a.pre || 0;
-            document.getElementById("nivel").value = a.nivel || 0;
-            document.getElementById("nex").value = a.nex || 0;
+            $("agi").value = a.agi || 0;
+            $("for").value = a.for || 0;
+            $("int").value = a.int || 0;
+            $("vig").value = a.vig || 0;
+            $("pre").value = a.pre || 0;
+            $("nivel").value = a.nivel || 0;
+            $("nex").value = a.nex || 0;
         }
 
         carregando = false;
@@ -233,44 +100,49 @@ function carregar() {
 function salvar() {
     if (!id || carregando) return;
 
-    let data = { tipo };
+    let data;
 
     if (tipo === "assimilar") {
         data = {
             tipo: "assimilar",
-            nome: nome.value,
-            evento: evento.value,
-            social: social.value,
+            nome: $("nome").value,
+            evento: $("evento").value,
+            social: $("social").value,
+
             saude: {
-                hp_atual: +hp_atual.value || 0,
-                hp_max: +hp_max.value || 0
+                hp_atual: +$("hp_atual").value || 0,
+                hp_max: +$("hp_max").value || 0
             },
+
             instintos: {
-                reacao: +reacao.value || 0,
-                percepcao: +percepcao.value || 0,
-                sagacidade: +sagacidade.value || 0,
-                potencia: +potencia.value || 0,
-                influencia: +influencia.value || 0,
-                resolucao: +resolucao.value || 0
+                reacao: +$("reacao").value || 0,
+                percepcao: +$("percepcao").value || 0,
+                sagacidade: +$("sagacidade").value || 0,
+                potencia: +$("potencia").value || 0,
+                influencia: +$("influencia").value || 0,
+                resolucao: +$("resolucao").value || 0
             },
+
             conhecimentos: {
-                agrario: +agrario.value || 0,
-                biologico: +biologico.value || 0,
-                exato: +exato.value || 0,
-                medicina: +medicina.value || 0,
-                social: +social2.value || 0,
-                artistico: +artistico.value || 0
+                agrario: +$("agrario").value || 0,
+                biologico: +$("biologico").value || 0,
+                exato: +$("exato").value || 0,
+                medicina: +$("medicina").value || 0,
+                social: +$("social2").value || 0,
+                artistico: +$("artistico").value || 0
             },
+
             praticas: {
-                esportivas: +esportivas.value || 0,
-                ferramentas: +ferramentas.value || 0,
-                oficios: +oficios.value || 0,
-                armas: +armas.value || 0,
-                veiculos: +veiculos.value || 0,
-                infiltracao: +infiltracao.value || 0
+                esportivas: +$("esportivas").value || 0,
+                ferramentas: +$("ferramentas").value || 0,
+                oficios: +$("oficios").value || 0,
+                armas: +$("armas").value || 0,
+                veiculos: +$("veiculos").value || 0,
+                infiltracao: +$("infiltracao").value || 0
             },
-            caracteristicas: caracteristicas.value,
-            equipamentos: equipamentos.value
+
+            caracteristicas: $("caracteristicas").value,
+            equipamentos: $("equipamentos").value
         };
     }
 
@@ -279,18 +151,18 @@ function salvar() {
             tipo: "ordem",
             dados: {
                 info: {
-                    nome: o_nome.value,
-                    origem: o_origem.value,
-                    classe: o_classe.value
+                    nome: $("o_nome").value,
+                    origem: $("o_origem").value,
+                    classe: $("o_classe").value
                 },
                 atributos: {
-                    agi: +agi.value || 0,
-                    for: +for.value || 0,
-                    int: +int.value || 0,
-                    vig: +vig.value || 0,
-                    pre: +pre.value || 0,
-                    nivel: +nivel.value || 0,
-                    nex: +nex.value || 0
+                    agi: +$("agi").value || 0,
+                    for: +$("for").value || 0,
+                    int: +$("int").value || 0,
+                    vig: +$("vig").value || 0,
+                    pre: +$("pre").value || 0,
+                    nivel: +$("nivel").value || 0,
+                    nex: +$("nex").value || 0
                 }
             }
         };
@@ -299,7 +171,7 @@ function salvar() {
     set(ref(db, "personagens/" + id), data);
 }
 
-/* AUTOSAVE */
+/* ================= AUTOSAVE ================= */
 document.querySelectorAll("input, textarea").forEach(el => {
     el.addEventListener("input", () => {
         if (carregando) return;
@@ -310,6 +182,3 @@ document.querySelectorAll("input, textarea").forEach(el => {
 
 window.onload = carregar;
 </script>
-
-</body>
-</html>
