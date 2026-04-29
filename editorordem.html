@@ -198,7 +198,7 @@ textarea {
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, set, get, child, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const app = initializeApp({
   apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
@@ -213,80 +213,103 @@ history.replaceState({}, "", "?id=" + id);
 
 let carregando = true;
 
-/* HELP */
 const $ = (id) => document.getElementById(id);
 
-/* 🔥 LOAD SEGURO (não quebra com outros editores) */
+/* LOAD */
 async function load() {
-    try {
-        const snap = await get(child(ref(db), "personagens/" + id));
-
-        if (!snap.exists()) {
-            carregando = false;
-            return;
-        }
-
-        const d = snap.val();
-
-        // flat safe loader (ignora campos inexistentes)
-        for (const key in d) {
-            const el = $(key);
-            if (el) el.value = d[key];
-        }
-
+    const snap = await get(child(ref(db), "personagens/" + id));
+    if (!snap.exists()) {
         carregando = false;
-
-    } catch (e) {
-        console.error("LOAD ERROR:", e);
-        carregando = false;
+        return;
     }
+
+    const p = snap.val();
+
+    const i = p.dados?.info || {};
+    const a = p.dados?.atributos || {};
+    const c = p.dados?.combate || {};
+    const e = p.extras || {};
+
+    nome.value = i.nome || "";
+    classe.value = i.classe || "";
+    origem.value = i.origem || "";
+
+    hp_atual.value = c.hp_atual || 0;
+    hp_max.value = c.hp_max || 0;
+
+    sanidade_atual.value = c.sanidade_atual || 0;
+    sanidade_max.value = c.sanidade_max || 0;
+
+    pe_atual.value = c.pe_atual || 0;
+    pe_max.value = c.pe_max || 0;
+    pd_turno.value = c.pd_turno || 0;
+
+    defesa.value = c.defesa || 0;
+    bloqueio.value = c.bloqueio || 0;
+    esquiva.value = c.esquiva || 0;
+
+    for.value = a.for || 0;
+    agi.value = a.agi || 0;
+    int.value = a.int || 0;
+    vig.value = a.vig || 0;
+    pre.value = a.pre || 0;
+    deslocamento.value = a.deslocamento || 0;
+
+    pericias.value = e.pericias || "";
+    habilidades.value = e.habilidades || "";
+    rituais.value = e.rituais || "";
+    equipamentos.value = e.equipamentos || "";
+    descricao.value = e.descricao || "";
+
+    carregando = false;
 }
 
-/* 🔥 SAVE INTELIGENTE (não destrói dados do outro editor) */
+/* SAVE */
 async function save() {
     if (carregando) return;
 
-    let patch = {};
+    const data = {
+        dados: {
+            info: {
+                nome: nome.value || "",
+                classe: classe.value || "",
+                origem: origem.value || ""
+            },
+            atributos: {
+                for: +for.value || 0,
+                agi: +agi.value || 0,
+                int: +int.value || 0,
+                vig: +vig.value || 0,
+                pre: +pre.value || 0,
+                deslocamento: +deslocamento.value || 0
+            },
+            combate: {
+                hp_atual: +hp_atual.value || 0,
+                hp_max: +hp_max.value || 0,
+                sanidade_atual: +sanidade_atual.value || 0,
+                sanidade_max: +sanidade_max.value || 0,
+                pe_atual: +pe_atual.value || 0,
+                pe_max: +pe_max.value || 0,
+                pd_turno: +pd_turno.value || 0,
+                defesa: +defesa.value || 0,
+                bloqueio: +bloqueio.value || 0,
+                esquiva: +esquiva.value || 0
+            }
+        },
+        extras: {
+            pericias: pericias.value || "",
+            habilidades: habilidades.value || "",
+            rituais: rituais.value || "",
+            equipamentos: equipamentos.value || "",
+            descricao: descricao.value || ""
+        }
+    };
 
-    document.querySelectorAll("input, textarea").forEach(el => {
-        if (el.id) patch[el.id] = el.value;
-    });
-
-    // UPDATE ao invés de SET (isso resolve o conflito com PC editor)
-    await update(ref(db, "personagens/" + id), patch);
-
-    $("status").innerText = "Salvo ✔";
-    setTimeout(() => $("status").innerText = "Salvando...", 1000);
+    await set(ref(db, "personagens/" + id), data);
 }
 
-/* AUTOSAVE */
-let timeout;
-document.querySelectorAll("input, textarea").forEach(el => {
-    el.addEventListener("input", () => {
-        if (carregando) return;
-
-        clearTimeout(timeout);
-        timeout = setTimeout(save, 600);
-    });
-});
-
-/* TABS FIX */
-function showTab(tabId) {
-    document.querySelectorAll(".tab").forEach(t => {
-        t.classList.remove("active");
-    });
-
-    const el = document.getElementById(tabId);
-    if (el) el.classList.add("active");
-}
-
-window.showTab = showTab;
-
-/* INIT */
-window.onload = async () => {
-    showTab("info");
-    await load();
-};
+setInterval(save, 5000);
+window.onload = load;
 </script>
 
 </body>
