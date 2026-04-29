@@ -21,7 +21,6 @@ header {
     top: 0;
 }
 
-/* TABS */
 .tabs {
     display: flex;
     background: #1f1f1f;
@@ -38,13 +37,11 @@ header {
     cursor: pointer;
 }
 
-/* TAB */
 .tab {
     display: none;
     padding: 12px;
 }
 
-/* INPUT */
 input, textarea {
     width: 100%;
     padding: 12px;
@@ -55,7 +52,6 @@ input, textarea {
     box-sizing: border-box;
 }
 
-/* GRID */
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -119,6 +115,23 @@ h3 {
     <div><input id="esquiva" type="number"><div class="label">ESQUIVA</div></div>
 </div>
 
+<!-- 🔥 RESTAURADO: SANIDADE / PE / PD -->
+<h3>Recursos</h3>
+<div class="grid">
+    <div><input id="san_atual" type="number"><div class="label">SAN Atual</div></div>
+    <div><input id="san_max" type="number"><div class="label">SAN Máx</div></div>
+</div>
+
+<div class="grid">
+    <div><input id="pe_atual" type="number"><div class="label">PE Atual</div></div>
+    <div><input id="pe_max" type="number"><div class="label">PE Máx</div></div>
+</div>
+
+<div class="grid">
+    <div><input id="pd_atual" type="number"><div class="label">PD Atual</div></div>
+    <div><input id="pd_max" type="number"><div class="label">PD Máx</div></div>
+</div>
+
 <h3>Armas</h3>
 <input id="arma1" placeholder="Arma 1">
 <input id="arma2" placeholder="Arma 2">
@@ -146,18 +159,17 @@ const app = initializeApp({
 });
 
 const db = getDatabase(app);
-
 const id = new URLSearchParams(location.search).get("id");
 
 function $(id){ return document.getElementById(id); }
 
-/* TAB FIX GLOBAL */
+/* TAB */
 window.showTab = function(tab){
     document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
     document.getElementById(tab).style.display = "block";
 };
 
-/* LOAD FIREBASE */
+/* LOAD */
 if(id){
     onValue(ref(db,"personagens/"+id), (snap)=>{
 
@@ -185,6 +197,15 @@ if(id){
         $("bloqueio").value = c.bloqueio || 0;
         $("esquiva").value = c.esquiva || 0;
 
+        $("san_atual").value = c.sanidade_atual || 0;
+        $("san_max").value = c.sanidade_max || 0;
+
+        $("pe_atual").value = c.pe_atual || 0;
+        $("pe_max").value = c.pe_max || 0;
+
+        $("pd_atual").value = c.pd_atual || 0;
+        $("pd_max").value = c.pd_max || 0;
+
         $("arma1").value = c.arma1 || "";
         $("arma2").value = c.arma2 || "";
         $("arma3").value = c.arma3 || "";
@@ -196,18 +217,15 @@ if(id){
     });
 }
 
-/* AUTO SAVE SIMPLES */
+/* SAVE SIMPLES */
 async function save(path, key, value){
     if(!id) return;
-
-    const refPath = ref(db,"personagens/"+id+"/"+path);
     const obj = {};
     obj[key] = value;
-
-    await set(refPath, obj);
+    await set(ref(db,"personagens/"+id+"/"+path), obj);
 }
 
-/* INPUT LISTENER */
+/* INPUTS */
 document.querySelectorAll("input, textarea").forEach(el=>{
     el.addEventListener("input", ()=>{
         const v = el.value;
@@ -215,7 +233,7 @@ document.querySelectorAll("input, textarea").forEach(el=>{
 
         if(["for","agi","int","vig","pre","desl"].includes(n))
             save("dados/atributos", n, Number(v));
-        else if(["defesa","bloqueio","esquiva","arma1","arma2","arma3"].includes(n))
+        else if(["defesa","bloqueio","esquiva","arma1","arma2","arma3","san_atual","san_max","pe_atual","pe_max","pd_atual","pd_max"].includes(n))
             save("dados/combate", n, v);
         else if(["pericias","habilidades","rituais","equipamentos","descricao"].includes(n))
             save("extras", n, v);
