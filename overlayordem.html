@@ -21,27 +21,11 @@ body {
 .nome {
     font-size: 28px;
     font-weight: bold;
+    margin-bottom: 6px;
 }
 
 .stat {
     font-size: 18px;
-    margin-top: 4px;
-    display: block;
-}
-
-.hidden {
-    display: none !important;
-}
-
-.toggle {
-    margin-top: 10px;
-    font-size: 12px;
-    padding: 5px 10px;
-    background: rgba(255,255,255,0.15);
-    display: inline-block;
-    border-radius: 6px;
-    cursor: pointer;
-    user-select: none;
 }
 </style>
 </head>
@@ -50,13 +34,7 @@ body {
 
 <div class="overlay">
     <div class="nome" id="nome">Carregando...</div>
-
-    <div class="stat" id="hp"></div>
-    <div class="stat" id="san"></div>
-    <div class="stat" id="pe"></div>
-    <div class="stat" id="pd"></div>
-
-    <div class="toggle" id="toggle">Modo PD: OFF</div>
+    <div class="stat" id="hp">HP: 0 / 0</div>
 </div>
 
 <script type="module">
@@ -78,60 +56,20 @@ if (!id) {
     console.error("ID não encontrado na URL");
 }
 
-/* ELEMENTOS */
 const nomeEl = document.getElementById("nome");
 const hpEl = document.getElementById("hp");
-const sanEl = document.getElementById("san");
-const peEl = document.getElementById("pe");
-const pdEl = document.getElementById("pd");
-const toggle = document.getElementById("toggle");
 
-let modoPD = false;
-
-/* render único */
-function renderUI() {
-    toggle.innerText = "Modo PD: " + (modoPD ? "ON" : "OFF");
-
-    if (modoPD) {
-        sanEl.classList.add("hidden");
-        peEl.classList.add("hidden");
-        pdEl.classList.remove("hidden");
-    } else {
-        sanEl.classList.remove("hidden");
-        peEl.classList.remove("hidden");
-        pdEl.classList.add("hidden");
-    }
-}
-
-toggle.onclick = () => {
-    modoPD = !modoPD;
-    renderUI();
-};
-
-/* FIREBASE REALTIME FIX */
+/* LIVE UPDATE */
 onValue(ref(db, "personagens/" + id), (snap) => {
     const p = snap.val();
-
-    if (!p || !p.dados) {
-        nomeEl.textContent = "Sem dados";
-        return;
-    }
+    if (!p || !p.dados) return;
 
     const info = p.dados.info || {};
     const c = p.dados.combate || {};
 
     nomeEl.textContent = info.nome || "Sem nome";
-
     hpEl.textContent = `HP: ${c.hp_atual ?? 0} / ${c.hp_max ?? 0}`;
-    sanEl.textContent = `SAN: ${c.sanidade_atual ?? 0} / ${c.sanidade_max ?? 0}`;
-    peEl.textContent = `PE: ${c.pe_atual ?? 0} / ${c.pe_max ?? 0}`;
-    pdEl.textContent = `PD: ${c.pd_turno ?? 0}`;
-
-    renderUI();
 });
-
-/* init */
-renderUI();
 
 </script>
 
