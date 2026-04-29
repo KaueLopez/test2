@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Editor Ordem Paranormal</title>
+<title>Editor PC Ordem Paranormal</title>
 
 <style>
 body {
@@ -21,17 +21,12 @@ body {
     padding: 20px;
 }
 
-h2 {
-    text-align: center;
-}
-
 h3 {
     margin-top: 20px;
     padding: 8px;
     background: #1f1f1f;
     border-left: 4px solid #7c3aed;
     border-radius: 6px;
-    font-size: 14px;
 }
 
 input, textarea {
@@ -47,8 +42,6 @@ input, textarea {
     box-sizing: border-box;
 }
 
-textarea { min-height: 80px; }
-
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -63,10 +56,9 @@ textarea { min-height: 80px; }
 label {
     font-size: 12px;
     color: #bbb;
-    margin-bottom: 4px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 800px) {
     .grid { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
@@ -74,105 +66,87 @@ label {
 
 <body>
 
-<h2>Ordem Paranormal</h2>
-
 <div class="box">
 
 <h3>Informações</h3>
-<div class="field"><label>Nome</label><input id="nome"></div>
-<div class="field"><label>Origem</label><input id="origem"></div>
-<div class="field"><label>Classe</label><input id="classe"></div>
+<input id="nome" placeholder="Nome">
+<input id="classe" placeholder="Classe">
+<input id="origem" placeholder="Origem">
 
-<h3>Saúde</h3>
+<h3>Combate</h3>
 
 <div class="grid">
-    <div class="field"><label>HP Atual</label><input id="hp_atual" type="number"></div>
-    <div class="field"><label>HP Máximo</label><input id="hp_max" type="number"></div>
+    <div><label>HP Atual</label><input id="hp_atual" type="number"></div>
+    <div><label>HP Máx</label><input id="hp_max" type="number"></div>
 </div>
 
 <div class="grid">
-    <div class="field"><label>Sanidade Atual</label><input id="sanidade_atual" type="number"></div>
-    <div class="field"><label>Sanidade Máxima</label><input id="sanidade_max" type="number"></div>
+    <div><label>Sanidade Atual</label><input id="san_atual" type="number"></div>
+    <div><label>Sanidade Máx</label><input id="san_max" type="number"></div>
 </div>
 
 <div class="grid">
-    <div class="field"><label>PE Atual</label><input id="pe_atual" type="number"></div>
-    <div class="field"><label>PE Máximo</label><input id="pe_max" type="number"></div>
-    <div class="field"><label>PD por Turno</label><input id="pd_turno" type="number"></div>
+    <div><label>PE Atual</label><input id="pe_atual" type="number"></div>
+    <div><label>PE Máx</label><input id="pe_max" type="number"></div>
+    <div><label>PD Turno</label><input id="pd_turno" type="number"></div>
 </div>
 
 <div class="grid">
-    <div class="field"><label>Defesa</label><input id="defesa" type="number"></div>
-    <div class="field"><label>Bloqueio</label><input id="bloqueio" type="number"></div>
-    <div class="field"><label>Esquiva</label><input id="esquiva" type="number"></div>
+    <div><label>Defesa</label><input id="defesa" type="number"></div>
+    <div><label>Bloqueio</label><input id="bloqueio" type="number"></div>
+    <div><label>Esquiva</label><input id="esquiva" type="number"></div>
 </div>
 
-<div class="grid">
-    <div class="field"><label>Nível</label><input id="nivel" type="number"></div>
-    <div class="field"><label>NEX</label><input id="nex" type="number"></div>
-</div>
+<h3>Armas</h3>
+<input id="arma1" placeholder="Arma 1">
+<input id="arma2" placeholder="Arma 2">
+<input id="arma3" placeholder="Arma 3">
 
 <h3>Atributos</h3>
 
 <div class="grid">
-    <div class="field"><label>AGI</label><input id="agi" type="number"></div>
-    <div class="field"><label>FOR</label><input id="for" type="number"></div>
-    <div class="field"><label>INT</label><input id="int" type="number"></div>
-    <div class="field"><label>VIG</label><input id="vig" type="number"></div>
-    <div class="field"><label>PRE</label><input id="pre" type="number"></div>
-    <div class="field"><label>Deslocamento</label><input id="deslocamento" type="number"></div>
+    <div><label>FOR</label><input id="for" type="number"></div>
+    <div><label>AGI</label><input id="agi" type="number"></div>
+    <div><label>INT</label><input id="int" type="number"></div>
+    <div><label>VIG</label><input id="vig" type="number"></div>
+    <div><label>PRE</label><input id="pre" type="number"></div>
+    <div><label>DESL</label><input id="desl" type="number"></div>
 </div>
 
-<h3>Combate</h3>
-<div class="field"><label>Arma 1</label><input id="arma1"></div>
-<div class="field"><label>Arma 2</label><input id="arma2"></div>
-<div class="field"><label>Arma 3</label><input id="arma3"></div>
-
-<h3>Perícias</h3>
+<h3>Extras</h3>
 <textarea id="pericias"></textarea>
-
-<h3>Habilidades</h3>
 <textarea id="habilidades"></textarea>
-
-<h3>Rituais</h3>
 <textarea id="rituais"></textarea>
-
-<h3>Equipamentos</h3>
 <textarea id="equipamentos"></textarea>
-
-<h3>Descrição</h3>
 <textarea id="descricao"></textarea>
+
+<label>
+<input id="modoPD" type="checkbox"> Modo PD
+</label>
 
 </div>
 
 <script type="module">
-import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-/* 🔥 FIREBASE ÚNICO (SEM CONFLITO) */
-const firebaseConfig = {
+const app = initializeApp({
   apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
   authDomain: "fichasrpg-45934.firebaseapp.com",
   databaseURL: "https://fichasrpg-45934-default-rtdb.firebaseio.com"
-};
+});
 
-const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const db = getDatabase(app);
-
 const id = new URLSearchParams(location.search).get("id");
-let carregando = true;
 
 const $ = (id) => document.getElementById(id);
 
-/* LOAD */
-async function carregar() {
-    if (!id) return;
+let carregando = true;
 
-    const snap = await get(child(ref(db), "personagens/" + id));
-    if (!snap.exists()) {
-        carregando = false;
-        return;
-    }
+/* LOAD */
+async function load(){
+    const snap = await get(child(ref(db),"personagens/"+id));
+    if(!snap.exists()){carregando=false;return;}
 
     const p = snap.val();
 
@@ -180,6 +154,7 @@ async function carregar() {
     const c = p.dados?.combate || {};
     const a = p.dados?.atributos || {};
     const e = p.extras || {};
+    const cfg = p.config || {};
 
     $("nome").value = i.nome || "";
     $("classe").value = i.classe || "";
@@ -188,8 +163,8 @@ async function carregar() {
     $("hp_atual").value = c.hp_atual || 0;
     $("hp_max").value = c.hp_max || 0;
 
-    $("sanidade_atual").value = c.sanidade_atual || 0;
-    $("sanidade_max").value = c.sanidade_max || 0;
+    $("san_atual").value = c.sanidade_atual || 0;
+    $("san_max").value = c.sanidade_max || 0;
 
     $("pe_atual").value = c.pe_atual || 0;
     $("pe_max").value = c.pe_max || 0;
@@ -199,19 +174,16 @@ async function carregar() {
     $("bloqueio").value = c.bloqueio || 0;
     $("esquiva").value = c.esquiva || 0;
 
-    $("nivel").value = c.nivel || 0;
-    $("nex").value = c.nex || 0;
+    $("arma1").value = c.arma1 || "";
+    $("arma2").value = c.arma2 || "";
+    $("arma3").value = c.arma3 || "";
 
     $("for").value = a.for || 0;
     $("agi").value = a.agi || 0;
     $("int").value = a.int || 0;
     $("vig").value = a.vig || 0;
     $("pre").value = a.pre || 0;
-    $("deslocamento").value = a.deslocamento || 0;
-
-    $("arma1").value = c.arma1 || "";
-    $("arma2").value = c.arma2 || "";
-    $("arma3").value = c.arma3 || "";
+    $("desl").value = a.deslocamento || 0;
 
     $("pericias").value = e.pericias || "";
     $("habilidades").value = e.habilidades || "";
@@ -219,60 +191,61 @@ async function carregar() {
     $("equipamentos").value = e.equipamentos || "";
     $("descricao").value = e.descricao || "";
 
+    $("modoPD").checked = cfg.modoPD || false;
+
     carregando = false;
 }
 
-/* SAVE */
-async function salvar() {
-    if (carregando) return;
+/* SAVE (PADRÃO ÚNICO COM MOBILE) */
+async function save(){
+    if(carregando) return;
 
-    const data = {
-        dados: {
-            info: {
-                nome: $("nome").value || "",
-                classe: $("classe").value || "",
-                origem: $("origem").value || ""
+    await set(ref(db,"personagens/"+id),{
+        dados:{
+            info:{
+                nome:$("nome").value,
+                classe:$("classe").value,
+                origem:$("origem").value
             },
-            atributos: {
-                for: +$("for").value || 0,
-                agi: +$("agi").value || 0,
-                int: +$("int").value || 0,
-                vig: +$("vig").value || 0,
-                pre: +$("pre").value || 0,
-                deslocamento: +$("deslocamento").value || 0
+            atributos:{
+                for:+$("for").value||0,
+                agi:+$("agi").value||0,
+                int:+$("int").value||0,
+                vig:+$("vig").value||0,
+                pre:+$("pre").value||0,
+                deslocamento:+$("desl").value||0
             },
-            combate: {
-                hp_atual: +$("hp_atual").value || 0,
-                hp_max: +$("hp_max").value || 0,
-                sanidade_atual: +$("sanidade_atual").value || 0,
-                sanidade_max: +$("sanidade_max").value || 0,
-                pe_atual: +$("pe_atual").value || 0,
-                pe_max: +$("pe_max").value || 0,
-                pd_turno: +$("pd_turno").value || 0,
-                defesa: +$("defesa").value || 0,
-                bloqueio: +$("bloqueio").value || 0,
-                esquiva: +$("esquiva").value || 0,
-                nivel: +$("nivel").value || 0,
-                nex: +$("nex").value || 0,
-                arma1: $("arma1").value || "",
-                arma2: $("arma2").value || "",
-                arma3: $("arma3").value || ""
+            combate:{
+                hp_atual:+$("hp_atual").value||0,
+                hp_max:+$("hp_max").value||0,
+                sanidade_atual:+$("san_atual").value||0,
+                sanidade_max:+$("san_max").value||0,
+                pe_atual:+$("pe_atual").value||0,
+                pe_max:+$("pe_max").value||0,
+                pd_turno:+$("pd_turno").value||0,
+                defesa:+$("defesa").value||0,
+                bloqueio:+$("bloqueio").value||0,
+                esquiva:+$("esquiva").value||0,
+                arma1:$("arma1").value,
+                arma2:$("arma2").value,
+                arma3:$("arma3").value
             }
         },
-        extras: {
-            pericias: $("pericias").value || "",
-            habilidades: $("habilidades").value || "",
-            rituais: $("rituais").value || "",
-            equipamentos: $("equipamentos").value || "",
-            descricao: $("descricao").value || ""
+        extras:{
+            pericias:$("pericias").value,
+            habilidades:$("habilidades").value,
+            rituais:$("rituais").value,
+            equipamentos:$("equipamentos").value,
+            descricao:$("descricao").value
+        },
+        config:{
+            modoPD:$("modoPD").checked
         }
-    };
-
-    await set(ref(db, "personagens/" + id), data);
+    });
 }
 
-setInterval(salvar, 5000);
-window.onload = carregar;
+setInterval(save,5000);
+window.onload=load;
 </script>
 
 </body>
