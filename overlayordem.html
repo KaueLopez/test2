@@ -1,77 +1,59 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-
 <style>
 body {
     margin: 0;
     background: transparent;
-    font-family: Times New Roman;
+    font-family: "Times New Roman", Times, serif;
 }
 
+/* CONTAINER */
 .overlay {
     position: absolute;
     bottom: 30px;
     left: 30px;
-    color: white;
-    text-shadow: 1px 1px 3px black;
+    color: #ffffff;
 }
 
+/* NOME NEON */
 .nome {
     font-size: 28px;
     font-weight: bold;
     margin-bottom: 6px;
+
+    color: #00fff7;
+    text-shadow:
+        0 0 5px #00fff7,
+        0 0 10px #00fff7,
+        0 0 20px #00fff7,
+        0 0 40px #00fff7;
 }
 
+/* STATUS COM NEON MAIS FRACO */
 .stat {
     font-size: 18px;
+
+    color: #ffffff;
+    text-shadow:
+        0 0 3px #ffffff,
+        0 0 6px #00fff7;
+}
+
+/* EXTRA: efeito de pulso leve no nome */
+@keyframes pulse {
+    0%, 100% {
+        text-shadow:
+            0 0 5px #00fff7,
+            0 0 10px #00fff7,
+            0 0 20px #00fff7;
+    }
+    50% {
+        text-shadow:
+            0 0 2px #00fff7,
+            0 0 8px #00fff7,
+            0 0 15px #00fff7;
+    }
+}
+
+.nome {
+    animation: pulse 2s infinite;
 }
 </style>
-</head>
-
-<body>
-
-<div class="overlay">
-    <div class="nome" id="nome">Carregando...</div>
-    <div class="stat" id="hp">HP: 0 / 0</div>
-</div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
-  authDomain: "fichasrpg-45934.firebaseapp.com",
-  databaseURL: "https://fichasrpg-45934-default-rtdb.firebaseio.com"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-const id = new URLSearchParams(location.search).get("id");
-
-if (!id) {
-    console.error("ID não encontrado na URL");
-}
-
-const nomeEl = document.getElementById("nome");
-const hpEl = document.getElementById("hp");
-
-/* LIVE UPDATE */
-onValue(ref(db, "personagens/" + id), (snap) => {
-    const p = snap.val();
-    if (!p || !p.dados) return;
-
-    const info = p.dados.info || {};
-    const c = p.dados.combate || {};
-
-    nomeEl.textContent = info.nome || "Sem nome";
-    hpEl.textContent = `HP: ${c.hp_atual ?? 0} / ${c.hp_max ?? 0}`;
-});
-
-</script>
-
-</body>
-</html>
