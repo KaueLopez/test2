@@ -29,7 +29,8 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-const id = "1"; // jogador
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id") || "1";
 
 function salvar() {
     db.ref("players/" + id).set({
