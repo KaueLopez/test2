@@ -178,8 +178,8 @@ function salvar() {
         social: document.getElementById("social").value,
 
         saude: {
-            hp_atual: document.getElementById("hp_atual").value,
-            hp_max: document.getElementById("hp_max").value
+            hp_atual: Number(document.getElementById("hp_atual").value) || 0,
+            hp_max: Number(document.getElementById("hp_max").value) || 0
         },
 
         caracteristicas: document.getElementById("caracteristicas").value,
@@ -201,7 +201,24 @@ function salvar() {
 },
     });
 }
+function carregar() {
+    get(child(ref(db), "personagens/" + idAtual)).then(snapshot => {
+        if (!snapshot.exists()) return;
 
+        const p = snapshot.val();
+
+        document.getElementById("nome").value = p.nome || "";
+        document.getElementById("evento").value = p.evento || "";
+        document.getElementById("social").value = p.social || "";
+
+        document.getElementById("hp_atual").value = p.saude?.hp_atual || "";
+        document.getElementById("hp_max").value = p.saude?.hp_max || "";
+
+        document.getElementById("caracteristicas").value = p.caracteristicas || "";
+        document.getElementById("equipamentos").value = p.equipamentos || "";
+    });
+}
+    
 // 🔁 AUTOSAVE AUTOMÁTICO
 document.querySelectorAll("input, textarea").forEach(el => {
     el.addEventListener("input", () => {
