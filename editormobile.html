@@ -366,7 +366,10 @@ function ativarAutosave() {
             if (carregando) return;
 
             clearTimeout(timeout);
-            timeout = setTimeout(salvar, 700);
+
+            timeout = setTimeout(() => {
+                salvar();
+            }, 5000); // ⬅️ 5 segundos de atraso
         });
     });
 }
