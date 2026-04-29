@@ -58,16 +58,23 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-// 👇 ID fixo ou via URL
+// 🔥 pega ID da URL
 const id = new URLSearchParams(window.location.search).get("id");
 
+if (!id) {
+    console.error("ID não encontrado na URL");
+}
+
+// 🔁 atualização em tempo real
 onValue(ref(db, "personagens/" + id), (snapshot) => {
     const p = snapshot.val();
 
     if (!p) return;
 
     document.getElementById("nome").innerText = p.nome || "Sem nome";
-    document.getElementById("hp").innerText = `HP: ${p.hp_atual || 0} / ${p.hp_max || 0}`;
+
+    document.getElementById("hp").innerText =
+        `HP: ${p.saude?.hp_atual || 0} / ${p.saude?.hp_max || 0}`;
 });
 
 </script>
