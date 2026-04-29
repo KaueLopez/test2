@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Editor Mobile</title>
+<title>Editor Mobile RPG</title>
 
 <style>
 body {
@@ -21,6 +21,7 @@ header {
     top: 0;
 }
 
+/* TABS */
 .tabs {
     display: flex;
     position: sticky;
@@ -34,6 +35,7 @@ header {
     border: none;
     background: #1f1f1f;
     color: white;
+    cursor: pointer;
 }
 
 .tab {
@@ -41,26 +43,56 @@ header {
     padding: 12px;
 }
 
+/* INPUTS */
 input, textarea {
     width: 100%;
-    padding: 14px;
-    font-size: 16px;
+    padding: 12px;
+    font-size: 15px;
     border-radius: 8px;
     border: none;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     box-sizing: border-box;
 }
 
+/* 🔥 GRID RESTAURADO */
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
 }
 
-@media (max-width: 600px) {
+/* RESPONSIVO */
+@media (max-width: 800px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 500px) {
     .grid { grid-template-columns: 1fr; }
 }
 
+/* 🔥 BLOCO DE STATUS (HP / ATRIBUTOS / ETC) */
+.block {
+    background: #161616;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #2a2a2a;
+    margin-bottom: 12px;
+}
+
+/* LABEL RESTAURADO */
+.label {
+    font-size: 12px;
+    opacity: 0.7;
+    margin-top: 4px;
+    text-align: center;
+}
+
+/* CELULA */
+.cell {
+    text-align: center;
+}
+
+/* STATUS SAVE */
 #status {
     position: fixed;
     bottom: 12px;
@@ -68,13 +100,14 @@ input, textarea {
     background: #7c3aed;
     padding: 8px 12px;
     border-radius: 20px;
+    font-size: 12px;
 }
 </style>
 </head>
 
 <body>
 
-<header>Editor Mobile</header>
+<header>Editor Mobile RPG</header>
 
 <div class="tabs">
     <button onclick="showTab('info')">Info</button>
@@ -82,49 +115,119 @@ input, textarea {
     <button onclick="showTab('skills')">Skills</button>
 </div>
 
+<!-- INFO -->
 <div id="info" class="tab">
-    <input id="nome" placeholder="Nome">
-    <input id="classe" placeholder="Classe">
-    <input id="origem" placeholder="Origem">
-    <textarea id="descricao"></textarea>
+    <div class="block">
+        <input id="nome" placeholder="Nome">
+        <input id="classe" placeholder="Classe">
+        <input id="origem" placeholder="Origem">
+        <textarea id="descricao" placeholder="Descrição"></textarea>
+    </div>
 </div>
 
+<!-- COMBATE -->
 <div id="combat" class="tab">
-    <input id="hp_atual" placeholder="HP Atual">
-    <input id="hp_max" placeholder="HP Max">
 
-    <input id="san_atual" placeholder="San Atual">
-    <input id="san_max" placeholder="San Max">
-
-    <input id="pe_atual" placeholder="PE Atual">
-    <input id="pe_max" placeholder="PE Max">
-    <input id="pd_turno" placeholder="PD Turno">
-
-    <input id="defesa" placeholder="Defesa">
-    <input id="bloqueio" placeholder="Bloqueio">
-    <input id="esquiva" placeholder="Esquiva">
-
-    <input id="arma1" placeholder="Arma 1">
-    <input id="arma2" placeholder="Arma 2">
-    <input id="arma3" placeholder="Arma 3">
+<div class="block">
+<h3>HP</h3>
+<div class="grid">
+    <div class="cell">
+        <input id="hp_atual" type="number">
+        <div class="label">Atual</div>
+    </div>
+    <div class="cell">
+        <input id="hp_max" type="number">
+        <div class="label">Máximo</div>
+    </div>
+</div>
 </div>
 
+<div class="block">
+<h3>Sanidade</h3>
+<div class="grid">
+    <div class="cell">
+        <input id="san_atual" type="number">
+        <div class="label">Atual</div>
+    </div>
+    <div class="cell">
+        <input id="san_max" type="number">
+        <div class="label">Máx</div>
+    </div>
+</div>
+</div>
+
+<div class="block">
+<h3>PD / PE</h3>
+<div class="grid">
+    <div class="cell">
+        <input id="pe_atual" type="number">
+        <div class="label">PE Atual</div>
+    </div>
+    <div class="cell">
+        <input id="pe_max" type="number">
+        <div class="label">PE Máx</div>
+    </div>
+    <div class="cell">
+        <input id="pd_turno" type="number">
+        <div class="label">PD Turno</div>
+    </div>
+</div>
+</div>
+
+<div class="block">
+<h3>Defesa</h3>
+<div class="grid">
+    <div class="cell"><input id="defesa" type="number"><div class="label">Defesa</div></div>
+    <div class="cell"><input id="bloqueio" type="number"><div class="label">Bloqueio</div></div>
+    <div class="cell"><input id="esquiva" type="number"><div class="label">Esquiva</div></div>
+</div>
+</div>
+
+<div class="block">
+<h3>Armas</h3>
+<input id="arma1" placeholder="Arma 1">
+<input id="arma2" placeholder="Arma 2">
+<input id="arma3" placeholder="Arma 3">
+</div>
+
+</div>
+
+<!-- SKILLS -->
 <div id="skills" class="tab">
-    <input id="for" placeholder="FOR">
-    <input id="agi" placeholder="AGI">
-    <input id="int" placeholder="INT">
-    <input id="vig" placeholder="VIG">
-    <input id="pre" placeholder="PRE">
-    <input id="desl" placeholder="DESL">
 
-    <textarea id="pericias"></textarea>
-    <textarea id="habilidades"></textarea>
-    <textarea id="rituais"></textarea>
-    <textarea id="equipamentos"></textarea>
+<div class="block">
+<h3>Atributos</h3>
+<div class="grid">
+    <div class="cell"><input id="for" type="number"><div class="label">FOR</div></div>
+    <div class="cell"><input id="agi" type="number"><div class="label">AGI</div></div>
+    <div class="cell"><input id="int" type="number"><div class="label">INT</div></div>
+    <div class="cell"><input id="vig" type="number"><div class="label">VIG</div></div>
+    <div class="cell"><input id="pre" type="number"><div class="label">PRE</div></div>
+    <div class="cell"><input id="desl" type="number"><div class="label">DESL</div></div>
+</div>
+</div>
 
-    <label>
-        <input id="modoPD" type="checkbox"> Modo PD
-    </label>
+<div class="block">
+<h3>Perícias</h3>
+<textarea id="pericias"></textarea>
+
+<h3>Habilidades</h3>
+<textarea id="habilidades"></textarea>
+
+<h3>Rituais</h3>
+<textarea id="rituais"></textarea>
+
+<h3>Equipamentos</h3>
+<textarea id="equipamentos"></textarea>
+</div>
+
+<div class="block">
+<label>
+<input id="modoPD" type="checkbox">
+Modo PD (substitui Sanidade)
+</label>
+</div>
+
 </div>
 
 <div id="status">Salvando...</div>
@@ -144,20 +247,21 @@ const id = new URLSearchParams(location.search).get("id");
 
 const $ = (id) => document.getElementById(id);
 
+let carregando = true;
+
 function showTab(t){
     document.querySelectorAll(".tab").forEach(e=>e.style.display="none");
     $(t).style.display="block";
 }
-
 window.showTab = showTab;
 
-let carregando = true;
-
+/* LOAD */
 async function load(){
-    const snap = await get(child(ref(db), "personagens/" + id));
+    const snap = await get(child(ref(db),"personagens/"+id));
     if(!snap.exists()){carregando=false;return;}
 
     const p = snap.val();
+
     const i = p.dados?.info || {};
     const c = p.dados?.combate || {};
     const a = p.dados?.atributos || {};
@@ -204,6 +308,7 @@ async function load(){
     carregando=false;
 }
 
+/* SAVE */
 async function save(){
     if(carregando) return;
 
