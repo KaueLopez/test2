@@ -177,8 +177,6 @@ h3 {
     <textarea id="equipamentos" placeholder="Equipamentos"></textarea>
 </div>
 
-<button class="save-btn" onclick="salvar()">💾</button>
-
 <!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -210,7 +208,7 @@ let idAtual = new URLSearchParams(window.location.search).get("id");
 let carregando = true;
 let timeout = null;
 
-// 💾 SALVAR
+// SALVAR
 function salvar() {
     if (!idAtual || carregando) return;
 
@@ -258,7 +256,7 @@ function salvar() {
     });
 }
 
-// 🔁 AUTOSAVE 5s (DEBOUNCE)
+// AUTOSAVE DEBOUCE 5S
 function ativarAutosave() {
     document.querySelectorAll("input, textarea").forEach(el => {
         el.addEventListener("input", () => {
@@ -272,7 +270,7 @@ function ativarAutosave() {
     });
 }
 
-// 📥 CARREGAR
+// CARREGAR
 function carregar() {
     if (!idAtual) return;
 
