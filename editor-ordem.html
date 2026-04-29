@@ -82,77 +82,77 @@ label {
 
 <div class="box">
 
-<!-- INFO -->
 <h3>Informações</h3>
 
 <div class="field"><label>Nome</label><input id="nome"></div>
 <div class="field"><label>Origem</label><input id="origem"></div>
 <div class="field"><label>Classe</label><input id="classe"></div>
 
-<!-- SAÚDE -->
 <h3>Saúde</h3>
 
 <div class="grid">
-<div class="field"><label>HP Atual</label><input id="hp_atual" type="number"></div>
-<div class="field"><label>HP Máximo</label><input id="hp_max" type="number"></div>
+    <div class="field"><label>HP Atual</label><input id="hp_atual" type="number"></div>
+    <div class="field"><label>HP Máximo</label><input id="hp_max" type="number"></div>
 </div>
 
 <div class="grid">
-<div class="field"><label>PD/PE Atual</label><input id="pe_atual" type="number"></div>
-<div class="field"><label>PD/PE Máximo</label><input id="pe_max" type="number"></div>
+    <div class="field"><label>Sanidade Atual</label><input id="sanidade_atual" type="number"></div>
+    <div class="field"><label>Sanidade Máxima</label><input id="sanidade_max" type="number"></div>
 </div>
 
 <div class="grid">
-<div class="field"><label>Defesa</label><input id="defesa" type="number"></div>
-<div class="field"><label>Bloqueio</label><input id="bloqueio" type="number"></div>
-<div class="field"><label>Esquiva</label><input id="esquiva" type="number"></div>
+    <div class="field"><label>PD/PE Atual</label><input id="pe_atual" type="number"></div>
+    <div class="field"><label>PD/PE Máximo</label><input id="pe_max" type="number"></div>
+    <div class="field"><label>PD por Turno</label><input id="pd_turno" type="number"></div>
 </div>
 
 <div class="grid">
-<div class="field"><label>Nível</label><input id="nivel" type="number"></div>
-<div class="field"><label>NEX</label><input id="nex" type="number"></div>
+    <div class="field"><label>Defesa</label><input id="defesa" type="number"></div>
+    <div class="field"><label>Bloqueio</label><input id="bloqueio" type="number"></div>
+    <div class="field"><label>Esquiva</label><input id="esquiva" type="number"></div>
 </div>
 
-<!-- ATRIBUTOS -->
+<div class="grid">
+    <div class="field"><label>Nível</label><input id="nivel" type="number"></div>
+    <div class="field"><label>NEX</label><input id="nex" type="number"></div>
+</div>
+
 <h3>Atributos</h3>
 
 <div class="grid">
-<div class="field"><label>AGI</label><input id="agi" type="number"></div>
-<div class="field"><label>FOR</label><input id="for" type="number"></div>
-<div class="field"><label>INT</label><input id="int" type="number"></div>
-<div class="field"><label>VIG</label><input id="vig" type="number"></div>
-<div class="field"><label>PRE</label><input id="pre" type="number"></div>
-<div class="field"><label>Deslocamento</label><input id="deslocamento" type="number"></div>
+    <div class="field"><label>AGI</label><input id="agi" type="number"></div>
+    <div class="field"><label>FOR</label><input id="for" type="number"></div>
+    <div class="field"><label>INT</label><input id="int" type="number"></div>
+    <div class="field"><label>VIG</label><input id="vig" type="number"></div>
+    <div class="field"><label>PRE</label><input id="pre" type="number"></div>
+    <div class="field"><label>Deslocamento</label><input id="deslocamento" type="number"></div>
 </div>
 
-<!-- COMBATE -->
 <h3>Combate</h3>
 
 <div class="field">
-<label>Arma 1</label>
-<input id="arma1" type="text">
+    <label>Arma 1</label>
+    <input id="arma1" type="text">
 </div>
 
 <div class="field">
-<label>Arma 2</label>
-<input id="arma2" type="text">
+    <label>Arma 2</label>
+    <input id="arma2" type="text">
 </div>
 
 <div class="field">
-<label>Arma 3</label>
-<input id="arma3" type="text">
+    <label>Arma 3</label>
+    <input id="arma3" type="text">
 </div>
 
-<!-- PERÍCIAS -->
 <h3>Perícias</h3>
 <div class="field">
-<textarea id="pericias"></textarea>
+    <textarea id="pericias"></textarea>
 </div>
 
-<!-- HABILIDADES -->
 <h3>Habilidades</h3>
 <div class="field">
-<textarea id="hab_texto"></textarea>
+    <textarea id="hab_texto"></textarea>
 </div>
 
 <h3>Defesas / Extras</h3>
@@ -170,7 +170,6 @@ label {
 
 </div>
 
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -182,12 +181,10 @@ const app = initializeApp({
 });
 
 const db = getDatabase(app);
-
 const id = new URLSearchParams(location.search).get("id");
 
 let carregando = true;
 
-/* ELEMENTOS */
 const nome = document.getElementById("nome");
 const origem = document.getElementById("origem");
 const classe = document.getElementById("classe");
@@ -195,8 +192,12 @@ const classe = document.getElementById("classe");
 const hp_atual = document.getElementById("hp_atual");
 const hp_max = document.getElementById("hp_max");
 
+const sanidade_atual = document.getElementById("sanidade_atual");
+const sanidade_max = document.getElementById("sanidade_max");
+
 const pe_atual = document.getElementById("pe_atual");
 const pe_max = document.getElementById("pe_max");
+const pd_turno = document.getElementById("pd_turno");
 
 const defesa = document.getElementById("defesa");
 const bloqueio = document.getElementById("bloqueio");
@@ -213,7 +214,6 @@ const pre = document.getElementById("pre");
 const deslocamento = document.getElementById("deslocamento");
 
 const pericias = document.getElementById("pericias");
-
 const hab_texto = document.getElementById("hab_texto");
 const hab_protecao = document.getElementById("hab_protecao");
 const hab_resistencias = document.getElementById("hab_resistencias");
@@ -227,7 +227,6 @@ const arma1 = document.getElementById("arma1");
 const arma2 = document.getElementById("arma2");
 const arma3 = document.getElementById("arma3");
 
-/* LOAD */
 async function carregar() {
     if (!id) return;
 
@@ -235,7 +234,6 @@ async function carregar() {
     if (!snap.exists()) return;
 
     const p = snap.val();
-
     const i = p.dados?.info || {};
     const a = p.dados?.atributos || {};
     const c = p.dados?.combate || {};
@@ -247,8 +245,12 @@ async function carregar() {
     hp_atual.value = c.hp_atual || 0;
     hp_max.value = c.hp_max || 0;
 
+    sanidade_atual.value = c.sanidade_atual || 0;
+    sanidade_max.value = c.sanidade_max || 0;
+
     pe_atual.value = c.pe_atual || 0;
     pe_max.value = c.pe_max || 0;
+    pd_turno.value = c.pd_turno || 0;
 
     defesa.value = c.defesa || 0;
     bloqueio.value = c.bloqueio || 0;
@@ -282,14 +284,17 @@ async function carregar() {
     carregando = false;
 }
 
-/* SAVE */
 function salvar() {
     if (!id || carregando) return;
 
     const data = {
         tipo: "ordem",
         dados: {
-            info: { nome: nome.value, origem: origem.value, classe: classe.value },
+            info: {
+                nome: nome.value,
+                origem: origem.value,
+                classe: classe.value
+            },
             atributos: {
                 agi: +agi.value || 0,
                 for: +forca.value || 0,
@@ -301,8 +306,11 @@ function salvar() {
             combate: {
                 hp_atual: +hp_atual.value || 0,
                 hp_max: +hp_max.value || 0,
+                sanidade_atual: +sanidade_atual.value || 0,
+                sanidade_max: +sanidade_max.value || 0,
                 pe_atual: +pe_atual.value || 0,
                 pe_max: +pe_max.value || 0,
+                pd_turno: +pd_turno.value || 0,
                 defesa: +defesa.value || 0,
                 bloqueio: +bloqueio.value || 0,
                 esquiva: +esquiva.value || 0,
@@ -313,7 +321,6 @@ function salvar() {
                 arma3: arma3.value || ""
             }
         },
-
         pericias: pericias.value || "",
         habilidades: hab_texto.value || "",
         hab_protecao: hab_protecao.value || "",
@@ -324,12 +331,11 @@ function salvar() {
         equipamentos: equipamentos.value || ""
     };
 
-    set(ref(db, "personagens/" + id), data);
+    set(ref(db, "personagens/" + id), data)
+        .catch(err => console.error("Erro ao salvar:", err));
 }
 
-/* AUTO SAVE */
 setInterval(() => salvar(), 5000);
-
 window.onload = carregar;
 </script>
 
