@@ -10,62 +10,41 @@ body {
     font-family: "Segoe UI", sans-serif;
 }
 
-/* CONTAINER GERAL */
+/* CONTAINER */
 .overlay {
     position: absolute;
     bottom: 30px;
     left: 30px;
-
-    display: flex;
-    gap: 25px;
 }
 
-/* BLOCO DE CADA PERSONAGEM */
-.personagem {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-/* IMAGEM */
-.portrait {
-    width: 180px;
-    height: 180px;
-    object-fit: cover;
-
-    animation: flutuar 3s ease-in-out infinite;
-}
-
-/* NOME */
+/* NOME (BRANCO + NEON NO CONTORNO) */
 .nome {
-    font-size: 20px;
-    margin-top: 5px;
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 6px;
 
     color: #FFFFFF;
     text-shadow:
         0 0 2px #ff1a1a,
-        0 0 6px #ff1a1a;
+        0 0 6px #ff1a1a,
+        0 0 12px #ff1a1a,
+        0 0 20px #ff1a1a;
 }
-
-/* ANIMAÇÃO */
-@keyframes flutuar {
-    0%   { transform: translateY(0px) scaleY(1); }
-    50%  { transform: translateY(-6px) scaleY(0.95); }
-    100% { transform: translateY(0px) scaleY(1); }
-}
+    
 </style>
 
 </head>
 
 <body>
 
-<div class="overlay" id="overlay"></div>
+<div class="overlay">
+    <div class="nome" id="nome">Carregando...</div>
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-/* FIREBASE */
 const firebaseConfig = {
   apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
   authDomain: "fichasrpg-45934.firebaseapp.com",
@@ -75,74 +54,19 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-/* PEGAR IDS */
-const idsParam = new URLSearchParams(location.search).get("ids");
+const id = new URLSearchParams(location.search).get("id");
 
-if (!idsParam) {
-    console.error("Use ?ids=personagem1,personagem2");
-}
+const nomeEl = document.getElementById("nome");
 
-const ids = idsParam ? idsParam.split(",") : [];
+/* LIVE UPDATE */
+onValue(ref(db, "personagens/" + id), (snap) => {
+    const p = snap.val();
+    if (!p || !p.dados) return;
 
-/* CONTAINER */
-const overlay = document.getElementById("overlay");
+    const info = p.dados.info || {};
+ 
 
-/* ARMAZENA ELEMENTOS */
-const personagens = {};
-
-/* CRIAR ELEMENTOS */
-ids.forEach(id => {
-
-    const container = document.createElement("div");
-    container.className = "personagem";
-
-    const img = document.createElement("img");
-    img.className = "portrait";
-    img.src = "img/default/normal.png";
-
-    const nome = document.createElement("div");
-    nome.className = "nome";
-    nome.textContent = "Carregando...";
-
-    container.appendChild(img);
-    container.appendChild(nome);
-    overlay.appendChild(container);
-
-    personagens[id] = { img, nome };
-});
-
-/* LISTENERS */
-ids.forEach(id => {
-
-    onValue(ref(db, "personagens/" + id), (snap) => {
-        const p = snap.val();
-        if (!p || !p.dados) return;
-
-        const info = p.dados.info || {};
-        const c = p.dados.combate || {};
-
-        const el = personagens[id];
-
-        el.nome.textContent = info.nome || "Sem nome";
-
-        const hpAtual = c.hp_atual ?? 0;
-        const hpMax = c.hp_max ?? 1;
-
-        const porcentagem = hpAtual / hpMax;
-
-        let estado = "normal";
-
-        if (porcentagem <= 0.5) {
-            estado = "ferido";
-        }
-
-        const caminho = `img/${id}/${estado}.png`;
-
-        if (!el.img.src.includes(caminho)) {
-            el.img.src = caminho;
-        }
-    });
-
+    nomeEl.textContent = info.nome || "Sem nome";
 });
 </script>
 
