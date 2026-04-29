@@ -89,18 +89,35 @@ if (!id) {
 // 🔁 listener em tempo real
 onValue(ref(db, "personagens/" + id), (snapshot) => {
     const p = snapshot.val();
-
-    console.log("UPDATE:", p);
-
     if (!p) return;
 
-    const nome = p.nome || "Sem nome";
+    const nomeEl = document.getElementById("nome");
+    const hpEl = document.getElementById("hp");
 
+    const novoNome = p.nome || "Sem nome";
     const hpAtual = Number(p.saude?.hp_atual || 0);
     const hpMax = Number(p.saude?.hp_max || 0);
 
-    document.getElementById("nome").textContent = nome;
-    document.getElementById("hp").textContent = `HP: ${hpAtual} / ${hpMax}`;
+    // 🔥 animação de nome
+    if (nomeEl.textContent !== novoNome) {
+        nomeEl.classList.remove("pulse");
+        void nomeEl.offsetWidth; // força reflow
+        nomeEl.classList.add("pulse");
+
+        nomeEl.textContent = novoNome;
+    }
+
+    // 🔥 animação de HP
+    const novoHP = `HP: ${hpAtual} / ${hpMax}`;
+
+    if (hpEl.textContent !== novoHP) {
+        hpEl.classList.add("fade");
+
+        setTimeout(() => {
+            hpEl.textContent = novoHP;
+            hpEl.classList.remove("fade");
+        }, 120);
+    }
 });
 
 </script>
