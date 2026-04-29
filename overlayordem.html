@@ -2,7 +2,6 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 body {
@@ -11,7 +10,6 @@ body {
     font-family: Arial;
 }
 
-/* CONTAINER */
 .overlay {
     position: absolute;
     bottom: 30px;
@@ -20,19 +18,27 @@ body {
     text-shadow: 1px 1px 3px black;
 }
 
-/* NOME */
 .nome {
     font-size: 28px;
     font-weight: bold;
 }
 
-/* HP */
-.hp {
+.stat {
     font-size: 18px;
-    margin-top: 5px;
+    margin-top: 4px;
 }
 
-/* ANIMAÇÃO */
+.toggle {
+    margin-top: 10px;
+    font-size: 12px;
+    padding: 5px 10px;
+    background: rgba(255,255,255,0.15);
+    display: inline-block;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+}
+
 @keyframes pulse {
     0% { transform: scale(1); }
     50% { transform: scale(1.08); }
@@ -49,7 +55,13 @@ body {
 
 <div class="overlay">
     <div class="nome" id="nome">Carregando...</div>
-    <div class="hp" id="hp">HP: 0 / 0</div>
+
+    <div class="stat" id="hp">HP: 0 / 0</div>
+    <div class="stat" id="san">SAN: 0 / 0</div>
+    <div class="stat" id="pe">PE: 0 / 0</div>
+    <div class="stat" id="pd">PD: 0 / 0</div>
+
+    <div class="toggle" id="toggle">Modo PD: OFF</div>
 </div>
 
 <script type="module">
@@ -65,39 +77,76 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-const id = new URLSearchParams(window.location.search).get("id");
+const id = new URLSearchParams(location.search).get("id");
 
+let modoPD = false;
+
+/* ELEMENTOS */
 const nomeEl = document.getElementById("nome");
 const hpEl = document.getElementById("hp");
+const sanEl = document.getElementById("san");
+const peEl = document.getElementById("pe");
+const pdEl = document.getElementById("pd");
+const toggle = document.getElementById("toggle");
 
+/* BOTÃO TOGGLE */
+toggle.onclick = () => {
+    modoPD = !modoPD;
+    toggle.innerText = "Modo PD: " + (modoPD ? "ON" : "OFF");
+};
+
+/* ANIMAÇÃO */
 function anim(el) {
     el.classList.remove("pulse");
     void el.offsetWidth;
     el.classList.add("pulse");
 }
 
+/* FIREBASE */
 onValue(ref(db, "personagens/" + id), (snap) => {
     const p = snap.val();
     if (!p) return;
 
     const info = p.dados?.info || {};
-    const combate = p.dados?.combate || {};
+    const c = p.dados?.combate || {};
 
     const nome = info.nome || "Sem nome";
 
-    const hpAtual = Number(combate.hp_atual || 0);
-    const hpMax = Number(combate.hp_max || 0);
+    const hpAtual = c.hp_atual || 0;
+    const hpMax = c.hp_max || 0;
 
+    const sanAtual = c.sanidade_atual || 0;
+    const sanMax = c.sanidade_max || 0;
+
+    const peAtual = c.pe_atual || 0;
+    const peMax = c.pe_max || 0;
+
+    const pd = c.pd_turno || 0;
+
+    /* NOME */
     if (nomeEl.textContent !== nome) {
         nomeEl.textContent = nome;
         anim(nomeEl);
     }
 
-    const hpTexto = `HP: ${hpAtual} / ${hpMax}`;
+    /* HP SEMPRE */
+    hpEl.textContent = `HP: ${hpAtual} / ${hpMax}`;
 
-    if (hpEl.textContent !== hpTexto) {
-        hpEl.textContent = hpTexto;
-        anim(hpEl);
+    if (!modoPD) {
+        /* MODO NORMAL */
+        sanEl.style.display = "block";
+        peEl.style.display = "block";
+        pdEl.style.display = "none";
+
+        sanEl.textContent = `SAN: ${sanAtual} / ${sanMax}`;
+        peEl.textContent = `PE: ${peAtual} / ${peMax}`;
+    } else {
+        /* MODO PD */
+        sanEl.style.display = "none";
+        peEl.style.display = "none";
+        pdEl.style.display = "block";
+
+        pdEl.textContent = `PD: ${pd} / turno`;
     }
 });
 </script>
