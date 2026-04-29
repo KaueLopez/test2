@@ -10,49 +10,47 @@ body {
     font-family: "Segoe UI", sans-serif;
 }
 
-/* CONTAINER */
+/* CONTAINER GERAL */
 .overlay {
     position: absolute;
     bottom: 30px;
     left: 30px;
 
     display: flex;
+    gap: 25px;
+}
+
+/* BLOCO DE CADA PERSONAGEM */
+.personagem {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 20px;
 }
 
 /* IMAGEM */
-#portrait {
-    width: 240px;
-    height: 240px;
+.portrait {
+    width: 180px;
+    height: 180px;
     object-fit: cover;
 
     animation: flutuar 3s ease-in-out infinite;
 }
 
-/* INFO */
-.info {
-    display: flex;
-    flex-direction: column;
-}
-
 /* NOME */
 .nome {
-    font-size: 48px;
-    font-weight: bold;
+    font-size: 20px;
+    margin-top: 5px;
 
     color: #FFFFFF;
     text-shadow:
         0 0 2px #ff1a1a,
-        0 0 6px #ff1a1a,
-        0 0 12px #ff1a1a,
-        0 0 20px #ff1a1a;
+        0 0 6px #ff1a1a;
 }
 
-/* ANIMAÇÃO (flutuar + leve achatado) */
+/* ANIMAÇÃO */
 @keyframes flutuar {
     0%   { transform: translateY(0px) scaleY(1); }
-    50%  { transform: translateY(-8px) scaleY(0.92); }
+    50%  { transform: translateY(-6px) scaleY(0.95); }
     100% { transform: translateY(0px) scaleY(1); }
 }
 </style>
@@ -61,21 +59,13 @@ body {
 
 <body>
 
-<div class="overlay">
-
-    <!-- imagem inicial -->
-    <img id="portrait" src="img/default/normal.png">
-
-    <div class="info">
-        <div class="nome" id="nome">Carregando...</div>
-    </div>
-
-</div>
+<div class="overlay" id="overlay"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
+/* FIREBASE */
 const firebaseConfig = {
   apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
   authDomain: "fichasrpg-45934.firebaseapp.com",
@@ -85,42 +75,74 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-const id = new URLSearchParams(location.search).get("id");
+/* PEGAR IDS */
+const idsParam = new URLSearchParams(location.search).get("ids");
 
-const nomeEl = document.getElementById("nome");
-const portrait = document.getElementById("portrait");
+if (!idsParam) {
+    console.error("Use ?ids=personagem1,personagem2");
+}
 
-onValue(ref(db, "personagens/" + id), (snap) => {
-    const p = snap.val();
-    if (!p || !p.dados) return;
+const ids = idsParam ? idsParam.split(",") : [];
 
-    const info = p.dados.info || {};
-    const c = p.dados.combate || {};
+/* CONTAINER */
+const overlay = document.getElementById("overlay");
 
-    nomeEl.textContent = info.nome || "Sem nome";
+/* ARMAZENA ELEMENTOS */
+const personagens = {};
 
-    const hpAtual = c.hp_atual ?? 0;
-    const hpMax = c.hp_max ?? 1;
+/* CRIAR ELEMENTOS */
+ids.forEach(id => {
 
-    const porcentagem = hpAtual / hpMax;
+    const container = document.createElement("div");
+    container.className = "personagem";
 
-    /* DEFINE PASTA */
-    const pasta = id;
+    const img = document.createElement("img");
+    img.className = "portrait";
+    img.src = "img/default/normal.png";
 
-    /* DEFINE ESTADO */
-    let estado = "normal";
+    const nome = document.createElement("div");
+    nome.className = "nome";
+    nome.textContent = "Carregando...";
 
-    if (porcentagem <= 0.5) {
-        estado = "ferido";
-    }
+    container.appendChild(img);
+    container.appendChild(nome);
+    overlay.appendChild(container);
 
-    /* CAMINHO */
-    const caminho = `img/${pasta}/${estado}.png`;
+    personagens[id] = { img, nome };
+});
 
-    /* TROCA */
-    if (!portrait.src.includes(caminho)) {
-        portrait.src = caminho;
-    }
+/* LISTENERS */
+ids.forEach(id => {
+
+    onValue(ref(db, "personagens/" + id), (snap) => {
+        const p = snap.val();
+        if (!p || !p.dados) return;
+
+        const info = p.dados.info || {};
+        const c = p.dados.combate || {};
+
+        const el = personagens[id];
+
+        el.nome.textContent = info.nome || "Sem nome";
+
+        const hpAtual = c.hp_atual ?? 0;
+        const hpMax = c.hp_max ?? 1;
+
+        const porcentagem = hpAtual / hpMax;
+
+        let estado = "normal";
+
+        if (porcentagem <= 0.5) {
+            estado = "ferido";
+        }
+
+        const caminho = `img/${id}/${estado}.png`;
+
+        if (!el.img.src.includes(caminho)) {
+            el.img.src = caminho;
+        }
+    });
+
 });
 </script>
 
