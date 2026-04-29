@@ -21,36 +21,6 @@ body {
     padding: 20px;
 }
 
-/* CAMPOS */
-.field {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 12px;
-}
-
-label {
-    font-size: 12px;
-    color: #bbb;
-    margin-bottom: 4px;
-}
-
-/* INPUTS */
-input, textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    background: #fff;
-    color: #000;
-    font-size: 14px;
-    box-sizing: border-box;
-}
-
-textarea {
-    min-height: 80px;
-}
-
-/* TÍTULOS */
 h2 {
     text-align: center;
 }
@@ -64,14 +34,40 @@ h3 {
     font-size: 14px;
 }
 
-/* GRID */
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: none;
+    background: #fff;
+    color: #000;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+textarea {
+    min-height: 80px;
+}
+
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
 }
 
-/* RESPONSIVO */
+.field {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: 12px;
+    color: #bbb;
+    margin-bottom: 4px;
+}
+
 @media (max-width: 768px) {
     .grid {
         grid-template-columns: repeat(2, 1fr);
@@ -108,7 +104,6 @@ h3 {
 <h3>Saúde</h3>
 
 <div class="grid">
-
 <div class="field">
 <label>HP Atual</label>
 <input id="hp_atual" type="number">
@@ -123,21 +118,18 @@ h3 {
 <label>Defesa</label>
 <input id="defesa" type="number">
 </div>
-
 </div>
 
 <!-- ATRIBUTOS -->
 <h3>Atributos</h3>
 
 <div class="grid">
-
 <div class="field"><label>AGI</label><input id="agi" type="number"></div>
 <div class="field"><label>FOR</label><input id="for" type="number"></div>
 <div class="field"><label>INT</label><input id="int" type="number"></div>
 <div class="field"><label>VIG</label><input id="vig" type="number"></div>
 <div class="field"><label>PRE</label><input id="pre" type="number"></div>
 <div class="field"><label>NÍVEL</label><input id="nivel" type="number"></div>
-
 </div>
 
 <div class="field">
@@ -145,15 +137,37 @@ h3 {
 <input id="nex" type="number">
 </div>
 
-<!-- COMBATE -->
-<h3>Combate</h3>
+<!-- HABILIDADES -->
+<h3>Habilidades</h3>
+
+<div class="field">
+<label>Texto</label>
+<textarea id="hab_texto"></textarea>
+</div>
 
 <div class="grid">
+<div class="field">
+<label>Proteção</label>
+<input id="hab_protecao" type="number">
+</div>
 
-<div class="field"><label>Deslocamento</label><input id="deslocamento" type="number"></div>
-<div class="field"><label>Bloqueio</label><input id="bloqueio" type="number"></div>
-<div class="field"><label>Esquiva</label><input id="esquiva" type="number"></div>
+<div class="field">
+<label>Resistências</label>
+<input id="hab_resistencias" type="number">
+</div>
 
+<div class="field">
+<label>Proficiências</label>
+<input id="hab_proficiencias" type="number">
+</div>
+</div>
+
+<!-- RITUAIS -->
+<h3>Rituais</h3>
+
+<div class="field">
+<label>Rituais</label>
+<textarea id="rituais"></textarea>
 </div>
 
 <!-- OUTROS -->
@@ -187,13 +201,14 @@ const db = getDatabase(app);
 let id = new URLSearchParams(location.search).get("id");
 let carregando = true;
 
-/* LOAD */
+/* ================= LOAD ================= */
 get(child(ref(db), "personagens/" + id)).then(snap => {
     const p = snap.val();
 
     const i = p.dados?.info || {};
     const a = p.dados?.atributos || {};
     const c = p.dados?.combate || {};
+    const h = p.dados?.habilidades || {};
 
     nome.value = i.nome || "";
     origem.value = i.origem || "";
@@ -211,28 +226,32 @@ get(child(ref(db), "personagens/" + id)).then(snap => {
     nivel.value = a.nivel || 0;
     nex.value = a.nex || 0;
 
-    deslocamento.value = c.deslocamento || 0;
-    bloqueio.value = c.bloqueio || 0;
-    esquiva.value = c.esquiva || 0;
+    hab_texto.value = h.texto || "";
+    hab_protecao.value = h.protecao || 0;
+    hab_resistencias.value = h.resistencias || 0;
+    hab_proficiencias.value = h.proficiencias || 0;
 
+    rituais.value = p.dados?.rituais || "";
     descricao.value = p.descricao || "";
     equipamentos.value = p.equipamentos || "";
 
     carregando = false;
 });
 
-/* SAVE */
+/* ================= SAVE ================= */
 setInterval(() => {
     if (carregando) return;
 
     set(ref(db, "personagens/" + id), {
         tipo: "ordem",
+
         dados: {
             info: {
                 nome: nome.value,
                 origem: origem.value,
                 classe: classe.value
             },
+
             atributos: {
                 agi: +agi.value || 0,
                 for: +for.value || 0,
@@ -242,15 +261,23 @@ setInterval(() => {
                 nivel: +nivel.value || 0,
                 nex: +nex.value || 0
             },
+
             combate: {
                 hp_atual: +hp_atual.value || 0,
                 hp_max: +hp_max.value || 0,
-                defesa: +defesa.value || 0,
-                deslocamento: +deslocamento.value || 0,
-                bloqueio: +bloqueio.value || 0,
-                esquiva: +esquiva.value || 0
-            }
+                defesa: +defesa.value || 0
+            },
+
+            habilidades: {
+                texto: hab_texto.value,
+                protecao: +hab_protecao.value || 0,
+                resistencias: +hab_resistencias.value || 0,
+                proficiencias: +hab_proficiencias.value || 0
+            },
+
+            rituais: rituais.value
         },
+
         descricao: descricao.value,
         equipamentos: equipamentos.value
     });
@@ -258,3 +285,4 @@ setInterval(() => {
 </script>
 
 </body>
+</html>
