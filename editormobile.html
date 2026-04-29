@@ -30,6 +30,7 @@ h2 {
     border: none;
     background: #222;
     color: white;
+    font-size: 14px;
 }
 
 .tab {
@@ -44,6 +45,7 @@ input, textarea {
     font-size: 16px;
     border-radius: 5px;
     border: none;
+    box-sizing: border-box;
 }
 
 textarea {
@@ -71,7 +73,7 @@ textarea {
     <button onclick="showTab('basico')">Básico</button>
     <button onclick="showTab('combate')">Combate</button>
     <button onclick="showTab('instintos')">Instintos</button>
-    <button onclick="showTab('conhecimentos')">Conhecimentos</button>
+    <button onclick="showTab('conhecimentos')">Conhec.</button>
     <button onclick="showTab('praticas')">Práticas</button>
     <button onclick="showTab('extras')">Extras</button>
 </div>
@@ -111,12 +113,12 @@ textarea {
 
 <!-- PRÁTICAS -->
 <div id="praticas" class="tab">
-    <input id="esportivas" type="number">
-    <input id="ferramentas" type="number">
-    <input id="oficios" type="number">
-    <input id="armas" type="number">
-    <input id="veiculos" type="number">
-    <input id="infiltracao" type="number">
+    <input id="esportivas" type="number" placeholder="Esportivas">
+    <input id="ferramentas" type="number" placeholder="Ferramentas">
+    <input id="oficios" type="number" placeholder="Ofícios">
+    <input id="armas" type="number" placeholder="Armas">
+    <input id="veiculos" type="number" placeholder="Veículos">
+    <input id="infiltracao" type="number" placeholder="Infiltração">
 </div>
 
 <!-- EXTRAS -->
@@ -156,7 +158,7 @@ window.child = child;
 let idAtual = new URLSearchParams(window.location.search).get("id");
 
 let carregando = true;
-let timeout;
+let timeout = null;
 
 // 🔥 SALVAR COMPLETO
 function salvar() {
@@ -206,15 +208,19 @@ function salvar() {
     });
 }
 
-// 🔁 AUTOSAVE (SEGURO)
-document.querySelectorAll("input, textarea").forEach(el => {
-    el.addEventListener("input", () => {
-        if (carregando) return;
+// 🔁 AUTOSAVE REAL (SEGURADO)
+function ativarAutosave() {
+    document.querySelectorAll("input, textarea").forEach(el => {
+        el.addEventListener("input", () => {
+            if (carregando) return;
 
-        clearTimeout(timeout);
-        timeout = setTimeout(salvar, 700);
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                salvar();
+            }, 700);
+        });
     });
-});
+}
 
 // 📥 CARREGAR
 function carregar() {
@@ -223,6 +229,7 @@ function carregar() {
     get(child(ref(db), "personagens/" + idAtual)).then(snapshot => {
         if (!snapshot.exists()) {
             carregando = false;
+            ativarAutosave();
             return;
         }
 
@@ -260,6 +267,7 @@ function carregar() {
         document.getElementById("equipamentos").value = p.equipamentos || "";
 
         carregando = false;
+        ativarAutosave();
     });
 }
 
