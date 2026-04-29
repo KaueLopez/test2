@@ -5,40 +5,96 @@
 <title>Editor de Personagem</title>
 
 <style>
-body { font-family: Arial; margin: 20px; }
+body {
+    font-family: Arial;
+    margin: 20px;
+    background: #000;
+    color: white;
+}
 
+/* CONTAINER */
+.box {
+    border: 1px solid #333;
+    padding: 15px;
+    background: #0b0b0b;
+    border-radius: 10px;
+}
+
+/* INPUTS */
 input, textarea {
     width: 100%;
     margin-bottom: 10px;
-    padding: 5px;
-}
-
-.box {
-    border: 1px solid #ccc;
     padding: 10px;
+    border: none;
+    border-radius: 6px;
+    background: #fff;
+    color: #000;
+    font-size: 14px;
+    box-sizing: border-box;
 }
 
-button {
-    padding: 10px;
-    margin-top: 10px;
+textarea {
+    min-height: 70px;
 }
 
+/* TITULOS (Instintos, etc.) */
+h3 {
+    background: #2a2a2a;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    margin: 15px 0 10px;
+    color: #fff;
+}
+
+/* GRID */
 .grid2x3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
-.grid2x3 input {
+/* CAIXA DO ATRIBUTO */
+.grid2x3 > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* LABEL DO ATRIBUTO */
+.grid2x3 .label {
+    background: #3a3a3a;
+    color: #fff;
+    font-size: 12px;
+    padding: 4px 6px;
+    border-radius: 4px;
+    margin-top: 5px;
     width: 100%;
     text-align: center;
 }
 
-.grid2x3 div {
+/* INPUT DENTRO DO GRID */
+.grid2x3 input {
     text-align: center;
-    font-size: 12px;
-    margin-top: -5px;
+    font-weight: bold;
+}
+
+/* HP ESPECIAL */
+#hp_atual, #hp_max {
+    background: #ff2b2b;
+    color: #000;
+    font-weight: bold;
+}
+
+/* BOTÃO */
+button {
+    padding: 10px;
+    margin-top: 10px;
+    background: #222;
+    color: white;
+    border: 1px solid #444;
+    border-radius: 6px;
 }
 </style>
 </head>
