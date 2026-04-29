@@ -21,14 +21,35 @@ body {
     font-size: 20px;
 }
 
+/* NOME COM PULSO */
 .nome {
     font-size: 28px;
     font-weight: bold;
+    display: inline-block;
 }
 
+/* HP COM TRANSIÇÃO */
 .hp {
     margin-top: 5px;
     font-size: 18px;
+    transition: all 0.3s ease;
+}
+
+/* ANIMAÇÃO */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+}
+
+.pulse {
+    animation: pulse 0.4s ease;
+}
+
+.fade {
+    opacity: 0;
+    transform: translateY(5px);
+    transition: all 0.25s ease;
 }
 </style>
 </head>
