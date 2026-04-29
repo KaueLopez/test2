@@ -13,47 +13,48 @@ body {
     color: #ffffff;
 }
 
-/* NOME NEON */
+/* NOME COM NEON VERMELHO */
 .nome {
     font-size: 28px;
     font-weight: bold;
     margin-bottom: 6px;
 
-    color: #00fff7;
+    color: #ff1a1a;
     text-shadow:
-        0 0 5px #00fff7,
-        0 0 10px #00fff7,
-        0 0 20px #00fff7,
-        0 0 40px #00fff7;
+        0 0 5px #ff1a1a,
+        0 0 10px #ff1a1a,
+        0 0 20px #ff1a1a,
+        0 0 40px #ff1a1a;
 }
 
-/* STATUS COM NEON MAIS FRACO */
+/* HP COM NEON VERMELHO MAIS SUAVE */
 .stat {
     font-size: 18px;
 
     color: #ffffff;
     text-shadow:
-        0 0 3px #ffffff,
-        0 0 6px #00fff7;
+        0 0 3px #ff1a1a,
+        0 0 8px #ff1a1a;
 }
 
-/* EXTRA: efeito de pulso leve no nome */
-@keyframes pulse {
+/* PULSO NO NOME (efeito vivo) */
+@keyframes pulseRed {
     0%, 100% {
         text-shadow:
-            0 0 5px #00fff7,
-            0 0 10px #00fff7,
-            0 0 20px #00fff7;
+            0 0 5px #ff1a1a,
+            0 0 10px #ff1a1a,
+            0 0 20px #ff1a1a;
     }
+
     50% {
         text-shadow:
-            0 0 2px #00fff7,
-            0 0 8px #00fff7,
-            0 0 15px #00fff7;
+            0 0 2px #ff1a1a,
+            0 0 6px #ff1a1a,
+            0 0 12px #ff1a1a;
     }
 }
 
 .nome {
-    animation: pulse 2s infinite;
+    animation: pulseRed 2s infinite;
 }
 </style>
