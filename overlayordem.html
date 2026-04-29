@@ -50,11 +50,16 @@ body {
         0 0 20px #ff1a1a;
 }
 
-/* ANIMAÇÃO LEVE */
 @keyframes flutuar {
-    0%   { transform: translateY(0px); }
-    50%  { transform: translateY(-8px); }
-    100% { transform: translateY(0px); }
+    0% {
+        transform: translateY(0px) scaleY(1);
+    }
+    50% {
+        transform: translateY(-8px) scaleY(0.95); /* levemente achatado */
+    }
+    100% {
+        transform: translateY(0px) scaleY(1);
+    }
 }
 
 /* TREMER QUANDO CRÍTICO */
