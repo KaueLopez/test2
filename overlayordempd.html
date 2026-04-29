@@ -77,7 +77,7 @@ body {
         transform: translateY(0px) scaleY(1);
     }
     50% {
-        transform: translateY(-10px) scaleY(0.92);
+        transform: translateY(-10px) scaleY(0.98);
     }
     100% {
         transform: translateY(0px) scaleY(1);
@@ -154,15 +154,15 @@ onValue(ref(db, "personagens/" + id), (snap) => {
 
     const porcentagem = hpAtual / hpMax;
 
-    let novaImagem = "normal.png";
+    let novaImagem = "Adelaide.png";
 
     portrait.classList.remove("critico");
 
     if (porcentagem <= 0.3) {
-        novaImagem = "critico.png";
+        novaImagem = "AdelaideMachucada.png";
         portrait.classList.add("critico");
-    } else if (porcentagem <= 0.6) {
-        novaImagem = "ferido.png";
+    } else if (porcentagem <= 0.5) {
+        novaImagem = "AdelaideMachucada.png";
     }
 
     if (!portrait.src.includes(novaImagem)) {
