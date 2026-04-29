@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <style>
 
-/* 🔥 força transparência real */
 html, body {
     background: rgba(0,0,0,0);
     margin: 0;
@@ -13,16 +12,10 @@ html, body {
     font-family: Arial;
 }
 
-/* remove qualquer fundo escondido */
-* {
-    box-sizing: border-box;
-}
-
 .card {
     width: 250px;
 }
 
-/* barra continua visível (isso NÃO quebra transparência) */
 .hp-bar {
     width: 100%;
     height: 18px;
@@ -35,7 +28,7 @@ html, body {
     height: 100%;
     background: red;
     width: 100%;
-    transition: 0.5s;
+    transition: width 0.3s ease;
 }
 
 </style>
@@ -56,35 +49,55 @@ html, body {
 <script>
 const url = "https://opensheet.elk.sh/1YdYNlO22v4JD_qlTx-PZBppwqpTD14ib3Q-h_QpPOio/P%C3%A1gina1";
 
-function atualizar() {
-    fetch(url)
-    .then(res => res.json())
-    .then(data => {
+async function atualizar() {
+    try {
+        // 🔥 evita cache
+        const res = await fetch(url + "?t=" + Date.now());
+        const data = await res.json();
 
         if (!data || data.length === 0) return;
 
-        let player = data[0];
+        const player = data[0];
 
-        let nome = player.Nome || player.nome || "Sem nome";
+        const nome = player.Nome || player.nome || "Sem nome";
         let hp = parseInt(player.HP || player.hp || 0);
         let max = parseInt(player.MAX || player.max || 1);
 
-        if (max <= 0) max = 1;
+        if (isNaN(hp)) hp = 0;
+        if (isNaN(max) || max <= 0) max = 1;
 
+        // 🔥 limita valores
+        hp = Math.max(0, Math.min(hp, max));
+
+        // atualiza nome
         document.getElementById("nome").innerText = nome;
 
-        let porcentagem = (hp / max) * 100;
+        // barra
+        const porcentagem = (hp / max) * 100;
         document.getElementById("hp").style.width = porcentagem + "%";
 
+        // texto
         document.getElementById("texto").innerText = `${hp} / ${max}`;
-    })
-    .catch(err => {
-        console.error("Erro ao buscar dados:", err);
-    });
+
+        // 🔥 cor dinâmica
+        let cor = "red";
+        if (hp / max > 0.6) cor = "lime";
+        else if (hp / max > 0.3) cor = "yellow";
+
+        document.getElementById("hp").style.background = cor;
+
+    } catch (err) {
+        console.error("Erro:", err);
+    }
 }
 
-setInterval(atualizar, 2000);
-atualizar();
+// 🔥 loop melhor que setInterval
+async function loop() {
+    await atualizar();
+    setTimeout(loop, 1000); // 1 segundo (ideal)
+}
+
+loop();
 </script>
 
 </body>
