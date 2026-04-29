@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<style>
+body {
+    margin: 0;
+    background: transparent;
+    font-family: Arial;
+}
+
+.overlay {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    color: white;
+    text-shadow: 1px 1px 3px black;
+}
+
+.nome {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
+
+.stat {
+    font-size: 18px;
+    margin-top: 4px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="overlay">
+    <div class="nome" id="nome">Carregando...</div>
+
+    <div class="stat" id="hp">HP: 0 / 0</div>
+    <div class="stat" id="san">SAN: 0 / 0</div>
+    <div class="stat" id="pe">PE: 0 / 0</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
+  authDomain: "fichasrpg-45934.firebaseapp.com",
+  databaseURL: "https://fichasrpg-45934-default-rtdb.firebaseio.com"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+const id = new URLSearchParams(location.search).get("id");
+
+if (!id) {
+    console.error("ID não encontrado na URL");
+}
+
+const nomeEl = document.getElementById("nome");
+const hpEl = document.getElementById("hp");
+const sanEl = document.getElementById("san");
+const peEl = document.getElementById("pe");
+
+onValue(ref(db, "personagens/" + id), (snap) => {
+    const p = snap.val();
+    if (!p || !p.dados) return;
+
+    const info = p.dados.info || {};
+    const c = p.dados.combate || {};
+
+    nomeEl.textContent = info.nome || "Sem nome";
+
+    hpEl.textContent = `HP: ${c.hp_atual ?? 0} / ${c.hp_max ?? 0}`;
+    sanEl.textContent = `SAN: ${c.sanidade_atual ?? 0} / ${c.sanidade_max ?? 0}`;
+    peEl.textContent = `PE: ${c.pe_atual ?? 0} / ${c.pe_max ?? 0}`;
+});
+
+</script>
+
+</body>
+</html>
