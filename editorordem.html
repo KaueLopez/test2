@@ -2,134 +2,177 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>FICHA ORDEM CODICE</title>
 
 <style>
 body {
-    font-family: Arial, sans-serif;
-    margin: 20px;
-    background: #0a0a0a;
-    color: #eaeaea;
+    margin: 0;
+    font-family: Arial;
+    background: #111;
+    color: white;
 }
 
-.box {
-    max-width: 1100px;
-    margin: auto;
-    background: #121212;
-    border: 1px solid #2a2a2a;
-    border-radius: 12px;
-    padding: 20px;
+h2 {
+    text-align: center;
+    margin: 10px 0;
+}
+
+/* TABS */
+.tabs {
+    display: flex;
+    background: #222;
+}
+
+.tabs button {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    background: #222;
+    color: white;
+    font-size: 14px;
+}
+
+/* CONTEÚDO */
+.tab {
+    display: none;
+    padding: 12px;
+}
+
+/* INPUTS */
+input, textarea {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: none;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+textarea {
+    text-align: left;
+    resize: none;
+    overflow: hidden;
+    min-height: 70px;
+}
+
+/* GRID MOBILE */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.cell {
+    text-align: center;
+}
+
+.label {
+    font-size: 12px;
+    margin-top: 4px;
+    opacity: 0.7;
 }
 
 h3 {
-    margin-top: 20px;
-    padding: 8px;
-    background: #1f1f1f;
-    border-left: 4px solid #7c3aed;
-    border-radius: 6px;
-}
-
-input, textarea {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    margin-bottom: 12px;
-    border-radius: 8px;
-    border: none;
-    background: #fff;
-    color: #000;
-    font-size: 14px;
-    box-sizing: border-box;
-}
-
-/* 🔥 AUTO RESIZE REAL */
-textarea {
-    resize: none;
-    overflow: hidden;
-    min-height: 60px;
-}
-
-.grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-}
-
-label {
-    font-size: 12px;
-    color: #bbb;
+    margin: 10px 0;
+    font-size: 16px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="box">
+<h2>FICHA ORDEM CODICE</h2>
 
-<h3>Informações</h3>
-<input id="nome" placeholder="Nome">
-<input id="classe" placeholder="Classe">
-<input id="origem" placeholder="Origem">
-
-<h3>Combate</h3>
-
-<div class="grid">
-    <div><label>HP Atual</label><input id="hp_atual" type="number"></div>
-    <div><label>HP Máx</label><input id="hp_max" type="number"></div>
+<div class="tabs">
+    <button onclick="showTab('info')">Info</button>
+    <button onclick="showTab('combat')">Combate</button>
+    <button onclick="showTab('extras')">Extras</button>
 </div>
 
-<div class="grid">
-    <div><label>Sanidade Atual</label><input id="san_atual" type="number"></div>
-    <div><label>Sanidade Máx</label><input id="san_max" type="number"></div>
+<!-- INFO -->
+<div id="info" class="tab">
+    <input id="nome" placeholder="Nome">
+    <input id="classe" placeholder="Classe">
+    <input id="origem" placeholder="Origem">
+    <textarea id="descricao" placeholder="Descrição"></textarea>
 </div>
 
+<!-- COMBATE -->
+<div id="combat" class="tab">
+
+<h3>HP</h3>
 <div class="grid">
-    <div><label>PE Atual</label><input id="pe_atual" type="number"></div>
-    <div><label>PE Máx</label><input id="pe_max" type="number"></div>
+    <div class="cell">
+        <input id="hp_atual" type="number">
+        <div class="label">Atual</div>
+    </div>
+    <div class="cell">
+        <input id="hp_max" type="number">
+        <div class="label">Máx</div>
+    </div>
 </div>
 
+<h3>Sanidade</h3>
 <div class="grid">
-    <div><label>PD Atual</label><input id="pd_atual" type="number"></div>
-    <div><label>PD Máx</label><input id="pd_max" type="number"></div>
+    <div class="cell">
+        <input id="san_atual" type="number">
+        <div class="label">Atual</div>
+    </div>
+    <div class="cell">
+        <input id="san_max" type="number">
+        <div class="label">Máx</div>
+    </div>
 </div>
 
+<h3>PE</h3>
 <div class="grid">
-    <div><label>Defesa</label><input id="defesa" type="number"></div>
-    <div><label>Bloqueio</label><input id="bloqueio" type="number"></div>
-    <div><label>Esquiva</label><input id="esquiva" type="number"></div>
+    <div class="cell">
+        <input id="pe_atual" type="number">
+        <div class="label">Atual</div>
+    </div>
+    <div class="cell">
+        <input id="pe_max" type="number">
+        <div class="label">Máx</div>
+    </div>
+</div>
+
+<h3>PD</h3>
+<div class="grid">
+    <div class="cell">
+        <input id="pd_atual" type="number">
+        <div class="label">Atual</div>
+    </div>
+    <div class="cell">
+        <input id="pd_max" type="number">
+        <div class="label">Máx</div>
+    </div>
+</div>
+
+<h3>Defesa</h3>
+<div class="grid">
+    <div class="cell"><input id="defesa" type="number"><div class="label">Defesa</div></div>
+    <div class="cell"><input id="bloqueio" type="number"><div class="label">Bloqueio</div></div>
+    <div class="cell"><input id="esquiva" type="number"><div class="label">Esquiva</div></div>
 </div>
 
 <h3>Armas</h3>
-<input id="arma1">
-<input id="arma2">
-<input id="arma3">
+<input id="arma1" placeholder="Arma 1">
+<input id="arma2" placeholder="Arma 2">
+<input id="arma3" placeholder="Arma 3">
 
-<h3>Atributos</h3>
-
-<div class="grid">
-    <div><label>FOR</label><input id="for" type="number"></div>
-    <div><label>AGI</label><input id="agi" type="number"></div>
-    <div><label>INT</label><input id="int" type="number"></div>
-    <div><label>VIG</label><input id="vig" type="number"></div>
-    <div><label>PRE</label><input id="pre" type="number"></div>
-    <div><label>DESL</label><input id="desl" type="number"></div>
 </div>
 
-<h3>Perícias</h3>
-<textarea id="pericias"></textarea>
-
-<h3>Habilidades</h3>
-<textarea id="habilidades"></textarea>
-
-<h3>Rituais</h3>
-<textarea id="rituais"></textarea>
-
-<h3>Equipamentos</h3>
-<textarea id="equipamentos"></textarea>
-
-<h3>Descrição</h3>
-<textarea id="descricao"></textarea>
-
+<!-- EXTRAS -->
+<div id="extras" class="tab">
+    <textarea id="pericias" placeholder="Perícias"></textarea>
+    <textarea id="habilidades" placeholder="Habilidades"></textarea>
+    <textarea id="rituais" placeholder="Rituais"></textarea>
+    <textarea id="equipamentos" placeholder="Equipamentos"></textarea>
 </div>
 
 <script type="module">
@@ -148,98 +191,80 @@ const id = new URLSearchParams(location.search).get("id");
 const $ = (id) => document.getElementById(id);
 
 let carregando = true;
-let userEditing = false;
 
-/* 🔥 AUTO RESIZE FUNCTION */
-function autoResize(el) {
+/* AUTO RESIZE */
+function autoResize(el){
     el.style.height = "auto";
     el.style.height = el.scrollHeight + "px";
 }
 
-/* aplica em todos */
-document.querySelectorAll("textarea").forEach(el => {
-    el.addEventListener("input", () => autoResize(el));
+document.querySelectorAll("textarea").forEach(el=>{
+    el.addEventListener("input", ()=> autoResize(el));
 });
 
-/* evita overwrite */
-document.querySelectorAll("input, textarea").forEach(el=>{
-    el.addEventListener("focus", ()=> userEditing = true);
-    el.addEventListener("blur", ()=> userEditing = false);
-});
-
-/* sync */
+/* SYNC */
 onValue(ref(db,"personagens/"+id), (snap)=>{
-    if(!snap.exists() || userEditing) return;
+    if(!snap.exists()) return;
 
     const p = snap.val();
-
     const i = p.dados?.info || {};
     const c = p.dados?.combate || {};
-    const a = p.dados?.atributos || {};
     const e = p.extras || {};
 
-    $("nome").value = i.nome || "";
-    $("classe").value = i.classe || "";
-    $("origem").value = i.origem || "";
+    $("nome").value=i.nome||"";
+    $("classe").value=i.classe||"";
+    $("origem").value=i.origem||"";
+    $("descricao").value=e.descricao||"";
 
-    $("hp_atual").value = c.hp_atual || 0;
-    $("hp_max").value = c.hp_max || 0;
+    $("hp_atual").value=c.hp_atual||0;
+    $("hp_max").value=c.hp_max||0;
 
-    $("san_atual").value = c.sanidade_atual || 0;
-    $("san_max").value = c.sanidade_max || 0;
+    $("san_atual").value=c.sanidade_atual||0;
+    $("san_max").value=c.sanidade_max||0;
 
-    $("pe_atual").value = c.pe_atual || 0;
-    $("pe_max").value = c.pe_max || 0;
+    $("pe_atual").value=c.pe_atual||0;
+    $("pe_max").value=c.pe_max||0;
 
-    $("pd_atual").value = c.pd_atual || 0;
-    $("pd_max").value = c.pd_max || 0;
+    $("pd_atual").value=c.pd_atual||0;
+    $("pd_max").value=c.pd_max||0;
 
-    $("defesa").value = c.defesa || 0;
-    $("bloqueio").value = c.bloqueio || 0;
-    $("esquiva").value = c.esquiva || 0;
+    $("defesa").value=c.defesa||0;
+    $("bloqueio").value=c.bloqueio||0;
+    $("esquiva").value=c.esquiva||0;
 
-    $("arma1").value = c.arma1 || "";
-    $("arma2").value = c.arma2 || "";
-    $("arma3").value = c.arma3 || "";
+    $("arma1").value=c.arma1||"";
+    $("arma2").value=c.arma2||"";
+    $("arma3").value=c.arma3||"";
 
-    $("for").value = a.for || 0;
-    $("agi").value = a.agi || 0;
-    $("int").value = a.int || 0;
-    $("vig").value = a.vig || 0;
-    $("pre").value = a.pre || 0;
-    $("desl").value = a.desl || 0;
+    $("pericias").value=e.pericias||"";
+    $("habilidades").value=e.habilidades||"";
+    $("rituais").value=e.rituais||"";
+    $("equipamentos").value=e.equipamentos||"";
 
-    $("pericias").value = e.pericias || "";
-    $("habilidades").value = e.habilidades || "";
-    $("rituais").value = e.rituais || "";
-    $("equipamentos").value = e.equipamentos || "";
-    $("descricao").value = e.descricao || "";
-
-    /* 🔥 aplica resize após carregar */
     document.querySelectorAll("textarea").forEach(autoResize);
 
-    carregando = false;
+    carregando=false;
 });
 
-/* autosave */
+/* AUTOSAVE */
 function bind(idField, path, key){
-    $(idField).addEventListener("input", async ()=>{
+    $(idField).addEventListener("input", ()=>{
         if(carregando) return;
 
         const value = $(idField).value;
         const parsed = isNaN(value) ? value : +value;
 
-        const obj = {};
-        obj[key] = parsed;
-
-        await update(ref(db,"personagens/"+id+"/"+path), obj);
+        update(ref(db,"personagens/"+id+"/"+path), {
+            [key]: parsed
+        });
     });
 }
 
-/* binds */
+/* BINDS */
 bind("nome","dados/info","nome");
 bind("classe","dados/info","classe");
 bind("origem","dados/info","origem");
+bind("descricao","extras","descricao");
 
 bind("hp_atual","dados/combate","hp_atual");
 bind("hp_max","dados/combate","hp_max");
@@ -253,22 +278,23 @@ bind("pd_max","dados/combate","pd_max");
 bind("defesa","dados/combate","defesa");
 bind("bloqueio","dados/combate","bloqueio");
 bind("esquiva","dados/combate","esquiva");
+
 bind("arma1","dados/combate","arma1");
 bind("arma2","dados/combate","arma2");
 bind("arma3","dados/combate","arma3");
-
-bind("for","dados/atributos","for");
-bind("agi","dados/atributos","agi");
-bind("int","dados/atributos","int");
-bind("vig","dados/atributos","vig");
-bind("pre","dados/atributos","pre");
-bind("desl","dados/atributos","desl");
 
 bind("pericias","extras","pericias");
 bind("habilidades","extras","habilidades");
 bind("rituais","extras","rituais");
 bind("equipamentos","extras","equipamentos");
-bind("descricao","extras","descricao");
+
+/* TABS */
+function showTab(id){
+    document.querySelectorAll(".tab").forEach(t=>t.style.display="none");
+    document.getElementById(id).style.display="block";
+}
+
+window.onload = ()=> showTab("info");
 </script>
 
 </body>
