@@ -14,42 +14,33 @@ body {
     position: absolute;
     bottom: 30px;
     left: 30px;
-
     color: white;
     text-shadow: 1px 1px 3px black;
-
-    font-size: 20px;
 }
 
-/* NOME COM PULSO */
+/* NOME */
 .nome {
     font-size: 28px;
     font-weight: bold;
     display: inline-block;
 }
 
-/* HP COM TRANSIÇÃO */
+/* HP */
 .hp {
-    margin-top: 5px;
     font-size: 18px;
-    transition: all 0.3s ease;
+    margin-top: 5px;
+    transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-/* ANIMAÇÃO */
+/* ANIMAÇÃO FORÇADA */
 @keyframes pulse {
     0% { transform: scale(1); }
-    50% { transform: scale(1.08); }
+    50% { transform: scale(1.1); }
     100% { transform: scale(1); }
 }
 
 .pulse {
-    animation: pulse 0.4s ease;
-}
-
-.fade {
-    opacity: 0;
-    transform: translateY(5px);
-    transition: all 0.25s ease;
+    animation: pulse 0.35s ease;
 }
 </style>
 </head>
@@ -87,6 +78,12 @@ if (!id) {
 }
 
 // 🔁 listener em tempo real
+function animar(el) {
+    el.classList.remove("pulse");
+    void el.offsetWidth; // força reinício da animação
+    el.classList.add("pulse");
+}
+
 onValue(ref(db, "personagens/" + id), (snapshot) => {
     const p = snapshot.val();
     if (!p) return;
@@ -98,25 +95,18 @@ onValue(ref(db, "personagens/" + id), (snapshot) => {
     const hpAtual = Number(p.saude?.hp_atual || 0);
     const hpMax = Number(p.saude?.hp_max || 0);
 
-    // 🔥 animação de nome
+    // NOME
     if (nomeEl.textContent !== novoNome) {
-        nomeEl.classList.remove("pulse");
-        void nomeEl.offsetWidth; // força reflow
-        nomeEl.classList.add("pulse");
-
         nomeEl.textContent = novoNome;
+        animar(nomeEl);
     }
 
-    // 🔥 animação de HP
+    // HP (sem fade bugado, só update limpo)
     const novoHP = `HP: ${hpAtual} / ${hpMax}`;
 
     if (hpEl.textContent !== novoHP) {
-        hpEl.classList.add("fade");
-
-        setTimeout(() => {
-            hpEl.textContent = novoHP;
-            hpEl.classList.remove("fade");
-        }, 120);
+        hpEl.textContent = novoHP;
+        animar(hpEl);
     }
 });
 
