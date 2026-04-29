@@ -6,30 +6,102 @@
 
 <style>
 body {
-    font-family: Arial;
+    font-family: Arial, sans-serif;
     margin: 20px;
-    background: #000;
-    color: white;
+    background: #0a0a0a;
+    color: #eaeaea;
 }
 
+/* CONTAINER PRINCIPAL */
 .box {
-    background: #0b0b0b;
-    padding: 15px;
-    border-radius: 10px;
-    border: 1px solid #333;
+    max-width: 1100px;
+    margin: auto;
+    background: #121212;
+    border: 1px solid #2a2a2a;
+    border-radius: 12px;
+    padding: 20px;
 }
 
-input {
+/* INPUTS */
+input, textarea {
     width: 100%;
-    margin-bottom: 10px;
     padding: 10px;
-    border-radius: 6px;
+    margin-top: 5px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: none;
+    background: #ffffff;
+    color: #000;
+    font-size: 14px;
+    box-sizing: border-box;
 }
 
+textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+/* TÍTULOS */
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ffffff;
+}
+
+h3 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding: 8px 10px;
+    background: #1f1f1f;
+    border-left: 4px solid #7c3aed;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+/* GRID BASE (3 COLUNAS LIMPA) */
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
+}
+
+/* BLOCO DE CAMPO */
+.field {
+    display: flex;
+    flex-direction: column;
+}
+
+/* LABEL */
+.label {
+    font-size: 11px;
+    color: #bbb;
+    margin-top: 4px;
+    text-align: center;
+}
+
+/* CAMPOS NUMÉRICOS */
+input[type="number"] {
+    text-align: center;
+    font-weight: bold;
+}
+
+/* DESTACAR CAMPOS IMPORTANTES */
+input:focus, textarea:focus {
+    outline: 2px solid #7c3aed;
+}
+
+/* SEÇÕES VISUAIS */
+.section {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
 }
 </style>
 </head>
