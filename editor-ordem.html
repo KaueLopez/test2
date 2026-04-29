@@ -82,29 +82,38 @@ label {
 
 <div class="box">
 
+<!-- INFO -->
 <h3>Informações</h3>
 
 <div class="field"><label>Nome</label><input id="nome"></div>
 <div class="field"><label>Origem</label><input id="origem"></div>
 <div class="field"><label>Classe</label><input id="classe"></div>
 
-<!-- 🩸 SAÚDE ATUALIZADA -->
+<!-- SAÚDE -->
 <h3>Saúde</h3>
 
 <div class="grid">
 <div class="field"><label>HP Atual</label><input id="hp_atual" type="number"></div>
 <div class="field"><label>HP Máximo</label><input id="hp_max" type="number"></div>
-<div class="field"><label>Defesa</label><input id="defesa" type="number"></div>
 </div>
 
 <div class="grid">
+<div class="field"><label>PD/PE Atual</label><input id="pe_atual" type="number"></div>
+<div class="field"><label>PD/PE Máximo</label><input id="pe_max" type="number"></div>
+</div>
+
+<div class="grid">
+<div class="field"><label>Defesa</label><input id="defesa" type="number"></div>
 <div class="field"><label>Bloqueio</label><input id="bloqueio" type="number"></div>
 <div class="field"><label>Esquiva</label><input id="esquiva" type="number"></div>
+</div>
+
+<div class="grid">
 <div class="field"><label>Nível</label><input id="nivel" type="number"></div>
 <div class="field"><label>NEX</label><input id="nex" type="number"></div>
 </div>
 
-<!-- 🧠 ATRIBUTOS ATUALIZADO -->
+<!-- ATRIBUTOS -->
 <h3>Atributos</h3>
 
 <div class="grid">
@@ -116,49 +125,48 @@ label {
 <div class="field"><label>Deslocamento</label><input id="deslocamento" type="number"></div>
 </div>
 
+<!-- COMBATE -->
+<h3>Combate</h3>
+
+<div class="field">
+<label>Arma 1</label>
+<input id="arma1" type="text">
+</div>
+
+<div class="field">
+<label>Arma 2</label>
+<input id="arma2" type="text">
+</div>
+
+<div class="field">
+<label>Arma 3</label>
+<input id="arma3" type="text">
+</div>
+
+<!-- PERÍCIAS -->
 <h3>Perícias</h3>
 <div class="field">
 <textarea id="pericias"></textarea>
 </div>
 
+<!-- HABILIDADES -->
 <h3>Habilidades</h3>
-
 <div class="field">
 <textarea id="hab_texto"></textarea>
 </div>
 
-<h3>Defesas e Proficiências</h3>
+<h3>Defesas / Extras</h3>
 
-<div class="field">
-<label>Proteção</label>
-<textarea id="hab_protecao"></textarea>
-</div>
-
-<div class="field">
-<label>Resistências</label>
-<textarea id="hab_resistencias"></textarea>
-</div>
-
-<div class="field">
-<label>Proficiências</label>
-<textarea id="hab_proficiencias"></textarea>
-</div>
+<div class="field"><label>Proteção</label><textarea id="hab_protecao"></textarea></div>
+<div class="field"><label>Resistências</label><textarea id="hab_resistencias"></textarea></div>
+<div class="field"><label>Proficiências</label><textarea id="hab_proficiencias"></textarea></div>
 
 <h3>Rituais</h3>
-
-<div class="field">
-<textarea id="rituais"></textarea>
-</div>
+<div class="field"><textarea id="rituais"></textarea></div>
 
 <h3>Outros</h3>
-
-<div class="field">
-<textarea id="descricao"></textarea>
-</div>
-
-<div class="field">
-<textarea id="equipamentos"></textarea>
-</div>
+<div class="field"><textarea id="descricao"></textarea></div>
+<div class="field"><textarea id="equipamentos"></textarea></div>
 
 </div>
 
@@ -186,10 +194,14 @@ const classe = document.getElementById("classe");
 
 const hp_atual = document.getElementById("hp_atual");
 const hp_max = document.getElementById("hp_max");
-const defesa = document.getElementById("defesa");
 
+const pe_atual = document.getElementById("pe_atual");
+const pe_max = document.getElementById("pe_max");
+
+const defesa = document.getElementById("defesa");
 const bloqueio = document.getElementById("bloqueio");
 const esquiva = document.getElementById("esquiva");
+
 const nivel = document.getElementById("nivel");
 const nex = document.getElementById("nex");
 
@@ -201,13 +213,19 @@ const pre = document.getElementById("pre");
 const deslocamento = document.getElementById("deslocamento");
 
 const pericias = document.getElementById("pericias");
+
 const hab_texto = document.getElementById("hab_texto");
 const hab_protecao = document.getElementById("hab_protecao");
 const hab_resistencias = document.getElementById("hab_resistencias");
 const hab_proficiencias = document.getElementById("hab_proficiencias");
+
 const rituais = document.getElementById("rituais");
 const descricao = document.getElementById("descricao");
 const equipamentos = document.getElementById("equipamentos");
+
+const arma1 = document.getElementById("arma1");
+const arma2 = document.getElementById("arma2");
+const arma3 = document.getElementById("arma3");
 
 /* LOAD */
 async function carregar() {
@@ -226,12 +244,16 @@ async function carregar() {
     origem.value = i.origem || "";
     classe.value = i.classe || "";
 
-    hp_max.value = c.hp_max || 0;
     hp_atual.value = c.hp_atual || 0;
-    defesa.value = c.defesa || 0;
+    hp_max.value = c.hp_max || 0;
 
+    pe_atual.value = c.pe_atual || 0;
+    pe_max.value = c.pe_max || 0;
+
+    defesa.value = c.defesa || 0;
     bloqueio.value = c.bloqueio || 0;
     esquiva.value = c.esquiva || 0;
+
     nivel.value = c.nivel || 0;
     nex.value = c.nex || 0;
 
@@ -253,6 +275,10 @@ async function carregar() {
     descricao.value = p.descricao || "";
     equipamentos.value = p.equipamentos || "";
 
+    arma1.value = c.arma1 || "";
+    arma2.value = c.arma2 || "";
+    arma3.value = c.arma3 || "";
+
     carregando = false;
 }
 
@@ -273,15 +299,21 @@ function salvar() {
                 deslocamento: +deslocamento.value || 0
             },
             combate: {
-                hp_max: +hp_max.value || 0,
                 hp_atual: +hp_atual.value || 0,
+                hp_max: +hp_max.value || 0,
+                pe_atual: +pe_atual.value || 0,
+                pe_max: +pe_max.value || 0,
                 defesa: +defesa.value || 0,
                 bloqueio: +bloqueio.value || 0,
                 esquiva: +esquiva.value || 0,
                 nivel: +nivel.value || 0,
-                nex: +nex.value || 0
+                nex: +nex.value || 0,
+                arma1: arma1.value || "",
+                arma2: arma2.value || "",
+                arma3: arma3.value || ""
             }
         },
+
         pericias: pericias.value || "",
         habilidades: hab_texto.value || "",
         hab_protecao: hab_protecao.value || "",
@@ -298,7 +330,6 @@ function salvar() {
 /* AUTO SAVE */
 setInterval(() => salvar(), 5000);
 
-/* INIT */
 window.onload = carregar;
 </script>
 
