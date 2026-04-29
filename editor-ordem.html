@@ -96,13 +96,6 @@ label {
 <div class="field"><label>Defesa</label><input id="defesa" type="number"></div>
 </div>
 
-<!-- NOVOS CAMPOS -->
-<div class="grid">
-<div class="field"><label>Perícias</label><input id="pericias" type="number"></div>
-<div class="field"><label>Bloqueio</label><input id="bloqueio" type="number"></div>
-<div class="field"><label>Esquiva</label><input id="esquiva" type="number"></div>
-</div>
-
 <h3>Atributos</h3>
 
 <div class="grid">
@@ -117,6 +110,13 @@ label {
 <div class="field">
 <label>NEX</label>
 <input id="nex" type="number">
+</div>
+
+<!-- PERÍCIAS CORRIGIDO -->
+<h3>Perícias</h3>
+<div class="field">
+<label>Lista de Perícias</label>
+<textarea id="pericias"></textarea>
 </div>
 
 <h3>Habilidades</h3>
@@ -188,8 +188,6 @@ const hp_max = document.getElementById("hp_max");
 const defesa = document.getElementById("defesa");
 
 const pericias = document.getElementById("pericias");
-const bloqueio = document.getElementById("bloqueio");
-const esquiva = document.getElementById("esquiva");
 
 const hab_texto = document.getElementById("hab_texto");
 const rituais = document.getElementById("rituais");
@@ -223,9 +221,7 @@ async function carregar() {
     hp_atual.value = c.hp_atual || 0;
     defesa.value = c.defesa || 0;
 
-    pericias.value = c.pericias || 0;
-    bloqueio.value = c.bloqueio || 0;
-    esquiva.value = c.esquiva || 0;
+    pericias.value = p.pericias || "";
 
     hab_texto.value = p.habilidades || "";
     rituais.value = p.rituais || "";
@@ -257,12 +253,10 @@ function salvar() {
             combate: {
                 hp_max: +hp_max.value || 0,
                 hp_atual: +hp_atual.value || 0,
-                defesa: +defesa.value || 0,
-                pericias: +pericias.value || 0,
-                bloqueio: +bloqueio.value || 0,
-                esquiva: +esquiva.value || 0
+                defesa: +defesa.value || 0
             }
         },
+        pericias: pericias.value || "",
         habilidades: hab_texto.value || "",
         rituais: rituais.value || ""
     };
