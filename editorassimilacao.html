@@ -58,7 +58,7 @@ input, textarea {
     box-sizing: border-box;
 }
 
-/* TEXTAREA AUTO EXPAND BASE */
+/* AUTO RESIZE */
 textarea {
     min-height: 120px;
     resize: none;
@@ -141,76 +141,19 @@ h3 {
 
 <h3>HP</h3>
 <div class="grid2x3">
-    <div class="cell">
-        <input id="hp_atual" type="number">
-        <div class="label">HP Atual</div>
-    </div>
-    <div class="cell">
-        <input id="hp_max" type="number">
-        <div class="label">HP Máximo</div>
-    </div>
+    <div class="cell"><input id="hp_atual" type="number"><div class="label">HP Atual</div></div>
+    <div class="cell"><input id="hp_max" type="number"><div class="label">HP Máximo</div></div>
 </div>
 
 <h3>Recursos</h3>
 <div class="grid2x3">
-    <div class="cell">
-        <input id="det_atual" type="number">
-        <div class="label">Determinação Atual</div>
-    </div>
-    <div class="cell">
-        <input id="det_max" type="number">
-        <div class="label">Determinação Máx</div>
-    </div>
+    <div class="cell"><input id="det_atual" type="number"><div class="label">Determinação Atual</div></div>
+    <div class="cell"><input id="det_max" type="number"><div class="label">Determinação Máx</div></div>
 </div>
 
 <div class="grid2x3">
-    <div class="cell">
-        <input id="assim_atual" type="number">
-        <div class="label">Assimilação Atual</div>
-    </div>
-    <div class="cell">
-        <input id="assim_max" type="number">
-        <div class="label">Assimilação Máx</div>
-    </div>
-</div>
-
-<h3>Instintos</h3>
-<div class="grid2x3">
-    <div class="cell"><input id="reacao"><div class="label">Reação</div></div>
-    <div class="cell"><input id="percepcao"><div class="label">Percepção</div></div>
-    <div class="cell"><input id="sagacidade"><div class="label">Sagacidade</div></div>
-</div>
-
-<div class="grid2x3">
-    <div class="cell"><input id="potencia"><div class="label">Potência</div></div>
-    <div class="cell"><input id="influencia"><div class="label">Influência</div></div>
-    <div class="cell"><input id="resolucao"><div class="label">Resolução</div></div>
-</div>
-
-<h3>Conhecimentos</h3>
-<div class="grid2x3">
-    <div class="cell"><input id="agrario"><div class="label">Agrário</div></div>
-    <div class="cell"><input id="biologico"><div class="label">Biológico</div></div>
-    <div class="cell"><input id="exato"><div class="label">Exato</div></div>
-</div>
-
-<div class="grid2x3">
-    <div class="cell"><input id="medicina"><div class="label">Medicina</div></div>
-    <div class="cell"><input id="social2"><div class="label">Social</div></div>
-    <div class="cell"><input id="artistico"><div class="label">Artístico</div></div>
-</div>
-
-<h3>Práticas</h3>
-<div class="grid2x3">
-    <div class="cell"><input id="esportivas"><div class="label">Esportivas</div></div>
-    <div class="cell"><input id="ferramentas"><div class="label">Ferramentas</div></div>
-    <div class="cell"><input id="oficios"><div class="label">Ofícios</div></div>
-</div>
-
-<div class="grid2x3">
-    <div class="cell"><input id="armas"><div class="label">Armas</div></div>
-    <div class="cell"><input id="veiculos"><div class="label">Veículos</div></div>
-    <div class="cell"><input id="infiltracao"><div class="label">Infiltração</div></div>
+    <div class="cell"><input id="assim_atual" type="number"><div class="label">Assimilação Atual</div></div>
+    <div class="cell"><input id="assim_max" type="number"><div class="label">Assimilação Máx</div></div>
 </div>
 
 </div>
@@ -253,11 +196,12 @@ function autoResize(el) {
     el.style.height = el.scrollHeight + "px";
 }
 
-/* SAVE */
+/* SAVE COMPLETO */
 function salvar() {
   if (carregando) return;
 
   set(ref(db, "personagens/" + id), {
+
     nome: $("nome").value || "",
     evento: $("evento").value || "",
     social: $("social").value || "",
@@ -290,6 +234,10 @@ async function load() {
 
     $("hp_atual").value = p.saude?.hp_atual || "";
     $("hp_max").value = p.saude?.hp_max || "";
+    $("det_atual").value = p.saude?.det_atual || "";
+    $("det_max").value = p.saude?.det_max || "";
+    $("assim_atual").value = p.saude?.assim_atual || "";
+    $("assim_max").value = p.saude?.assim_max || "";
 
     $("habilidades").value = p.habilidades || "";
     $("equipamentos").value = p.equipamentos || "";
@@ -301,32 +249,25 @@ async function load() {
   autoResize($("equipamentos"));
 }
 
-/* autosave + resize */
-["habilidades", "equipamentos"].forEach(id => {
-    const el = $(id);
-
+/* AUTOSAVE + RESIZE */
+document.querySelectorAll("input, textarea").forEach(el => {
     el.addEventListener("input", () => {
-        autoResize(el);
+
+        if (el.tagName === "TEXTAREA") autoResize(el);
 
         clearTimeout(timeout);
         timeout = setTimeout(salvar, 500);
     });
 });
 
-document.querySelectorAll("input").forEach(e => {
-    e.addEventListener("input", () => {
-        clearTimeout(timeout);
-        timeout = setTimeout(salvar, 500);
-    });
-});
-
-/* tabs */
+/* TABS */
 function showTab(id) {
   document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
   document.getElementById(id).style.display = "block";
 }
 window.showTab = showTab;
 
+/* INIT */
 window.onload = () => {
   showTab("basico");
   load();
