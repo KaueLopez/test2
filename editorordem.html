@@ -52,6 +52,13 @@ input, textarea {
     box-sizing: border-box;
 }
 
+/* AUTO RESIZE BASE */
+textarea {
+    min-height: 120px;
+    resize: none;
+    overflow: hidden;
+}
+
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -115,7 +122,6 @@ h3 {
     <div><input id="esquiva" type="number"><div class="label">ESQUIVA</div></div>
 </div>
 
-<!-- 🔥 RESTAURADO: SANIDADE / PE / PD -->
 <h3>Recursos</h3>
 <div class="grid">
     <div><input id="san_atual" type="number"><div class="label">SAN Atual</div></div>
@@ -147,7 +153,6 @@ h3 {
     <textarea id="equipamentos" placeholder="Equipamentos"></textarea>
 </div>
 
-<!-- FIREBASE -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -168,6 +173,22 @@ window.showTab = function(tab){
     document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
     document.getElementById(tab).style.display = "block";
 };
+
+/* AUTO RESIZE */
+function autoResize(el){
+    el.style.height = "auto";
+    el.style.height = el.scrollHeight + "px";
+}
+
+const camposResize = ["pericias","habilidades","rituais","descricao"];
+
+/* aplicar resize ao digitar */
+camposResize.forEach(idField=>{
+    const el = $(idField);
+    el.addEventListener("input", ()=>{
+        autoResize(el);
+    });
+});
 
 /* LOAD */
 if(id){
@@ -214,10 +235,17 @@ if(id){
         $("habilidades").value = e.habilidades || "";
         $("rituais").value = e.rituais || "";
         $("equipamentos").value = e.equipamentos || "";
+
+        /* resize após carregar */
+        setTimeout(()=>{
+            camposResize.forEach(idField=>{
+                autoResize($(idField));
+            });
+        },50);
     });
 }
 
-/* SAVE SIMPLES */
+/* SAVE */
 async function save(path, key, value){
     if(!id) return;
     const obj = {};
@@ -230,6 +258,8 @@ document.querySelectorAll("input, textarea").forEach(el=>{
     el.addEventListener("input", ()=>{
         const v = el.value;
         const n = el.id;
+
+        if(camposResize.includes(n)) autoResize(el);
 
         if(["for","agi","int","vig","pre","desl"].includes(n))
             save("dados/atributos", n, Number(v));
