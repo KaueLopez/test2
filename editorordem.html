@@ -65,10 +65,6 @@ textarea {
     gap: 10px;
 }
 
-.cell {
-    text-align: center;
-}
-
 .label {
     font-size: 12px;
     opacity: 0.7;
@@ -182,18 +178,15 @@ function autoResize(el){
 
 const camposResize = ["pericias","habilidades","rituais","descricao"];
 
-/* aplicar resize ao digitar */
+/* resize ao digitar */
 camposResize.forEach(idField=>{
     const el = $(idField);
-    el.addEventListener("input", ()=>{
-        autoResize(el);
-    });
+    el.addEventListener("input", ()=> autoResize(el));
 });
 
 /* LOAD */
 if(id){
     onValue(ref(db,"personagens/"+id), (snap)=>{
-
         const p = snap.val();
         if(!p) return;
 
@@ -248,9 +241,11 @@ if(id){
 /* SAVE */
 async function save(path, key, value){
     if(!id) return;
+
     const obj = {};
     obj[key] = value;
-    await set(ref(db,"personagens/"+id+"/"+path), obj);
+
+    await update(ref(db,"personagens/"+id+"/"+path), obj);
 }
 
 /* INPUTS */
