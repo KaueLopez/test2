@@ -59,7 +59,7 @@ input, textarea {
 }
 
 textarea {
-    min-height: 80px;
+    min-height: 120px;
     resize: vertical;
 }
 
@@ -217,8 +217,13 @@ h3 {
 <!-- EXTRAS -->
 <div id="extras" class="tab">
     <div class="block">
-        <textarea id="caracteristicas"></textarea>
-        <textarea id="equipamentos"></textarea>
+
+        <h3>Habilidades</h3>
+        <textarea id="habilidades" placeholder="Descreva as habilidades do personagem..."></textarea>
+
+        <h3>Equipamentos</h3>
+        <textarea id="equipamentos" placeholder="Liste os equipamentos..."></textarea>
+
     </div>
 </div>
 
@@ -234,7 +239,7 @@ const app = initializeApp({
 
 const db = getDatabase(app);
 
-// ✔ nunca deixa ID vazio
+// ID seguro
 const id = new URLSearchParams(location.search).get("id") || "default";
 
 const $ = (i) => document.getElementById(i);
@@ -247,6 +252,7 @@ function salvar() {
   if (carregando) return;
 
   set(ref(db, "personagens/" + id), {
+
     nome: $("nome").value || "",
     evento: $("evento").value || "",
     social: $("social").value || "",
@@ -287,9 +293,11 @@ function salvar() {
       infiltracao: +$("infiltracao").value || 0
     },
 
-    caracteristicas: $("caracteristicas").value || "",
+    caracteristicas: $("caracteristicas")?.value || "",
+    habilidades: $("habilidades").value || "",
     equipamentos: $("equipamentos").value || ""
-  }).catch(err => console.error("Erro Firebase:", err));
+
+  }).catch(err => console.error("Firebase erro:", err));
 }
 
 /* LOAD */
@@ -310,7 +318,11 @@ async function load() {
       $("det_max").value = p.saude?.det_max || "";
       $("assim_atual").value = p.saude?.assim_atual || "";
       $("assim_max").value = p.saude?.assim_max || "";
+
+      $("habilidades").value = p.habilidades || "";
+      $("equipamentos").value = p.equipamentos || "";
     }
+
   } catch (e) {
     console.error(e);
   }
