@@ -10,25 +10,30 @@
 body {
     margin: 0;
     font-family: Arial;
-    background: #000;
+    background: #0f0f0f;
     color: white;
 }
 
-h2 {
+header {
     text-align: center;
-    margin: 10px 0;
+    padding: 10px;
+    background: #1a1a1a;
+    position: sticky;
+    top: 0;
 }
 
 .tabs {
     display: flex;
-    background: #1a1a1a;
+    background: #1f1f1f;
+    position: sticky;
+    top: 44px;
 }
 
 .tabs button {
     flex: 1;
     padding: 14px;
     border: none;
-    background: #1a1a1a;
+    background: #1f1f1f;
     color: white;
     cursor: pointer;
 }
@@ -38,50 +43,40 @@ h2 {
     padding: 12px;
 }
 
-.block {
-    background: #0b0b0b;
-    border: 1px solid #333;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 12px;
-}
-
 input, textarea {
     width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 6px;
+    padding: 12px;
+    font-size: 15px;
+    border-radius: 8px;
     border: none;
-    background: #fff;
-    color: #000;
+    margin-bottom: 10px;
+    box-sizing: border-box;
 }
 
-/* AUTO RESIZE */
+/* AUTO RESIZE BASE */
 textarea {
     min-height: 120px;
     resize: none;
     overflow: hidden;
 }
 
-h3 {
-    background: #2a2a2a;
-    padding: 8px;
-    border-radius: 6px;
-}
-
-/* GRID */
-.grid2x3 {
+.grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
 }
 
-.cell {
-    text-align: center;
-}
-
 .label {
     font-size: 12px;
+    opacity: 0.7;
+    margin-top: 4px;
+}
+
+h3 {
+    margin-top: 15px;
+    background: #1f1f1f;
+    padding: 8px;
+    border-left: 4px solid #7c3aed;
 }
 </style>
 </head>
