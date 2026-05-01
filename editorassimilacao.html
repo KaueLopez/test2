@@ -50,8 +50,8 @@ input, textarea {
     width: 100%;
     padding: 10px;
     margin-bottom: 10px;
-    border: none;
     border-radius: 6px;
+    border: none;
     background: #fff;
     color: #000;
 }
@@ -69,6 +69,7 @@ h3 {
     border-radius: 6px;
 }
 
+/* GRID */
 .grid2x3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -81,7 +82,6 @@ h3 {
 
 .label {
     font-size: 12px;
-    margin-top: 4px;
 }
 </style>
 </head>
@@ -96,13 +96,13 @@ h3 {
     <button onclick="showTab('extras')">Extras</button>
 </div>
 
-<!-- BÁSICO -->
+<!-- BASICO -->
 <div id="basico" class="tab">
-    <div class="block">
-        <input id="nome" placeholder="Nome">
-        <textarea id="evento"></textarea>
-        <input id="social" placeholder="Posição Social">
-    </div>
+<div class="block">
+<input id="nome" placeholder="Nome">
+<textarea id="evento" placeholder="Evento Marcante"></textarea>
+<input id="social" placeholder="Posição Social">
+</div>
 </div>
 
 <!-- COMBATE -->
@@ -133,15 +133,15 @@ h3 {
 
 <!-- EXTRAS -->
 <div id="extras" class="tab">
-    <div class="block">
+<div class="block">
 
-        <h3>Habilidades</h3>
-        <textarea id="habilidades"></textarea>
+<h3>Habilidades</h3>
+<textarea id="habilidades"></textarea>
 
-        <h3>Equipamentos</h3>
-        <textarea id="equipamentos"></textarea>
+<h3>Equipamentos</h3>
+<textarea id="equipamentos"></textarea>
 
-    </div>
+</div>
 </div>
 
 <script type="module">
@@ -149,15 +149,15 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const app = initializeApp({
-  apiKey: "AIza...",
-  authDomain: "...",
-  databaseURL: "..."
+  apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
+  authDomain: "fichasrpg-45934.firebaseapp.com",
+  databaseURL: "https://fichasrpg-45934-default-rtdb.firebaseio.com"
 });
 
 const db = getDatabase(app);
 const id = new URLSearchParams(location.search).get("id") || "default";
 
-const $ = (i) => document.getElementById(i);
+const $ = (i)=>document.getElementById(i);
 
 let carregando = true;
 let timeout;
@@ -168,33 +168,33 @@ function autoResize(el){
     el.style.height = el.scrollHeight + "px";
 }
 
-/* SAVE */
+/* SAVE (SALVA TUDO) */
 function salvar(){
 if(carregando) return;
 
 set(ref(db,"personagens/"+id),{
 
-nome:$("nome").value,
-evento:$("evento").value,
-social:$("social").value,
+nome:$("nome").value||"",
+evento:$("evento").value||"",
+social:$("social").value||"",
 
 hp_atual:+$("hp_atual").value||0,
 hp_max:+$("hp_max").value||0,
 
-reacao:$("reacao").value,
-percepcao:$("percepcao").value,
-sagacidade:$("sagacidade").value,
+reacao:$("reacao").value||"",
+percepcao:$("percepcao").value||"",
+sagacidade:$("sagacidade").value||"",
 
-agrario:$("agrario").value,
-biologico:$("biologico").value,
-exato:$("exato").value,
+agrario:$("agrario").value||"",
+biologico:$("biologico").value||"",
+exato:$("exato").value||"",
 
-esportivas:$("esportivas").value,
-ferramentas:$("ferramentas").value,
-oficios:$("oficios").value,
+esportivas:$("esportivas").value||"",
+ferramentas:$("ferramentas").value||"",
+oficios:$("oficios").value||"",
 
-habilidades:$("habilidades").value,
-equipamentos:$("equipamentos").value
+habilidades:$("habilidades").value||"",
+equipamentos:$("equipamentos").value||""
 
 });
 }
@@ -206,19 +206,20 @@ if(!snap.exists()){carregando=false;return}
 
 const p=snap.val();
 
+/* carrega dinamico */
 Object.keys(p).forEach(k=>{
 if($(k)) $(k).value=p[k];
 });
 
 carregando=false;
 
-/* resize */
-["habilidades","equipamentos","evento"].forEach(id=>{
+/* resize após load */
+["evento","habilidades","equipamentos"].forEach(id=>{
 autoResize($(id));
 });
 }
 
-/* EVENTS */
+/* EVENTOS */
 document.querySelectorAll("input,textarea").forEach(el=>{
 el.addEventListener("input",()=>{
 if(el.tagName==="TEXTAREA") autoResize(el);
@@ -235,6 +236,7 @@ $(id).style.display="block";
 }
 window.showTab=showTab;
 
+/* INIT */
 window.onload=()=>{
 showTab("basico");
 load();
