@@ -10,30 +10,25 @@
 body {
     margin: 0;
     font-family: Arial;
-    background: #0f0f0f;
+    background: #000;
     color: white;
 }
 
-header {
+h2 {
     text-align: center;
-    padding: 10px;
-    background: #1a1a1a;
-    position: sticky;
-    top: 0;
+    margin: 10px 0;
 }
 
 .tabs {
     display: flex;
-    background: #1f1f1f;
-    position: sticky;
-    top: 44px;
+    background: #1a1a1a;
 }
 
 .tabs button {
     flex: 1;
     padding: 14px;
     border: none;
-    background: #1f1f1f;
+    background: #1a1a1a;
     color: white;
     cursor: pointer;
 }
@@ -43,40 +38,50 @@ header {
     padding: 12px;
 }
 
-input, textarea {
-    width: 100%;
-    padding: 12px;
-    font-size: 15px;
-    border-radius: 8px;
-    border: none;
-    margin-bottom: 10px;
-    box-sizing: border-box;
+.block {
+    background: #0b0b0b;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 12px;
 }
 
-/* AUTO RESIZE BASE */
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    border: none;
+    background: #fff;
+    color: #000;
+}
+
+/* AUTO RESIZE */
 textarea {
     min-height: 120px;
     resize: none;
     overflow: hidden;
 }
 
-.grid {
+h3 {
+    background: #2a2a2a;
+    padding: 8px;
+    border-radius: 6px;
+}
+
+/* GRID */
+.grid2x3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
 }
 
-.label {
-    font-size: 12px;
-    opacity: 0.7;
-    margin-top: 4px;
+.cell {
+    text-align: center;
 }
 
-h3 {
-    margin-top: 15px;
-    background: #1f1f1f;
-    padding: 8px;
-    border-left: 4px solid #7c3aed;
+.label {
+    font-size: 12px;
 }
 </style>
 </head>
@@ -105,8 +110,13 @@ h3 {
 <div class="block">
 
 <h3>HP</h3>
-<input id="hp_atual" type="number">
-<input id="hp_max" type="number">
+    <div class="grid">
+    <input id="hp_1" type="number">
+    <input id="hp_2" type="number">
+    <input id="hp_3" type="number">
+    <input id="hp_3" type="number">
+    <input id="hp_4" type="number">
+
 
 <h3>Instintos</h3>
     <div class="grid">
