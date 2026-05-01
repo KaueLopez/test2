@@ -54,8 +54,6 @@ input, textarea {
     border-radius: 6px;
     background: #fff;
     color: #000;
-    font-size: 14px;
-    box-sizing: border-box;
 }
 
 /* AUTO RESIZE */
@@ -67,51 +65,23 @@ textarea {
 
 h3 {
     background: #2a2a2a;
-    padding: 8px 10px;
+    padding: 8px;
     border-radius: 6px;
-    font-size: 14px;
-    margin: 15px 0 10px;
 }
 
 .grid2x3 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 10px;
-    margin-bottom: 15px;
-}
-
-@media (max-width: 600px) {
-    .grid2x3 {
-        grid-template-columns: repeat(2, 1fr);
-    }
 }
 
 .cell {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    text-align: center;
 }
 
 .label {
-    background: #3a3a3a;
-    color: #fff;
     font-size: 12px;
-    padding: 4px 6px;
-    border-radius: 4px;
-    margin-top: 5px;
-    width: 100%;
-    text-align: center;
-}
-
-.cell input {
-    text-align: center;
-    font-weight: bold;
-}
-
-#hp_atual, #hp_max {
-    background: #ff2b2b;
-    color: #000;
-    font-weight: bold;
+    margin-top: 4px;
 }
 </style>
 </head>
@@ -130,7 +100,7 @@ h3 {
 <div id="basico" class="tab">
     <div class="block">
         <input id="nome" placeholder="Nome">
-        <textarea id="evento" placeholder="Evento Marcante"></textarea>
+        <textarea id="evento"></textarea>
         <input id="social" placeholder="Posição Social">
     </div>
 </div>
@@ -140,21 +110,23 @@ h3 {
 <div class="block">
 
 <h3>HP</h3>
-<div class="grid2x3">
-    <div class="cell"><input id="hp_atual" type="number"><div class="label">HP Atual</div></div>
-    <div class="cell"><input id="hp_max" type="number"><div class="label">HP Máximo</div></div>
-</div>
+<input id="hp_atual" type="number">
+<input id="hp_max" type="number">
 
-<h3>Recursos</h3>
-<div class="grid2x3">
-    <div class="cell"><input id="det_atual" type="number"><div class="label">Determinação Atual</div></div>
-    <div class="cell"><input id="det_max" type="number"><div class="label">Determinação Máx</div></div>
-</div>
+<h3>Instintos</h3>
+<input id="reacao">
+<input id="percepcao">
+<input id="sagacidade">
 
-<div class="grid2x3">
-    <div class="cell"><input id="assim_atual" type="number"><div class="label">Assimilação Atual</div></div>
-    <div class="cell"><input id="assim_max" type="number"><div class="label">Assimilação Máx</div></div>
-</div>
+<h3>Conhecimentos</h3>
+<input id="agrario">
+<input id="biologico">
+<input id="exato">
+
+<h3>Práticas</h3>
+<input id="esportivas">
+<input id="ferramentas">
+<input id="oficios">
 
 </div>
 </div>
@@ -191,86 +163,81 @@ let carregando = true;
 let timeout;
 
 /* AUTO RESIZE */
-function autoResize(el) {
+function autoResize(el){
     el.style.height = "auto";
     el.style.height = el.scrollHeight + "px";
 }
 
-/* SAVE COMPLETO */
-function salvar() {
-  if (carregando) return;
+/* SAVE */
+function salvar(){
+if(carregando) return;
 
-  set(ref(db, "personagens/" + id), {
+set(ref(db,"personagens/"+id),{
 
-    nome: $("nome").value || "",
-    evento: $("evento").value || "",
-    social: $("social").value || "",
+nome:$("nome").value,
+evento:$("evento").value,
+social:$("social").value,
 
-    saude: {
-      hp_atual: +$("hp_atual").value || 0,
-      hp_max: +$("hp_max").value || 0,
-      det_atual: +$("det_atual").value || 0,
-      det_max: +$("det_max").value || 0,
-      assim_atual: +$("assim_atual").value || 0,
-      assim_max: +$("assim_max").value || 0
-    },
+hp_atual:+$("hp_atual").value||0,
+hp_max:+$("hp_max").value||0,
 
-    habilidades: $("habilidades").value || "",
-    equipamentos: $("equipamentos").value || ""
+reacao:$("reacao").value,
+percepcao:$("percepcao").value,
+sagacidade:$("sagacidade").value,
 
-  });
+agrario:$("agrario").value,
+biologico:$("biologico").value,
+exato:$("exato").value,
+
+esportivas:$("esportivas").value,
+ferramentas:$("ferramentas").value,
+oficios:$("oficios").value,
+
+habilidades:$("habilidades").value,
+equipamentos:$("equipamentos").value
+
+});
 }
 
 /* LOAD */
-async function load() {
-  const snap = await get(child(ref(db), "personagens/" + id));
+async function load(){
+const snap=await get(child(ref(db),"personagens/"+id));
+if(!snap.exists()){carregando=false;return}
 
-  if (snap.exists()) {
-    const p = snap.val();
+const p=snap.val();
 
-    $("nome").value = p.nome || "";
-    $("evento").value = p.evento || "";
-    $("social").value = p.social || "";
+Object.keys(p).forEach(k=>{
+if($(k)) $(k).value=p[k];
+});
 
-    $("hp_atual").value = p.saude?.hp_atual || "";
-    $("hp_max").value = p.saude?.hp_max || "";
-    $("det_atual").value = p.saude?.det_atual || "";
-    $("det_max").value = p.saude?.det_max || "";
-    $("assim_atual").value = p.saude?.assim_atual || "";
-    $("assim_max").value = p.saude?.assim_max || "";
+carregando=false;
 
-    $("habilidades").value = p.habilidades || "";
-    $("equipamentos").value = p.equipamentos || "";
-  }
-
-  carregando = false;
-
-  autoResize($("habilidades"));
-  autoResize($("equipamentos"));
+/* resize */
+["habilidades","equipamentos","evento"].forEach(id=>{
+autoResize($(id));
+});
 }
 
-/* AUTOSAVE + RESIZE */
-document.querySelectorAll("input, textarea").forEach(el => {
-    el.addEventListener("input", () => {
+/* EVENTS */
+document.querySelectorAll("input,textarea").forEach(el=>{
+el.addEventListener("input",()=>{
+if(el.tagName==="TEXTAREA") autoResize(el);
 
-        if (el.tagName === "TEXTAREA") autoResize(el);
-
-        clearTimeout(timeout);
-        timeout = setTimeout(salvar, 500);
-    });
+clearTimeout(timeout);
+timeout=setTimeout(salvar,500);
+});
 });
 
 /* TABS */
-function showTab(id) {
-  document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
-  document.getElementById(id).style.display = "block";
+function showTab(id){
+document.querySelectorAll(".tab").forEach(t=>t.style.display="none");
+$(id).style.display="block";
 }
-window.showTab = showTab;
+window.showTab=showTab;
 
-/* INIT */
-window.onload = () => {
-  showTab("basico");
-  load();
+window.onload=()=>{
+showTab("basico");
+load();
 };
 </script>
 
