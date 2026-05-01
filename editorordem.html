@@ -267,7 +267,7 @@ document.querySelectorAll("input, textarea").forEach(el=>{
 
         if(["for","agi","int","vig","pre","desl"].includes(n))
             save("dados/atributos", n, Number(v));
-        else if(["defesa","bloqueio","esquiva","arma1","arma2","arma3","san_atual","san_max","pe_atual","pe_max","pd_atual","pd_max"].includes(n))
+        else if(["defesa","bloqueio","esquiva","arma1","arma2","arma3","san_atual","san_max","pe_atual","pe_max","pe_TURNO","pd_atual","pd_max","pd_TURNO",].includes(n))
             save("dados/combate", n, v);
         else if(["pericias","habilidades","rituais","equipamentos","descricao"].includes(n))
             save("extras", n, v);
