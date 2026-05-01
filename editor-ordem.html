@@ -79,13 +79,12 @@ label {
 <div class="grid">
     <div><label>PE Atual</label><input id="pe_atual" type="number"></div>
     <div><label>PE Máx</label><input id="pe_max" type="number"></div>
-    <div><label>PE Turno</label><input id="pe_turno" type="number"></div>
+    <div><label>PE/PD Turno</label><input id="pe_turno" type="number"></div>
 </div>
 
 <div class="grid">
     <div><label>PD Atual</label><input id="pd_atual" type="number"></div>
     <div><label>PD Máx</label><input id="pd_max" type="number"></div>
-    <div><label>PD Turno</label><input id="pd_turno" type="number"></div>
 </div>
 
 <div class="grid">
@@ -178,7 +177,7 @@ onValue(ref(db,"personagens/"+id), (snap)=>{
 
     $("pd_atual").value = c.pd_atual || 0;
     $("pd_max").value = c.pd_max || 0;
-    $("pd_turno").value = c.pd_turno || 0;
+    
 
     $("defesa").value = c.defesa || 0;
     $("bloqueio").value = c.bloqueio || 0;
@@ -231,7 +230,6 @@ bind("san_max","dados/combate","sanidade_max");
 bind("pe_atual","dados/combate","pe_atual");
 bind("pe_max","dados/combate","pe_max");
 bind("pe_turno","dados/combate","pe_turno");
-bind("pd_atual","dados/combate","pd_atual");
 bind("pd_max","dados/combate","pd_max");
 bind("pd_turno","dados/combate","pd_turno");
 
