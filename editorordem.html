@@ -159,7 +159,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebas
 import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
 const app = initializeApp({
-  apiKey: "AIzaSyBp6FWCK0IYmeAbCMjdyStz5z1xeUvieV4",
+  apiKey: "SUA_API_KEY",
   authDomain: "fichasrpg-45934.firebaseapp.com",
   databaseURL: "https://fichasrpg-45934-default-rtdb.firebaseio.com"
 });
@@ -172,22 +172,18 @@ function $(id){ return document.getElementById(id); }
 /* TAB */
 window.showTab = function(tab){
     document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
-    document.getElementById(tab).style.display = "block";
+    const el = document.getElementById(tab);
+    if(el) el.style.display = "block";
 };
 
 /* AUTO RESIZE */
 function autoResize(el){
+    if(!el) return;
     el.style.height = "auto";
     el.style.height = el.scrollHeight + "px";
 }
 
 const camposResize = ["pericias","habilidades","rituais","descricao"];
-
-/* resize ao digitar */
-camposResize.forEach(idField=>{
-    const el = $(idField);
-    el.addEventListener("input", ()=> autoResize(el));
-});
 
 /* LOAD */
 if(id){
@@ -218,9 +214,9 @@ if(id){
 
         $("hp_atual").value = c.hp_atual || 0;
         $("hp_max").value = c.hp_max || 0;
-        
-        $("san_atual").value = c.sanidade_atual || 0;
-        $("san_max").value = c.sanidade_max || 0;
+
+        $("san_atual").value = c.san_atual || 0;
+        $("san_max").value = c.san_max || 0;
 
         $("pe_atual").value = c.pe_atual || 0;
         $("pe_max").value = c.pe_max || 0;
@@ -238,7 +234,6 @@ if(id){
         $("rituais").value = e.rituais || "";
         $("equipamentos").value = e.equipamentos || "";
 
-        /* resize após carregar */
         setTimeout(()=>{
             camposResize.forEach(idField=>{
                 autoResize($(idField));
@@ -251,28 +246,55 @@ if(id){
 async function save(path, key, value){
     if(!id) return;
 
-    const obj = {};
-    obj[key] = value;
-
-    await update(ref(db,"personagens/"+id+"/"+path), obj);
+    try{
+        await update(ref(db,"personagens/"+id+"/"+path), {
+            [key]: value
+        });
+    }catch(err){
+        console.error("Erro ao salvar:", err);
+    }
 }
 
 /* INPUTS */
 document.querySelectorAll("input, textarea").forEach(el=>{
+    if(!el) return;
+
     el.addEventListener("input", ()=>{
         const v = el.value;
         const n = el.id;
 
         if(camposResize.includes(n)) autoResize(el);
 
-        if(["for","agi","int","vig","pre","desl"].includes(n))
+        /* ATRIBUTOS (número) */
+        if(["for","agi","int","vig","pre","desl"].includes(n)){
             save("dados/atributos", n, Number(v));
-        else if(["defesa","bloqueio","esquiva","arma1","arma2","arma3","san_atual","san_max","pe_atual","pe_max","pe_turno","pd_atual","pd_max","pd_turno"].includes(n))
+        }
+
+        /* COMBATE (número quando possível) */
+        else if([
+            "defesa","bloqueio","esquiva",
+            "hp_atual","hp_max",
+            "san_atual","san_max",
+            "pe_atual","pe_max","pe_turno",
+            "pd_atual","pd_max"
+        ].includes(n)){
+            save("dados/combate", n, Number(v));
+        }
+
+        /* ARMAS (string) */
+        else if(["arma1","arma2","arma3"].includes(n)){
             save("dados/combate", n, v);
-        else if(["pericias","habilidades","rituais","equipamentos","descricao"].includes(n))
+        }
+
+        /* TEXTOS */
+        else if(["pericias","habilidades","rituais","equipamentos","descricao"].includes(n)){
             save("extras", n, v);
-        else
+        }
+
+        /* INFO */
+        else{
             save("dados/info", n, v);
+        }
     });
 });
 
