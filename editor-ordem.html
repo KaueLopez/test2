@@ -144,13 +144,16 @@ const $ = (id) => document.getElementById(id);
 let carregando = true;
 let userEditing = false;
 
+/* DEBUG (não seja cego) */
+console.log("ID:", id);
+
 /* evita overwrite durante edição */
 document.querySelectorAll("input, textarea").forEach(el=>{
     el.addEventListener("focus", ()=> userEditing = true);
     el.addEventListener("blur", ()=> userEditing = false);
 });
 
-/* sync tempo real */
+/* realtime sync */
 onValue(ref(db,"personagens/"+id), (snap)=>{
     if(!snap.exists() || userEditing) return;
 
@@ -161,85 +164,109 @@ onValue(ref(db,"personagens/"+id), (snap)=>{
     const a = p.dados?.atributos || {};
     const e = p.extras || {};
 
-    $("nome").value = i.nome || "";
-    $("classe").value = i.classe || "";
-    $("origem").value = i.origem || "";
+    /* INFO */
+    if($("nome")) $("nome").value = i.nome || "";
+    if($("classe")) $("classe").value = i.classe || "";
+    if($("origem")) $("origem").value = i.origem || "";
 
-    $("hp_atual").value = c.hp_atual || 0;
-    $("hp_max").value = c.hp_max || 0;
+    /* COMBATE */
+    if($("hp_atual")) $("hp_atual").value = c.hp_atual || 0;
+    if($("hp_max")) $("hp_max").value = c.hp_max || 0;
 
-    $("san_atual").value = c.sanidade_atual || 0;
-    $("san_max").value = c.sanidade_max || 0;
+    if($("san_atual")) $("san_atual").value = c.sanidade_atual || 0;
+    if($("san_max")) $("san_max").value = c.sanidade_max || 0;
 
-    $("pe_atual").value = c.pe_atual || 0;
-    $("pe_max").value = c.pe_max || 0;
-    $("pe_turno").value = c.pe_turno || 0;
+    if($("pe_atual")) $("pe_atual").value = c.pe_atual || 0;
+    if($("pe_max")) $("pe_max").value = c.pe_max || 0;
+    if($("pe_turno")) $("pe_turno").value = c.pe_turno || 0;
 
-    $("pd_atual").value = c.pd_atual || 0;
-    $("pd_max").value = c.pd_max || 0;
-    
+    if($("pd_atual")) $("pd_atual").value = c.pd_atual || 0;
+    if($("pd_max")) $("pd_max").value = c.pd_max || 0;
 
-    $("defesa").value = c.defesa || 0;
-    $("bloqueio").value = c.bloqueio || 0;
-    $("esquiva").value = c.esquiva || 0;
+    if($("defesa")) $("defesa").value = c.defesa || 0;
+    if($("bloqueio")) $("bloqueio").value = c.bloqueio || 0;
+    if($("esquiva")) $("esquiva").value = c.esquiva || 0;
 
-    $("arma1").value = c.arma1 || "";
-    $("arma2").value = c.arma2 || "";
-    $("arma3").value = c.arma3 || "";
+    if($("arma1")) $("arma1").value = c.arma1 || "";
+    if($("arma2")) $("arma2").value = c.arma2 || "";
+    if($("arma3")) $("arma3").value = c.arma3 || "";
 
-    $("for").value = a.for || 0;
-    $("agi").value = a.agi || 0;
-    $("int").value = a.int || 0;
-    $("vig").value = a.vig || 0;
-    $("pre").value = a.pre || 0;
-    $("desl").value = a.desl || 0;
+    /* ATRIBUTOS */
+    if($("for")) $("for").value = a.for || 0;
+    if($("agi")) $("agi").value = a.agi || 0;
+    if($("int")) $("int").value = a.int || 0;
+    if($("vig")) $("vig").value = a.vig || 0;
+    if($("pre")) $("pre").value = a.pre || 0;
+    if($("desl")) $("desl").value = a.desl || 0;
 
-    $("pericias").value = e.pericias || "";
-    $("habilidades").value = e.habilidades || "";
-    $("rituais").value = e.rituais || "";
-    $("equipamentos").value = e.equipamentos || "";
-    $("descricao").value = e.descricao || "";
+    /* EXTRAS */
+    if($("pericias")) $("pericias").value = e.pericias || "";
+    if($("habilidades")) $("habilidades").value = e.habilidades || "";
+    if($("rituais")) $("rituais").value = e.rituais || "";
+    if($("equipamentos")) $("equipamentos").value = e.equipamentos || "";
+    if($("descricao")) $("descricao").value = e.descricao || "";
 
     carregando = false;
 });
 
-/* autosave */
+/* bind seguro */
 function bind(idField, path, key){
-    $(idField).addEventListener("input", async ()=>{
+    const el = $(idField);
+    if(!el) {
+        console.warn("Campo não encontrado:", idField);
+        return;
+    }
+
+    el.addEventListener("input", async ()=>{
         if(carregando) return;
 
-        const value = $(idField).value;
-        const parsed = isNaN(value) ? value : +value;
+        const value = el.value;
 
-        const obj = {};
-        obj[key] = parsed;
+        /* converte número corretamente */
+        const parsed = value === "" ? "" : (isNaN(value) ? value : Number(value));
 
-        await update(ref(db,"personagens/"+id+"/"+path), obj);
+        try{
+            await update(ref(db,"personagens/"+id+"/"+path), {
+                [key]: parsed
+            });
+        }catch(err){
+            console.error("Erro ao salvar:", err);
+        }
     });
 }
 
-/* binds */
+/* BINDS */
+
+/* INFO */
 bind("nome","dados/info","nome");
 bind("classe","dados/info","classe");
 bind("origem","dados/info","origem");
 
+/* COMBATE */
 bind("hp_atual","dados/combate","hp_atual");
 bind("hp_max","dados/combate","hp_max");
+
 bind("san_atual","dados/combate","sanidade_atual");
 bind("san_max","dados/combate","sanidade_max");
+
 bind("pe_atual","dados/combate","pe_atual");
 bind("pe_max","dados/combate","pe_max");
 bind("pe_turno","dados/combate","pe_turno");
-bind("pd_max","dados/combate","pd_max");
-bind("pd_turno","dados/combate","pd_turno");
 
+bind("pd_atual","dados/combate","pd_atual");
+bind("pd_max","dados/combate","pd_max");
+
+/* DEFESA */
 bind("defesa","dados/combate","defesa");
 bind("bloqueio","dados/combate","bloqueio");
 bind("esquiva","dados/combate","esquiva");
+
+/* ARMAS */
 bind("arma1","dados/combate","arma1");
 bind("arma2","dados/combate","arma2");
 bind("arma3","dados/combate","arma3");
 
+/* ATRIBUTOS */
 bind("for","dados/atributos","for");
 bind("agi","dados/atributos","agi");
 bind("int","dados/atributos","int");
@@ -247,11 +274,13 @@ bind("vig","dados/atributos","vig");
 bind("pre","dados/atributos","pre");
 bind("desl","dados/atributos","desl");
 
+/* EXTRAS */
 bind("pericias","extras","pericias");
 bind("habilidades","extras","habilidades");
 bind("rituais","extras","rituais");
 bind("equipamentos","extras","equipamentos");
 bind("descricao","extras","descricao");
+
 </script>
 
 </body>
